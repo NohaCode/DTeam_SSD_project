@@ -2,6 +2,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 class SSDTest {
@@ -48,8 +50,14 @@ class SSDTest {
 
     @Test
     public void read_SSD_Write한주소를Read(){
-        //ssd W 0 0xFFFFFFFF
-        //ssd R 0
+        //ssd W 1 0xFFFFFFFF
+        //ssd R 1
+
+        SSD ssd = mock(SSD.class);
+        ssd.write(1, "0xFFFFFFFF");
+        when(ssd.read(1)).thenReturn("0xFFFFFFFF");
+
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
