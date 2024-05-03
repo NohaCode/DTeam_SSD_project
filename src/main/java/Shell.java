@@ -56,7 +56,7 @@ public class Shell {
 
     public void help() {
         try {
-            ClassLoader classLoader = SSD.class.getClassLoader();
+            ClassLoader classLoader = Shell.class.getClassLoader();
             File file = new File(Objects.requireNonNull(classLoader.getResource("help.txt")).getFile());
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             bufferedReader.lines().forEach(System.out::println);

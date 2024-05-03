@@ -22,11 +22,6 @@ class ShellTest {
         shell = new Shell(ssd);
     }
 
-    @Mock
-    SSD ssd;
-
-    Shell shell;
-
     @BeforeEach
     void setUp() {
         shell = new Shell(ssd);
