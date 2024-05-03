@@ -1,6 +1,21 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ShellTest {
+
+    @Mock
+    SSD ssd;
+
+    Shell shell;
+
+    @BeforeEach
+    void setUp() {
+        shell = new Shell(ssd);
+    }
 
     @Test
     public void write_3번LBA에Write_통과() {
@@ -48,6 +63,7 @@ class ShellTest {
 
     @Test
     public void shell_help_함수호출시_사용방법_출력확인() {
+        shell.help();
     }
 
     @Test
