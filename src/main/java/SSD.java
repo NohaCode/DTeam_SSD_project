@@ -1,15 +1,19 @@
 public class SSD {
-
-    private byte LBA[];
-
     public SSD() {
-        this.LBA = new byte[100];
     }
 
-    public void write(int index, byte b){
+    public void write(int index, String b){
     }
 
-    public byte read(int index){
-        return 0;
+    public String read(int index){
+        return "0x00000000";
+    }
+
+    public static void main(String[] args) {
+
+    }
+
+    public boolean isValidFile(String file) {
+        return true;
     }
 }
