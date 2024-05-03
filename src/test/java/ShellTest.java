@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ShellTest {
-    @Spy
+    @Mock
     SSD ssd;
+
     Shell shell;
 
     @BeforeEach
     void setUp() {
-        ssd = mock(SSD.class);
         shell = new Shell(ssd);
     }
 
