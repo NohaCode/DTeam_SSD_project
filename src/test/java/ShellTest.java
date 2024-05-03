@@ -43,30 +43,30 @@ class ShellTest {
     }
 
     @Test
-    void shell_exit_함수호출시_shell_종료확인() {
+    public void shell_exit_함수호출시_shell_종료확인() {
     }
 
     @Test
-    void shell_help_함수호출시_사용방법_출력확인() {
+    public void shell_help_함수호출시_사용방법_출력확인() {
     }
 
     @Test
-    void 전체파일읽기_통과(){
-
-    }
-
-    @Test
-    void 전체파일읽기_실패(){
+    public void 전체파일읽기_통과(){
 
     }
 
     @Test
-    void 전체파일쓰기_10자리_입력_통과(){
+    public void 전체파일읽기_실패(){
 
     }
 
     @Test
-    void 전체파일쓰기_10자리아님_입력_실패(){
+    public void 전체파일쓰기_10자리_입력_통과(){
+
+    }
+
+    @Test
+    public void 전체파일쓰기_10자리아님_입력_실패(){
 
     }
 }
