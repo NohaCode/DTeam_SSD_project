@@ -1,5 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class ShellTest {
 
     @Test
@@ -61,7 +66,17 @@ class ShellTest {
     }
 
     @Test
-    public void 전체파일쓰기_10자리_입력_통과(){
+    public void 전체파일쓰기_10자리_입력_통과() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
+        String inputValue = "0x00000000";
+
+        //act
+        shell.fullwrite(inputValue);
+
+        //assert
+        verify(mockSSD, times(100)).write(anyInt(),eq(inputValue));
 
     }
 
