@@ -6,6 +6,8 @@ public class SSD {
     }
 
     public String read(int index){
+        if(!(0 <= index && index <= 99))
+            return "Invalid Address";
         return "0x00000000";
     }
 
