@@ -69,6 +69,15 @@ class SSDTest {
     @Test
     public void read_SSD_resultFile없는경우Read(){
         //ssd R 0
+        SSD ssd = new SSD();
+        if(!ssd.isValidFile("result.txt")){
+            fail();
+        }
+
+        assertDoesNotThrow(() ->{
+            String readedData = ssd.read(10);
+            assertThat(readedData).isEqualTo("0x00000000");
+        });
     }
 
     @Test
