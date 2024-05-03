@@ -70,7 +70,7 @@ public class Shell {
     }
 
     void fullwrite(String value) throws Exception {
-        if(value.length() != 10 && !value.matches("^0x[0-9A-F]{8}$")){
+        if(isIncorrectValue(value)){
             System.out.println("10자리 16진수만 입력 가능합니다.");
             return;
         }
