@@ -1,5 +1,9 @@
+
+import java.util.ArrayList;
+import java.util.List;
 import java.io.*;
 import java.util.Objects;
+
 
 public class Shell {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
@@ -79,7 +83,26 @@ public class Shell {
                 e.printStackTrace();
             }
         }
-
     }
 
+    void fullread() throws Exception {
+        makeReadFileBySSD();
+        printResult(readFile());
+    }
+
+    private void makeReadFileBySSD() {
+        for (int addreess = 0; addreess < 100; addreess++) {
+            ssd.read(addreess);
+        }
+    }
+
+    private List<String> readFile() {
+        return new ArrayList<>();
+    }
+
+    void printResult(List<String> result) throws Exception {
+        for (String s : result) {
+            System.out.println(s);
+        }
+    }
 }
