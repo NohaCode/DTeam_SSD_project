@@ -1,14 +1,12 @@
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.mockito.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -21,6 +19,16 @@ class ShellTest {
     @BeforeEach
     void setUP() {
         ssd = mock(SSD.class);
+        shell = new Shell(ssd);
+    }
+
+    @Mock
+    SSD ssd;
+
+    Shell shell;
+
+    @BeforeEach
+    void setUp() {
         shell = new Shell(ssd);
     }
 
@@ -83,6 +91,7 @@ class ShellTest {
 
     @Test
     public void shell_help_함수호출시_사용방법_출력확인() {
+        shell.help();
     }
 
     @Test
@@ -96,7 +105,17 @@ class ShellTest {
     }
 
     @Test
-    public void 전체파일쓰기_10자리_입력_통과(){
+    public void 전체파일쓰기_10자리_입력_통과() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
+        String inputValue = "0x00000000";
+
+        //act
+        shell.fullwrite(inputValue);
+
+        //assert
+        verify(mockSSD, times(100)).write(anyInt(),eq(inputValue));
 
     }
 
