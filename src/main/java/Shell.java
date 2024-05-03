@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shell {
     private SSD ssd;
 
@@ -19,7 +22,26 @@ public class Shell {
                 e.printStackTrace();
             }
         }
-
     }
 
+    void fullread() throws Exception {
+        makeReadFileBySSD();
+        printResult(readFile());
+    }
+
+    private void makeReadFileBySSD() {
+        for (int addreess = 0; addreess < 100; addreess++) {
+            ssd.read(addreess);
+        }
+    }
+
+    private List<String> readFile() {
+        return new ArrayList<>();
+    }
+
+    void printResult(List<String> result) throws Exception {
+        for (String s : result) {
+            System.out.println(s);
+        }
+    }
 }

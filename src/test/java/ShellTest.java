@@ -56,14 +56,18 @@ class ShellTest {
     }
 
     @Test
-    public void 전체파일읽기_통과(){
+    public void 전체파일읽기_통과() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
 
+        //acts
+        shell.fullread();
+
+        //assert
+        verify(mockSSD, times(100)).read(anyInt());
     }
 
-    @Test
-    public void 전체파일읽기_실패(){
-
-    }
 
     @Test
     public void 전체파일쓰기_10자리_입력_통과() throws Exception {
@@ -81,7 +85,16 @@ class ShellTest {
     }
 
     @Test
-    public void 전체파일쓰기_10자리아님_입력_실패(){
+    public void 전체파일쓰기_10자리아님_입력_실패() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
+        String inputValue = "0x000000001";
 
+        //act
+        shell.fullwrite(inputValue);
+
+        //assert
+        verify(mockSSD, times(0)).write(anyInt(),eq(inputValue));
     }
 }
