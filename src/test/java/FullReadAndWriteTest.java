@@ -13,13 +13,13 @@ public class FullReadAndWriteTest {
     }
     
     @Test
-    void 전체파일쓰기_4바이트_입력_통과(){
+    void 전체파일쓰기_10자리_입력_통과(){
         
     }
 
 
     @Test
-    void 전체파일쓰기_4바이트아님_입력_실패(){
+    void 전체파일쓰기_10자리아님_입력_실패(){
         
     }
 
