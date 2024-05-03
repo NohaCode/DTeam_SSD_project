@@ -1,11 +1,13 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
+@ExtendWith(MockitoExtension.class)
 class SSDTest {
 
     @Test
@@ -102,10 +104,6 @@ class SSDTest {
 
     @Test
     public void read_SSD_같은주소여러번Read(){
-        //ssd R 0
-        //ssd R 0
-        //ssd R 0
-
         SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFF");
         when(ssd.read(1))
@@ -118,9 +116,18 @@ class SSDTest {
 
     @Test
     public void read_SSD_다른주소연속read(){
-        //ssd R 0
-        //ssd R 1
-        //ssd R 2
+        SSD ssd = mock(SSD.class);
+        ssd.write(1, "0xFFFFFFFA");
+        ssd.write(2, "0xFFFFFFFB");
+        ssd.write(3, "0xFFFFFFFF");
+
+        when(ssd.read(1)).thenReturn("0xFFFFFFFA");
+        when(ssd.read(2)).thenReturn("0xFFFFFFFB");
+        when(ssd.read(3)).thenReturn("0xFFFFFFFF");
+
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFA");
+        assertThat(ssd.read(2)).isEqualTo("0xFFFFFFFB");
+        assertThat(ssd.read(3)).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
