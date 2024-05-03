@@ -84,6 +84,12 @@ class SSDTest {
     public void read_SSD_이상한주소값Read(){
         //ssd R -1
         //ssd R 111
+        SSD ssd = new SSD();
+        String data = ssd.read(-1);
+        assertThat(data).isEqualTo("Invalid Address");
+
+        data = ssd.read(111);
+        assertThat(data).isEqualTo("Invalid Address");
     }
 
     @Test
