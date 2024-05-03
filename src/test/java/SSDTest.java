@@ -105,6 +105,15 @@ class SSDTest {
         //ssd R 0
         //ssd R 0
         //ssd R 0
+
+        SSD ssd = mock(SSD.class);
+        ssd.write(1, "0xFFFFFFFF");
+        when(ssd.read(1))
+                .thenReturn("0xFFFFFFFF")
+                .thenReturn("0xFFFFFFFF")
+                .thenReturn("0xFFFFFFFF");
+
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
