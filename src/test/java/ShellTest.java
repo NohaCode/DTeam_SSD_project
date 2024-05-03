@@ -17,13 +17,8 @@ class ShellTest {
     Shell shell;
 
     @BeforeEach
-    void setUP() {
-        ssd = mock(SSD.class);
-        shell = new Shell(ssd);
-    }
-
-    @BeforeEach
     void setUp() {
+        ssd = mock(SSD.class);
         shell = new Shell(ssd);
     }
 
