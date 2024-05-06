@@ -106,7 +106,7 @@ class ShellTest {
     }
 
     @Test
-    public void 전체파일읽기_통과() throws Exception {
+    public void fullread_전체파일읽기_통과() throws Exception {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
@@ -120,31 +120,68 @@ class ShellTest {
 
 
     @Test
-    public void 전체파일쓰기_10자리_입력_통과() throws Exception {
+    public void fullwrite_10자리_입력_통과() throws Exception {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-        String inputValue = "0x00000000";
 
         //act
-        shell.fullwrite(inputValue);
+        shell.fullwrite(CORRECT_WRITE_VALUE);
 
         //assert
-        verify(mockSSD, times(100)).write(anyInt(),eq(inputValue));
+        verify(mockSSD, times(100)).write(anyInt(),eq(CORRECT_WRITE_VALUE));
 
     }
 
     @Test
-    public void 전체파일쓰기_10자리아님_입력_실패() throws Exception {
+    public void fullwrite_비정상자리수_실패() throws Exception {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-        String inputValue = "0x000000001";
 
         //act
-        shell.fullwrite(inputValue);
+        shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH);
 
         //assert
-        verify(mockSSD, times(0)).write(anyInt(),eq(inputValue));
+        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH));
+    }
+
+    @Test
+    public void fullwrite_16진수아님_실패() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
+
+        //act
+        shell.fullwrite(INCORRECT_WRITE_VALUE_ALPHA );
+
+        //assert
+        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_ALPHA ));
+    }
+
+    @Test
+    public void fullwrite_자리수초과_실패() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
+
+        //act
+        shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH );
+
+        //assert
+        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH ));
+    }
+
+    @Test
+    public void fullwrite_알파벳에러_실패() throws Exception {
+        //arrange
+        SSD mockSSD = mock(SSD.class);
+        Shell shell = new Shell(mockSSD);
+
+        //act
+        shell.fullwrite(INCORRECT_WRITE_VALUE_START );
+
+        //assert
+        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_START ));
     }
 }
