@@ -113,13 +113,12 @@ class ShellTest {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-        String inputValue = "0x00000000";
 
         //act
-        shell.fullwrite(inputValue);
+        shell.fullwrite(CORRECT_WRITE_VALUE);
 
         //assert
-        verify(mockSSD, times(100)).write(anyInt(),eq(inputValue));
+        verify(mockSSD, times(100)).write(anyInt(),eq(CORRECT_WRITE_VALUE));
 
     }
 
