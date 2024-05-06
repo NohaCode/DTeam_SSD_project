@@ -128,13 +128,12 @@ class ShellTest {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-        String inputValue = "0x000000001";
 
         //act
-        shell.fullwrite(inputValue);
+        shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH);
 
         //assert
-        verify(mockSSD, times(0)).write(anyInt(),eq(inputValue));
+        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH));
     }
 
     @Test
@@ -142,7 +141,6 @@ class ShellTest {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-//        String inputValue = "0x000000001";
 
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_ALPHA );
@@ -156,7 +154,6 @@ class ShellTest {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-//        String inputValue = "0x000000001";
 
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH );
@@ -170,7 +167,6 @@ class ShellTest {
         //arrange
         SSD mockSSD = mock(SSD.class);
         Shell shell = new Shell(mockSSD);
-//        String inputValue = "0x000000001";
 
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_START );
