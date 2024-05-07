@@ -29,7 +29,7 @@ class SSDTest {
 
     @BeforeEach
     void setUp() {
-        fileHandler = new FileHandler();
+        fileHandler = FileHandler.get();
     }
 
     private static String getWriteCommandArgument(int index, String value) {
@@ -129,16 +129,22 @@ class SSDTest {
 
     @Test
     public void read_SSD_Write하지않은상태로Read() {
-        String dataByIndex = ssd.read(10);
-        assertThat(dataByIndex).isEqualTo("0x00000000");
+        assertDoesNotThrow(() -> {
+            ssd.run("R 10");
+        });
+
+        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0x00000000");
     }
 
     @Test
     public void read_SSD_Write한주소를Read() {
-        ssd.write(1, "0xFFFFFFFF");
-        when(ssd.read(1)).thenReturn("0xFFFFFFFF");
+        ssd.run("W 1 0xFFFFFFFF");
+        ssd.run("R 1");
 
-        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
+        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+
+        assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
@@ -148,8 +154,9 @@ class SSDTest {
         }
 
         assertDoesNotThrow(() -> {
-            String readedData = ssd.read(10);
-            assertThat(readedData).isEqualTo("0x00000000");
+            ssd.run("R 10");
+            String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+            assertThat(data).isEqualTo("0x00000000");
         });
     }
 
@@ -160,42 +167,59 @@ class SSDTest {
         }
 
         assertDoesNotThrow(() -> {
-            String readedData = ssd.read(10);
-            assertThat(readedData).isEqualTo("0x00000000");
+            ssd.run("R 10");
+            String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+            assertThat(data).isEqualTo("0x00000000");
         });
     }
 
     @Test
     public void read_SSD_이상한주소값Read() {
         SSDException e = assertThrows(SSDException.class, () -> {
-            ssd.read(-1);
+            ssd.run("R -1");
         });
         assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
 
         e = assertThrows(SSDException.class, () -> {
-            ssd.read(111);
+            ssd.run("R 111");
         });
         assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
     }
 
     @Test
     public void read_SSD_같은주소여러번Read() {
-        ssd.write(1, "0xFFFFFFFF");
+        ssd.run("W 1 0xFFFFFFFF");
 
-        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
-        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
-        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
+        ssd.run("R 1");
+        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0xFFFFFFFF");
+
+        ssd.run("R 1");
+        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0xFFFFFFFF");
+
+        ssd.run("R 1");
+        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
     public void read_SSD_다른주소연속read() {
-        ssd.write(1, "0xFFFFFFFA");
-        ssd.write(2, "0xFFFFFFFB");
-        ssd.write(3, "0xFFFFFFFF");
+        ssd.run("W 1 0xFFFFFFFA");
+        ssd.run("W 2 0xFFFFFFFB");
+        ssd.run("W 3 0xFFFFFFFF");
 
-        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFA");
-        assertThat(ssd.read(2)).isEqualTo("0xFFFFFFFB");
-        assertThat(ssd.read(3)).isEqualTo("0xFFFFFFFF");
+        ssd.run("R 1");
+        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0xFFFFFFFA");
+
+        ssd.run("R 2");
+        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0xFFFFFFFB");
+
+        ssd.run("R 3");
+        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
