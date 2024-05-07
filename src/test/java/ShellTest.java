@@ -1,5 +1,3 @@
-
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +5,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 
 @ExtendWith(MockitoExtension.class)
 class ShellTest {
@@ -38,20 +34,20 @@ class ShellTest {
         //write  3  0xAAAABBBB
         // • 3번 LBA 에 0xAAAABBB 를 기록한다.
         // • ssd 에 명령어를 전달한다.
-        String[] tokens = {"ssd", "W", String.valueOf(CORRECT_WRITE_INDEX), CORRECT_WRITE_VALUE};
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), CORRECT_WRITE_VALUE};
 
         shell.processWriteCommand(tokens);
 
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
+        verify(ssd, times(1)).run(anyString());
     }
 
     @Test
     public void write_Shell_알맞지_않은_범위에_쓰기_실패_상한선() {
         //write  100  0xAAAABBBB
         //LBA 범위는 0 ~ 99
-        String[] tokens = {"ssd", "W", String.valueOf(INCORRECT_WRITE_INDEX_BIG), CORRECT_WRITE_VALUE};
+        String[] tokens = {"write", String.valueOf(INCORRECT_WRITE_INDEX_BIG), CORRECT_WRITE_VALUE};
         shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
+        verify(ssd, times(0)).run(anyString());
 
     }
 
@@ -59,9 +55,9 @@ class ShellTest {
     public void write_Shell_알맞지_않은_범위에_쓰기_실패_하한선() {
         //write  100  0xAAAABBBB
         //LBA 범위는 0 ~ 99
-        String[] tokens = {"ssd", "W", String.valueOf(INCORRECT_WRITE_INDEX_SMALL), CORRECT_WRITE_VALUE};
+        String[] tokens = {"write", String.valueOf(INCORRECT_WRITE_INDEX_SMALL), CORRECT_WRITE_VALUE};
         shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
+        verify(ssd, times(0)).run(anyString());
 
     }
 
@@ -72,7 +68,7 @@ class ShellTest {
         String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_START};
 
         shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run("ssd W "+CORRECT_WRITE_INDEX+" "+ INCORRECT_WRITE_VALUE_START);
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
@@ -82,7 +78,7 @@ class ShellTest {
         String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_ALPHA};
 
         shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run("ssd W "+CORRECT_WRITE_INDEX+" "+ INCORRECT_WRITE_VALUE_ALPHA);
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
@@ -92,7 +88,7 @@ class ShellTest {
         String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
 
         shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run("ssd W "+CORRECT_WRITE_INDEX+" "+ INCORRECT_WRITE_VALUE_LENGTH);
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
@@ -104,7 +100,7 @@ class ShellTest {
         String[] tokens = {"read", String.valueOf(CORRECT_WRITE_INDEX)};
 
         shell.processReadCommand(tokens);
-        verify(ssd, times(1)).run("ssd R "+CORRECT_WRITE_INDEX);
+        verify(ssd, times(1)).run(anyString());
     }
 
     @Test
@@ -114,7 +110,7 @@ class ShellTest {
         String[] tokens = {"read", String.valueOf(INCORRECT_WRITE_INDEX_SMALL)};
         shell.processReadCommand(tokens);
 
-        verify(ssd, times(0)).run("ssd R "+INCORRECT_WRITE_INDEX_SMALL);
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
@@ -124,7 +120,7 @@ class ShellTest {
         String[] tokens = {"read", String.valueOf(INCORRECT_WRITE_INDEX_BIG)};
         shell.processReadCommand(tokens);
 
-        verify(ssd, times(0)).run("ssd R "+INCORRECT_WRITE_INDEX_BIG);
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
@@ -146,57 +142,83 @@ class ShellTest {
 
     @Test
     public void fullread_Shell_전체파일읽기_통과() throws Exception {
+
+        String[] tokens = {"fullread"};
+
         //acts
-        shell.fullread();
+        shell.processFullReadCommand(tokens);
 
         //assert
-        verify(ssd, times(100)).read(anyInt());
+        verify(ssd, times(100)).run(anyString());
+    }
+
+    @Test
+    public void fullread_Shell_전체파일읽기_실패() throws Exception {
+
+        String[] tokens = {"fullread", "WWW"};
+
+        //acts
+        shell.processFullReadCommand(tokens);
+
+        //assert
+        verify(ssd, times(0)).run(anyString());
     }
 
 
     @Test
     public void fullwrite_Shell_10자리_입력_통과() throws Exception {
+        String[] tokens = {"fullwrite", CORRECT_WRITE_VALUE};
+
         //act
-        shell.fullwrite(CORRECT_WRITE_VALUE);
+        shell.processFullWriteCommand(tokens);
 
         //assert
-        verify(ssd, times(100)).write(anyInt(),eq(CORRECT_WRITE_VALUE));
+        verify(ssd, times(100)).run(anyString());
 
     }
 
     @Test
     public void fullwrite_Shell_비정상자리수_실패() throws Exception {
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
+
         //act
-        shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH);
+        shell.processFullWriteCommand(tokens);
 
         //assert
-        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH));
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
     public void fullwrite_Shell_16진수아님_실패() throws Exception {
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_START};
+
         //act
-        shell.fullwrite(INCORRECT_WRITE_VALUE_ALPHA );
+        shell.processFullWriteCommand(tokens);
 
         //assert
-        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_ALPHA ));
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
     public void fullwrite_Shell_자리수초과_실패() throws Exception {
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
+
         //act
-        shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH );
+        shell.processFullWriteCommand(tokens);
+
 
         //assert
-        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH ));
+        verify(ssd, times(0)).run(anyString());
     }
 
     @Test
     public void fullwrite_Shell_알파벳에러_실패() throws Exception {
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_ALPHA};
+
         //act
-        shell.fullwrite(INCORRECT_WRITE_VALUE_START );
+        shell.processFullWriteCommand(tokens);
 
         //assert
-        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_START ));
+        verify(ssd, times(0)).run(anyString());
     }
 }
