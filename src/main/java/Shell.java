@@ -29,6 +29,33 @@ public class Shell {
         }
     }
 
+    public void run(String commandLine) throws Exception {
+        String[] tokens = commandLine.split(" ");
+        String cmd = tokens[0];
+
+        switch (cmd) {
+            case "write":
+                processWriteCommand(tokens);
+                break;
+            case "read":
+                processReadCommand(tokens);
+                break;
+            case "exit":
+                System.exit(0);
+            case "help":
+                help();
+                break;
+            case "fullread":
+                fullread();
+                break;
+            case "fullwrite":
+                processFullWriteCommand(tokens);
+                break;
+            default:
+                System.out.println("INVALID COMMAND");
+        }
+    }
+
     public void printValueError() {
         System.out.println("10자리 16진수만 입력 가능합니다.");
     }
@@ -101,39 +128,8 @@ public class Shell {
         }
     }
 
-    public void run() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        
-        while(scanner.hasNextLine()){
-            String commandLine = scanner.nextLine();
-            String[] tokens = commandLine.split(" ");
 
-            String cmd = tokens[0];
-
-            switch (cmd) {
-                case "write":
-                    processWriteCommand(tokens);
-                    break;
-                case "read":
-                    processReadCommand(tokens);
-                    break;
-                case "exit":
-                    System.exit(0);
-                case "help":
-                    help();
-                    break;
-                case "fullread":
-                    fullread();
-                    break;
-                case "fullwrite":
-                    processFullWriteCommand(tokens);
-                    break;
-                default:
-                    System.out.println("INVALID COMMAND");
-            }
-        }
-    }
-    private void processWriteCommand(String[] tokens) {
+    public void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
             return;
