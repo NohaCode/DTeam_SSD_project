@@ -15,6 +15,48 @@ public class Shell {
         this.ssd = ssd;
     }
 
+    public static void main(String[] args) {
+        Shell shell = new Shell(new SSD());
+        Scanner scanner = new Scanner(System.in);
+        String commandLine;
+        while (true) {
+            commandLine = scanner.nextLine();
+            try {
+                shell.run(commandLine);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void run(String commandLine) throws Exception {
+        String[] tokens = commandLine.split(" ");
+        String cmd = tokens[0];
+
+        switch (cmd) {
+            case "write":
+                processWriteCommand(tokens);
+                break;
+            case "read":
+                processReadCommand(tokens);
+                break;
+            case "exit":
+                System.exit(0);
+            case "help":
+                help();
+                break;
+            case "fullread":
+                fullread();
+                System.out.println("fullread 실행");
+                break;
+            case "fullwrite":
+                processFullWriteCommand(tokens);
+                break;
+            default:
+                System.out.println("INVALID COMMAND");
+        }
+    }
+
     public void write(int index, String value) {
         if (isIncorrectValue(value)) {
             printValueError();
@@ -44,7 +86,7 @@ public class Shell {
     }
 
     public String read(int index) {
-        if(!(0 <= index && index <= 99))
+        if (!(0 <= index && index <= 99))
             return "Invalid Address";
         return ssd.read(index);
     }
@@ -67,16 +109,16 @@ public class Shell {
     }
 
     void fullwrite(String value) {
-        if(isIncorrectValue(value)){
+        if (isIncorrectValue(value)) {
             System.out.println("10자리 16진수만 입력 가능합니다.");
             return;
         }
 
 
         for (int addreess = 0; addreess < 100; addreess++) {
-            try{
+            try {
                 ssd.write(addreess, value);
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("INVALID COMMAND");
             }
         }
@@ -103,39 +145,6 @@ public class Shell {
         }
     }
 
-    public void run() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        
-        while(scanner.hasNextLine()){
-            String commandLine = scanner.nextLine();
-            String[] tokens = commandLine.split(" ");
-
-            String cmd = tokens[0];
-
-            switch (cmd) {
-                case "write":
-                    processWriteCommand(tokens);
-                    break;
-                case "read":
-                    processReadCommand(tokens);
-                    break;
-                case "exit":
-                    System.exit(0);
-                case "help":
-                    help();
-                    break;
-                case "fullread":
-                    fullread();
-                    System.out.println("fullread 실행");
-                    break;
-                case "fullwrite":
-                    processFullWriteCommand(tokens);
-                    break;
-                default:
-                    System.out.println("INVALID COMMAND");
-            }
-        }
-    }
     private void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
