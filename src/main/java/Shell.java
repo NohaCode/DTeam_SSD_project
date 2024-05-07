@@ -109,33 +109,35 @@ public class Shell {
     }
 
     void fullwrite(String value) {
-        if (isIncorrectValue(value)) {
-            System.out.println("10자리 16진수만 입력 가능합니다.");
+        if(!isValidHex(value)){
+            System.out.println("INVALID COMMAND");
+
             return;
         }
 
-
         for (int addreess = 0; addreess < 100; addreess++) {
-            try {
-                ssd.write(addreess, value);
-            } catch (Exception e) {
+            try{
+                ssd.run("ssd W "+addreess+" "+value);
+            }catch (Exception e){
                 System.out.println("INVALID COMMAND");
             }
         }
     }
 
     void fullread() {
-        makeReadFileBySSD();
+        for (int addreess = 0; addreess < 100; addreess++) {
+            ssd.run("ssd R " + addreess);
+        }
+
         printResult(readFile());
     }
 
     private void makeReadFileBySSD() {
-        for (int addreess = 0; addreess < 100; addreess++) {
-            ssd.read(addreess);
-        }
+
     }
 
     private List<String> readFile() {
+        /* result.json 읽어서 List로 반환 (구현필요) */
         return new ArrayList<>();
     }
 
@@ -145,6 +147,7 @@ public class Shell {
         }
     }
 
+
     private void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
@@ -153,8 +156,7 @@ public class Shell {
         try {
             int intValue = Integer.parseInt(tokens[1]);
             if (isValidHex(tokens[2])) {
-                ssd.write(intValue, tokens[2]);
-                System.out.println("write: 정수=" + intValue + ", 16진수=" + tokens[2]);
+                ssd.run("ssd W " + tokens[1] + " "+ tokens[2]);
             } else {
                 System.out.println("INVALID COMMAND");
             }
@@ -171,8 +173,10 @@ public class Shell {
         try {
             int intValue = Integer.parseInt(tokens[1]);
             if (isValidInt(intValue)) {
-                ssd.read(intValue);
-                System.out.println("read: 정수=" + intValue);
+                ssd.run("ssd R "+tokens[1]);
+
+                /* result.json에서 읽어서 출력(구현필요) */
+
             } else {
                 System.out.println("INVALID COMMAND");
             }
@@ -187,7 +191,6 @@ public class Shell {
             return;
         }
         fullwrite(tokens[1]);
-        System.out.println("fullwrite: 16진수=" + tokens[1]);
     }
 
     private boolean isValidInt(int value) {
