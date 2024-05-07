@@ -1,4 +1,7 @@
+import org.json.JSONObject;
+
 import java.io.*;
+import java.util.HashMap;
 
 public class FileHandler {
 
@@ -45,21 +48,57 @@ public class FileHandler {
         checkNANDFile();
     }
 
-    private void checkResultFile() {
+    public boolean checkResultFile() {
         File resultFile = new File(RESULT_FILE_PATH);
         try {
             if (!resultFile.exists()) resultFile.createNewFile();
+            return true;
         } catch (Exception ignored) {
-
+            return false;
         }
     }
 
-    private void checkNANDFile() {
+    public boolean checkNANDFile() {
         File nandFile = new File(NAND_FILE_PATH);
         try {
             if (!nandFile.exists()) nandFile.createNewFile();
+            return true;
         } catch (Exception ignored) {
-
+            return false;
         }
+    }
+
+    public String readNAND(int index) {
+        JSONObject jsonObject = getJSONFromNANDFile();
+        String jsonIndex = "" + index;
+        if (jsonObject != null && jsonObject.has(jsonIndex)) {
+            return (String) jsonObject.get(jsonIndex);
+        }
+        return SSD.DEFAULT_VALUE;
+    }
+
+    public void writeNAND(int index, String data) {
+        JSONObject jsonObject = getJSONFromNANDFile();
+        String jsonIndex = "" + index;
+        if (jsonObject != null) {
+            jsonObject.put(jsonIndex, data);
+            fileWrite(FileHandler.NAND_FILE_PATH, jsonObject.toString());
+        }
+    }
+
+    private JSONObject getJSONFromNANDFile() {
+        String data = fileRead(NAND_FILE_PATH);
+        if (data != null) {
+            if (data.isEmpty()) {
+                return new JSONObject(new HashMap<>());
+            } else {
+                return new JSONObject(data);
+            }
+        }
+        return null;
+    }
+
+    public void writeResult(String data) {
+        fileWrite(FileHandler.RESULT_FILE_PATH, data);
     }
 }

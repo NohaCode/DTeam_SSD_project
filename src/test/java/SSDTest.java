@@ -1,6 +1,6 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,6 +23,13 @@ class SSDTest {
 
     @Spy
     SSD ssd;
+
+    FileHandler fileHandler;
+
+    @BeforeEach
+    void setUp() {
+        fileHandler = new FileHandler();
+    }
 
     @Test
     public void write_SSD_데이터_없는_곳에_쓰기_성공() {
@@ -96,7 +103,7 @@ class SSDTest {
 
     @Test
     public void read_SSD_NandFile없는경우Read() {
-        if (!ssd.checkNANDFile()) {
+        if (!fileHandler.checkNANDFile()) {
             fail();
         }
 
@@ -108,7 +115,7 @@ class SSDTest {
 
     @Test
     public void read_SSD_resultFile없는경우Read() {
-        if (!ssd.checkResultFile()) {
+        if (!fileHandler.checkResultFile()) {
             fail();
         }
 
