@@ -133,17 +133,15 @@ class SSDTest {
             ssd.run("R 10");
         });
 
-        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        String data = fileHandler.readNAND(10);
         assertThat(data).isEqualTo("0x00000000");
     }
 
     @Test
     public void read_SSD_Write한주소를Read() {
         ssd.run("W 1 0xFFFFFFFF");
-        ssd.run("R 1");
 
-        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
-
+        String data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
@@ -154,8 +152,7 @@ class SSDTest {
         }
 
         assertDoesNotThrow(() -> {
-            ssd.run("R 10");
-            String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+            String data = fileHandler.readNAND(10);
             assertThat(data).isEqualTo("0x00000000");
         });
     }
@@ -168,7 +165,7 @@ class SSDTest {
 
         assertDoesNotThrow(() -> {
             ssd.run("R 10");
-            String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+            String data = fileHandler.readNAND(10);
             assertThat(data).isEqualTo("0x00000000");
         });
     }
@@ -190,16 +187,13 @@ class SSDTest {
     public void read_SSD_같은주소여러번Read() {
         ssd.run("W 1 0xFFFFFFFF");
 
-        ssd.run("R 1");
-        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        String data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
 
-        ssd.run("R 1");
-        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        data = fileHandler.readNAND(1);;
         assertThat(data).isEqualTo("0xFFFFFFFF");
 
-        ssd.run("R 1");
-        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        data = fileHandler.readNAND(1);;
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
@@ -209,16 +203,13 @@ class SSDTest {
         ssd.run("W 2 0xFFFFFFFB");
         ssd.run("W 3 0xFFFFFFFF");
 
-        ssd.run("R 1");
-        String data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        String data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo("0xFFFFFFFA");
 
-        ssd.run("R 2");
-        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        data = fileHandler.readNAND(2);
         assertThat(data).isEqualTo("0xFFFFFFFB");
 
-        ssd.run("R 3");
-        data = fileHandler.fileRead(FileHandler.RESULT_FILE_PATH);
+        data = fileHandler.readNAND(3);
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
