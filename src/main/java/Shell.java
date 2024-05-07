@@ -126,7 +126,7 @@ public class Shell {
                 case "exit":
                     System.exit(0);
                 case "help":
-                    printHelp();
+                    help();
                     break;
                 case "fullread":
                     fullread();
@@ -193,7 +193,4 @@ public class Shell {
         return hex.matches("0x[0-9A-Fa-f]{8}");
     }
 
-    private void printHelp() {
-        System.out.println("도움말 출력");
-    }
 }
