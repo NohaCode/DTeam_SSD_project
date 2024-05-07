@@ -3,9 +3,7 @@ import java.util.*;
 
 
 public class Shell {
-    public static final String REGEX = "^0x[0-9A-F]{8}$";
     private SSD ssd;
-    private FileHandler fileHandler = new FileHandler();
     public static final String COMMAND_SEPARATOR = " ";
 
     public Shell(SSD ssd) {
@@ -43,14 +41,5 @@ public class Shell {
 
     private boolean isValidCommandLine(String commandLine) {
         return commandLine == null || commandLine.trim().isEmpty();
-    }
-
-
-    public String listen(int index) {
-        return invalidCommand();
-    }
-
-    private String invalidCommand() {
-        return "INVALID COMMAND";
     }
 }
