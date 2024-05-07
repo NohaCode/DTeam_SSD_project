@@ -1,15 +1,12 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SSDTest {
@@ -24,7 +21,7 @@ class SSDTest {
     public static final String NULL_WRITE_VALUE = null;
     public static final String EMPTY_WRITE_VALUE = "";
 
-    @Spy
+    @Mock
     SSD ssd;
 
     @Test
@@ -60,7 +57,8 @@ class SSDTest {
         ssd.write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
         ssd.write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
 
-        verify(ssd, times(2)).printError();
+        verify(ssd, times(1)).write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
+        verify(ssd, times(1)).write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
     }
 
     @Test
@@ -68,7 +66,9 @@ class SSDTest {
         ssd.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START);
         ssd.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA);
         ssd.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH);
-        verify(ssd, times(3)).printError();
+        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START);
+        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA);
+        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH);
     }
 
     @Test
@@ -76,8 +76,8 @@ class SSDTest {
         ssd.write(CORRECT_WRITE_INDEX, NULL_WRITE_VALUE);
         ssd.write(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE);
 
-        verify(ssd, times(2)).printError();
-
+        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, NULL_WRITE_VALUE);
+        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE);
     }
 
     @Test
