@@ -24,7 +24,7 @@ public class SSDReadCommand implements Command {
 
     @Override
     public void run(ArrayList<String> commandOptionList) {
-        if(isValidCommand(commandOptionList))
+        if(!isValidCommand(commandOptionList))
             return;
 
         fileHandler.makeFile();

@@ -125,4 +125,17 @@ public class FileHandler {
         jsonObject.put(jsonIndex, data);
         fileWrite(RESULT_FILE_PATH, jsonObject.toString());
     }
+
+    private JSONObject getJSONFromRESULTFile() {
+        return new JSONObject(fileRead(RESULT_FILE_PATH));
+    }
+
+    public String readRESULT (int index) {
+        JSONObject jsonObject = getJSONFromRESULTFile();
+        String jsonIndex = "" + index;
+        if (jsonObject != null && jsonObject.has(jsonIndex)) {
+            return (String) jsonObject.get(jsonIndex);
+        }
+        return SSD.DEFAULT_VALUE;
+    }
 }
