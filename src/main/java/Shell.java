@@ -29,46 +29,6 @@ public class Shell {
         }
     }
 
-    public void run(String commandLine) throws Exception {
-        String[] tokens = commandLine.split(" ");
-        String cmd = tokens[0];
-
-        switch (cmd) {
-            case "write":
-                processWriteCommand(tokens);
-                break;
-            case "read":
-                processReadCommand(tokens);
-                break;
-            case "exit":
-                System.exit(0);
-            case "help":
-                help();
-                break;
-            case "fullread":
-                fullread();
-                System.out.println("fullread 실행");
-                break;
-            case "fullwrite":
-                processFullWriteCommand(tokens);
-                break;
-            default:
-                System.out.println("INVALID COMMAND");
-        }
-    }
-
-    public void write(int index, String value) {
-        if (isIncorrectValue(value)) {
-            printValueError();
-            return;
-        }
-        if (IsIncorrectIndex(index)) {
-            printIndexError();
-            return;
-        }
-        ssd.run("write " + index + " " + value);
-    }
-
     public void printValueError() {
         System.out.println("10자리 16진수만 입력 가능합니다.");
     }
@@ -83,12 +43,6 @@ public class Shell {
 
     private static boolean IsIncorrectIndex(int index) {
         return index < 0 || index > 99;
-    }
-
-    public String read(int index) {
-        if (!(0 <= index && index <= 99))
-            return "Invalid Address";
-        return ssd.run("read " + index);
     }
 
     public String listen(int index) {
@@ -147,7 +101,38 @@ public class Shell {
         }
     }
 
+    public void run() throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        
+        while(scanner.hasNextLine()){
+            String commandLine = scanner.nextLine();
+            String[] tokens = commandLine.split(" ");
 
+            String cmd = tokens[0];
+
+            switch (cmd) {
+                case "write":
+                    processWriteCommand(tokens);
+                    break;
+                case "read":
+                    processReadCommand(tokens);
+                    break;
+                case "exit":
+                    System.exit(0);
+                case "help":
+                    help();
+                    break;
+                case "fullread":
+                    fullread();
+                    break;
+                case "fullwrite":
+                    processFullWriteCommand(tokens);
+                    break;
+                default:
+                    System.out.println("INVALID COMMAND");
+            }
+        }
+    }
     private void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
@@ -165,7 +150,7 @@ public class Shell {
         }
     }
 
-    private void processReadCommand(String[] tokens) {
+    public void processReadCommand(String[] tokens) {
         if (tokens.length != 2) {
             System.out.println("INVALID COMMAND");
             return;
@@ -185,7 +170,7 @@ public class Shell {
         }
     }
 
-    private void processFullWriteCommand(String[] tokens) throws Exception {
+    public void processFullWriteCommand(String[] tokens) throws Exception {
         if (tokens.length != 2 || !isValidHex(tokens[1])) {
             System.out.println("INVALID COMMAND");
             return;

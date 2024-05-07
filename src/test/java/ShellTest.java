@@ -38,35 +38,61 @@ class ShellTest {
         //write  3  0xAAAABBBB
         // • 3번 LBA 에 0xAAAABBB 를 기록한다.
         // • ssd 에 명령어를 전달한다.
-        shell.write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
+        String[] tokens = {"ssd", "W", String.valueOf(CORRECT_WRITE_INDEX), CORRECT_WRITE_VALUE};
+
+        shell.processWriteCommand(tokens);
+
         verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
     }
 
     @Test
-    public void write_Shell_알맞지_않은_범위에_쓰기_실패() {
+    public void write_Shell_알맞지_않은_범위에_쓰기_실패_상한선() {
         //write  100  0xAAAABBBB
         //LBA 범위는 0 ~ 99
-        shell.write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
+        String[] tokens = {"ssd", "W", String.valueOf(INCORRECT_WRITE_INDEX_BIG), CORRECT_WRITE_VALUE};
+        shell.processWriteCommand(tokens);
         verify(ssd, times(0)).write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
 
-        shell.write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
+    }
+
+    @Test
+    public void write_Shell_알맞지_않은_범위에_쓰기_실패_하한선() {
+        //write  100  0xAAAABBBB
+        //LBA 범위는 0 ~ 99
+        String[] tokens = {"ssd", "W", String.valueOf(INCORRECT_WRITE_INDEX_SMALL), CORRECT_WRITE_VALUE};
+        shell.processWriteCommand(tokens);
         verify(ssd, times(0)).write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
 
     }
 
     @Test
-    public void write_Shell_알맞지_않은_값으로_쓰기_실패() {
+    public void write_Shell_알맞지_않은_값으로_쓰기_실패_숫자() {
         //write  3  0xGAAABBBB
         //A ~ F, 0 ~ 9 까지 숫자 범위만 허용
-        shell.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA);
-        verify(ssd, times(0)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA);
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_START};
 
-        shell.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START);
-        verify(ssd, times(0)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START);
+        shell.processWriteCommand(tokens);
+        verify(ssd, times(0)).run("ssd W "+CORRECT_WRITE_INDEX+" "+ INCORRECT_WRITE_VALUE_START);
+    }
 
-        shell.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH);
-        verify(ssd, times(0)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH);
+    @Test
+    public void write_Shell_알맞지_않은_값으로_쓰기_실패_알파벳() {
+        //write  3  0xGAAABBBB
+        //A ~ F, 0 ~ 9 까지 숫자 범위만 허용
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_ALPHA};
 
+        shell.processWriteCommand(tokens);
+        verify(ssd, times(0)).run("ssd W "+CORRECT_WRITE_INDEX+" "+ INCORRECT_WRITE_VALUE_ALPHA);
+    }
+
+    @Test
+    public void write_Shell_알맞지_않은_값으로_쓰기_실패_길이() {
+        //write  3  0xGAAABBBB
+        //A ~ F, 0 ~ 9 까지 숫자 범위만 허용
+        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
+
+        shell.processWriteCommand(tokens);
+        verify(ssd, times(0)).run("ssd W "+CORRECT_WRITE_INDEX+" "+ INCORRECT_WRITE_VALUE_LENGTH);
     }
 
     @Test
@@ -75,17 +101,30 @@ class ShellTest {
         // • 3번 LBA 를 읽는다.
         // • ssd 에 명령어를 전달한다.
         // • result.txt 에 적힌 결과를 화면에 출력한다.
-        shell.read(CORRECT_WRITE_INDEX);
-        verify(ssd, times(1)).read(CORRECT_WRITE_INDEX);
+        String[] tokens = {"read", String.valueOf(CORRECT_WRITE_INDEX)};
+
+        shell.processReadCommand(tokens);
+        verify(ssd, times(1)).run("ssd R "+CORRECT_WRITE_INDEX);
     }
 
     @Test
-    public void read_Shell_알맞지_않은_범위에_읽기_실패() {
+    public void read_Shell_알맞지_않은_범위에_읽기_실패_하한선() {
         //read  100
         //LBA 범위는 0 ~ 99
-        assertThat(shell.read(INCORRECT_WRITE_INDEX_BIG)).isEqualTo("Invalid Address");
-        assertThat(shell.read(INCORRECT_WRITE_INDEX_SMALL)).isEqualTo("Invalid Address");
+        String[] tokens = {"read", String.valueOf(INCORRECT_WRITE_INDEX_SMALL)};
+        shell.processReadCommand(tokens);
 
+        verify(ssd, times(0)).run("ssd R "+INCORRECT_WRITE_INDEX_SMALL);
+    }
+
+    @Test
+    public void read_Shell_알맞지_않은_범위에_읽기_실패_상한선() {
+        //read  100
+        //LBA 범위는 0 ~ 99
+        String[] tokens = {"read", String.valueOf(INCORRECT_WRITE_INDEX_BIG)};
+        shell.processReadCommand(tokens);
+
+        verify(ssd, times(0)).run("ssd R "+INCORRECT_WRITE_INDEX_BIG);
     }
 
     @Test
