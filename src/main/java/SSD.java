@@ -5,18 +5,14 @@ import java.util.HashMap;
 
 public class SSD {
     public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
-    public static final String RESOURCES_PATH = "src/main/resources/";
-    public static final String NAND_FILE = "nand.txt";
-    public static final String RESULT_FILE = "result.txt";
     public static final String DEFAULT_VALUE = "0x00000000";
-    public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
-    public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
 
     public static final String INVALID_INDEX_MESSAGE = "Invalid Address";
     public static final String INVALID_VALUE_MESSAGE = "Invalid Value";
 
-    public SSD() {
-    }
+    private FileHandler fileHandler = new FileHandler();
+
+    public SSD() {}
 
     public String run(String fullCommandArgument){
         String[] fullCommandArgumentArr = fullCommandArgument.split(" ");
@@ -63,7 +59,7 @@ public class SSD {
         if (isIncorrectValue(value)) {
             throw new SSDException(INVALID_VALUE_MESSAGE);
         }
-        makeFile();
+        fileHandler.makeFile();
         writeNAND(index, value);
     }
 
@@ -71,7 +67,7 @@ public class SSD {
         if (IsIncorrectIndex(index))
             throw new SSDException(INVALID_INDEX_MESSAGE);
 
-        makeFile();
+        fileHandler.makeFile();
         String data = readNAND(index);
         writeResult(data);
 
@@ -87,7 +83,7 @@ public class SSD {
     }
 
     private JSONObject getJSONFromNANDFile() {
-        String data = fileRead(NAND_FILE_PATH);
+        String data = fileHandler.fileRead(FileHandler.NAND_FILE_PATH);
         if (data != null) {
             if (data.isEmpty()) {
                 return new JSONObject(new HashMap<>());
@@ -112,12 +108,12 @@ public class SSD {
         String jsonIndex = "" + index;
         if (jsonObject != null) {
             jsonObject.put(jsonIndex, data);
-            fileWrite(NAND_FILE_PATH, jsonObject.toString());
+            fileHandler.fileWrite(FileHandler.NAND_FILE_PATH, jsonObject.toString());
         }
     }
 
     private void writeResult(String data) {
-        fileWrite(RESULT_FILE_PATH, data);
+        fileHandler.fileWrite(FileHandler.RESULT_FILE_PATH, data);
     }
 
     public static void main(String[] args) {
@@ -132,60 +128,5 @@ public class SSD {
 
     public void printError() {
 
-    }
-
-    private void fileWrite(String filePath, String data) {
-        File file = new File(filePath);
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
-            writer.write(data);
-            writer.close();
-        } catch (Exception e) {
-        }
-    }
-
-    private String fileRead(String filePath) {
-        File file = new File(filePath);
-        BufferedReader br = null;
-        StringBuffer sb = new StringBuffer();
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException ignored) {
-        } finally {
-            try {
-                if (br != null) br.close();
-            } catch (IOException ex) {
-                return DEFAULT_VALUE;
-            }
-            return sb.toString();
-        }
-    }
-
-    private void makeFile() {
-        checkResultFile();
-        checkNANDFile();
-    }
-
-    private void checkResultFile() {
-        File resultFile = new File(RESULT_FILE_PATH);
-        try {
-            if (!resultFile.exists()) resultFile.createNewFile();
-        } catch (Exception ignored) {
-
-        }
-    }
-
-    private void checkNANDFile() {
-        File nandFile = new File(NAND_FILE_PATH);
-        try {
-            if (!nandFile.exists()) nandFile.createNewFile();
-        } catch (Exception ignored) {
-
-        }
     }
 }

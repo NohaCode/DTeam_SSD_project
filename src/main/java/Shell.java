@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Shell {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
     private SSD ssd;
+    private FileHandler fileHandler = new FileHandler();
 
     public Shell(SSD ssd) {
         this.ssd = ssd;
@@ -60,14 +61,9 @@ public class Shell {
     }
 
     public void help() {
-        try {
-            ClassLoader classLoader = Shell.class.getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource("help.txt")).getFile());
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            bufferedReader.lines().forEach(System.out::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        String helpContext = fileHandler.fileRead(FileHandler.RESOURCES_PATH + "help.txt");
+        System.out.println(helpContext);
     }
 
     void fullwrite(String value) {
