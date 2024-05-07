@@ -115,8 +115,7 @@ public class SSD {
         } catch (IOException ignored) {
         } finally {
             try {
-                if (br != null)
-                    br.close();
+                if (br != null) br.close();
             } catch (IOException ex) {
                 return DEFAULT_VALUE;
             }
@@ -125,13 +124,25 @@ public class SSD {
     }
 
     private void makeFile() {
+        checkResultFile();
+        checkNANDFile();
+    }
+
+    private void checkResultFile() {
         File resultFile = new File(RESULT_FILE_PATH);
-        File nandFile = new File(NAND_FILE_PATH);
         try {
             if (!resultFile.exists()) resultFile.createNewFile();
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    private void checkNANDFile() {
+        File nandFile = new File(NAND_FILE_PATH);
+        try {
             if (!nandFile.exists()) nandFile.createNewFile();
         } catch (Exception ignored) {
-            
+
         }
     }
 }
