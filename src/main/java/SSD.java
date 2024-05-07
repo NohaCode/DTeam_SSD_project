@@ -1,8 +1,3 @@
-import org.json.JSONObject;
-
-import java.io.*;
-import java.util.HashMap;
-
 public class SSD {
     public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
     public static final String DEFAULT_VALUE = "0x00000000";
@@ -27,18 +22,18 @@ public class SSD {
     }
 
     public void run(String fullCommandArgument) {
-        if (fullCommandArgument == null || fullCommandArgument.trim().isEmpty()) {
-            throw new SSDException(INVALID_COMMAND_MESSAGE);
-        }
-
-        String[] fullCommandArgumentArr = fullCommandArgument.trim().split(COMMAND_SEPARATOR);
-        String command = fullCommandArgumentArr[0];
-
-        if (command == null || command.trim().isEmpty()) {
-            throw new SSDException(INVALID_COMMAND_MESSAGE);
-        }
-
         try {
+            if (isBlank(fullCommandArgument)) {
+                throw new SSDException(INVALID_COMMAND_MESSAGE);
+            }
+
+            String[] fullCommandArgumentArr = fullCommandArgument.trim().split(COMMAND_SEPARATOR);
+            String command = fullCommandArgumentArr[0];
+
+            if (isBlank(command)) {
+                throw new SSDException(INVALID_COMMAND_MESSAGE);
+            }
+
             switch (command) {
                 case WRITE_COMMAND_SHORTCUT:
                     if (isInvalidLengthParameter(fullCommandArgumentArr, 3)) {
@@ -58,12 +53,16 @@ public class SSD {
         }
     }
 
+    private static boolean isBlank(String fullCommandArgument) {
+        return fullCommandArgument == null || fullCommandArgument.trim().isEmpty();
+    }
+
     private static boolean isInvalidLengthParameter(String[] fullCommandArgumentArr, int expected) {
         return fullCommandArgumentArr.length != expected;
     }
 
     private boolean isIncorrectValue(String value) {
-        return value == null || value.trim().isEmpty() || !value.trim().matches(CORRECT_VALUE_REGEX);
+        return isBlank(value) || !value.trim().matches(CORRECT_VALUE_REGEX);
     }
 
     private boolean IsIncorrectIndex(int index) {

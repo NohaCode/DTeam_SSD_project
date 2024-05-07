@@ -33,11 +33,11 @@ class SSDTest {
     }
 
     private static String getWriteCommandArgument(int index, String value) {
-        return "W" + " " + index + " " + value;
+        return SSD.WRITE_COMMAND_SHORTCUT + " " + index + " " + value;
     }
 
     private static String getReadCommandArgument(int index) {
-        return "R" + " " + index;
+        return SSD.READ_COMMAND_SHORTCUT + " " + index;
     }
 
     @Test
@@ -97,7 +97,7 @@ class SSDTest {
 
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
     }
 
     @Test
