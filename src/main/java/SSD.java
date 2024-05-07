@@ -18,42 +18,67 @@ public class SSD {
     public SSD() {
     }
 
-    public String run(String fullCommandArgument){
+    public static void main(String[] args) {
+//        makeFile();
+//        String data = fileRead(NAND_FILE_PATH);
+//        writeResult("TESTTEST");
+    }
+
+    public String run(String fullCommandArgument) {
         String[] fullCommandArgumentArr = fullCommandArgument.split(" ");
         String command = fullCommandArgumentArr[0];
 
-        if(command == null || command.isEmpty()){
+        if (command == null || command.isEmpty()) {
             return null;
         }
 
-        switch (command) {
-            case "write":
-                write(Integer.parseInt(fullCommandArgumentArr[1]), fullCommandArgumentArr[2]);
-                break;
-            case "read":
-                read(Integer.parseInt(fullCommandArgumentArr[1]));
-                break;
-            case "exit":
-                break;
-            case "help":
-                break;
-            case "fullwrite":
-                fullwrite(fullCommandArgumentArr[1]);
-                break;
-            case "fullread":
-                fullread();
-                break;
+        try {
+            switch (command) {
+                case "write":
+                    write(Integer.parseInt(fullCommandArgumentArr[1]), fullCommandArgumentArr[2]);
+                    break;
+                case "read":
+                    read(Integer.parseInt(fullCommandArgumentArr[1]));
+                    break;
+            }
+        }catch (Exception e){
+            return e.getMessage();
         }
 
         return null;
     }
 
-    public String fullread(){
-        return null;
+    private boolean isIncorrectValue(String value) {
+        return value == null || value.isEmpty() || !value.matches(CORRECT_VALUE_REGEX);
     }
 
-    public void fullwrite(String value){
+    private boolean IsIncorrectIndex(int index) {
+        return index < 0 || index > 99;
+    }
 
+    private void makeFile() {
+        checkResultFile();
+        checkNANDFile();
+    }
+
+    public boolean checkResultFile() {
+        File resultFile = new File(RESULT_FILE_PATH);
+        try {
+            if (!resultFile.exists()) resultFile.createNewFile();
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    public boolean checkNANDFile() {
+        File nandFile = new File(NAND_FILE_PATH);
+        try {
+            if (!nandFile.exists()) nandFile.createNewFile();
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     public void write(int index, String value) {
@@ -78,26 +103,6 @@ public class SSD {
         return data;
     }
 
-    private boolean isIncorrectValue(String value) {
-        return value == null || value.isEmpty() || !value.matches(CORRECT_VALUE_REGEX);
-    }
-
-    private boolean IsIncorrectIndex(int index) {
-        return index < 0 || index > 99;
-    }
-
-    private JSONObject getJSONFromNANDFile() {
-        String data = fileRead(NAND_FILE_PATH);
-        if (data != null) {
-            if (data.isEmpty()) {
-                return new JSONObject(new HashMap<>());
-            } else {
-                return new JSONObject(data);
-            }
-        }
-        return null;
-    }
-
     private String readNAND(int index) {
         JSONObject jsonObject = getJSONFromNANDFile();
         String jsonIndex = "" + index;
@@ -116,22 +121,20 @@ public class SSD {
         }
     }
 
+    private JSONObject getJSONFromNANDFile() {
+        String data = fileRead(NAND_FILE_PATH);
+        if (data != null) {
+            if (data.isEmpty()) {
+                return new JSONObject(new HashMap<>());
+            } else {
+                return new JSONObject(data);
+            }
+        }
+        return null;
+    }
+
     private void writeResult(String data) {
         fileWrite(RESULT_FILE_PATH, data);
-    }
-
-    public static void main(String[] args) {
-//        makeFile();
-//        String data = fileRead(NAND_FILE_PATH);
-//        writeResult("TESTTEST");
-    }
-
-    public boolean isValidFile(String file) {
-        return true;
-    }
-
-    public void printError() {
-
     }
 
     private void fileWrite(String filePath, String data) {
@@ -163,29 +166,6 @@ public class SSD {
                 return DEFAULT_VALUE;
             }
             return sb.toString();
-        }
-    }
-
-    private void makeFile() {
-        checkResultFile();
-        checkNANDFile();
-    }
-
-    private void checkResultFile() {
-        File resultFile = new File(RESULT_FILE_PATH);
-        try {
-            if (!resultFile.exists()) resultFile.createNewFile();
-        } catch (Exception ignored) {
-
-        }
-    }
-
-    private void checkNANDFile() {
-        File nandFile = new File(NAND_FILE_PATH);
-        try {
-            if (!nandFile.exists()) nandFile.createNewFile();
-        } catch (Exception ignored) {
-
         }
     }
 }
