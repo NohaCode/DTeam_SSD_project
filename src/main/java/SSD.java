@@ -45,9 +45,6 @@ public class SSD {
             writer.close();
         } catch (Exception e) {
         }
-
-
-
     }
 
     private String fileRead(String filePath) {
