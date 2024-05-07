@@ -27,7 +27,7 @@ public class SSD {
     }
 
     public void run(String commandLine) {
-        if (isValidCommandLine(commandLine)) {
+        if (isInvalidCommandLine(commandLine)) {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
 
@@ -35,14 +35,18 @@ public class SSD {
         String commandStr = commandOptionList.get(0);
 
         SSDCommand command = SSDCommandFactory.of(commandStr);
-        if (!command.isValidCommand(commandOptionList)) {
-            return;
+        if (isInvalidCommand(command, commandOptionList)) {
+            throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
 
         command.run(commandOptionList);
     }
 
-    private static boolean isValidCommandLine(String commandLine) {
+    private static boolean isInvalidCommand(SSDCommand command, ArrayList<String> commandOptionList) {
+        return command == null || !command.isValidCommand(commandOptionList);
+    }
+
+    private static boolean isInvalidCommandLine(String commandLine) {
         return commandLine == null || commandLine.trim().isEmpty();
     }
 }

@@ -10,14 +10,13 @@ public class SSDReadCommand implements SSDCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
-
-        if (isIncorrectIndex(pos))
-            throw new SSDException(SSD.INVALID_INDEX_MESSAGE);
-
         if (isInvalidLengthParameter(commandOptionList)) {
             throw new SSDException(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
         }
+
+        int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
+        if (isIncorrectIndex(pos))
+            throw new SSDException(SSD.INVALID_INDEX_MESSAGE);
 
         return true;
     }
