@@ -3,11 +3,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 import java.util.Objects;
+import java.util.Scanner;
 
 
 public class Shell {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
     private SSD ssd;
+    private FileHandler fileHandler = new FileHandler();
 
     public Shell(SSD ssd) {
         this.ssd = ssd;
@@ -59,14 +61,9 @@ public class Shell {
     }
 
     public void help() {
-        try {
-            ClassLoader classLoader = Shell.class.getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource("help.txt")).getFile());
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            bufferedReader.lines().forEach(System.out::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        String helpContext = fileHandler.fileRead(FileHandler.RESOURCES_PATH + "help.txt");
+        System.out.println(helpContext);
     }
 
     void fullwrite(String value) {
@@ -80,7 +77,7 @@ public class Shell {
             try{
                 ssd.write(addreess, value);
             }catch (Exception e){
-                e.printStackTrace();
+                System.out.println("INVALID COMMAND");
             }
         }
     }
@@ -105,4 +102,91 @@ public class Shell {
             System.out.println(s);
         }
     }
+
+    public void run() throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        
+        while(scanner.hasNextLine()){
+            String commandLine = scanner.nextLine();
+            String[] tokens = commandLine.split(" ");
+
+            String cmd = tokens[0];
+
+            switch (cmd) {
+                case "write":
+                    processWriteCommand(tokens);
+                    break;
+                case "read":
+                    processReadCommand(tokens);
+                    break;
+                case "exit":
+                    System.exit(0);
+                case "help":
+                    help();
+                    break;
+                case "fullread":
+                    fullread();
+                    System.out.println("fullread 실행");
+                    break;
+                case "fullwrite":
+                    processFullWriteCommand(tokens);
+                    break;
+                default:
+                    System.out.println("INVALID COMMAND");
+            }
+        }
+    }
+    private void processWriteCommand(String[] tokens) {
+        if (tokens.length != 3) {
+            System.out.println("INVALID COMMAND");
+            return;
+        }
+        try {
+            int intValue = Integer.parseInt(tokens[1]);
+            if (isValidHex(tokens[2])) {
+                ssd.write(intValue, tokens[2]);
+                System.out.println("write: 정수=" + intValue + ", 16진수=" + tokens[2]);
+            } else {
+                System.out.println("INVALID COMMAND");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("INVALID COMMAND");
+        }
+    }
+
+    private void processReadCommand(String[] tokens) {
+        if (tokens.length != 2) {
+            System.out.println("INVALID COMMAND");
+            return;
+        }
+        try {
+            int intValue = Integer.parseInt(tokens[1]);
+            if (isValidInt(intValue)) {
+                ssd.read(intValue);
+                System.out.println("read: 정수=" + intValue);
+            } else {
+                System.out.println("INVALID COMMAND");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("INVALID COMMAND");
+        }
+    }
+
+    private void processFullWriteCommand(String[] tokens) throws Exception {
+        if (tokens.length != 2 || !isValidHex(tokens[1])) {
+            System.out.println("INVALID COMMAND");
+            return;
+        }
+        fullwrite(tokens[1]);
+        System.out.println("fullwrite: 16진수=" + tokens[1]);
+    }
+
+    private boolean isValidInt(int value) {
+        return value >= 0 && value <= 99;
+    }
+
+    private boolean isValidHex(String hex) {
+        return hex.matches("0x[0-9A-Fa-f]{8}");
+    }
+
 }

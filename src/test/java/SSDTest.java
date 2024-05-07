@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +23,7 @@ class SSDTest {
     public static final String NULL_WRITE_VALUE = null;
     public static final String EMPTY_WRITE_VALUE = "";
 
-    @Mock
+    @Spy
     SSD ssd;
 
     private static String getWriteCommandArgument(int index, String value) {
@@ -95,18 +96,12 @@ class SSDTest {
 
     @Test
     public void read_SSD_Write하지않은상태로Read() {
-        //ssd R 0
-        SSD ssd = new SSD();
-        String readedValue = ssd.read(10);
-        assertThat(readedValue).isEqualTo("0x00000000");
+        String dataByIndex = ssd.read(10);
+        assertThat(dataByIndex).isEqualTo("0x00000000");
     }
 
     @Test
     public void read_SSD_Write한주소를Read() {
-        //ssd W 1 0xFFFFFFFF
-        //ssd R 1
-
-        SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFF");
         when(ssd.read(1)).thenReturn("0xFFFFFFFF");
 
@@ -115,9 +110,7 @@ class SSDTest {
 
     @Test
     public void read_SSD_NandFile없는경우Read() {
-        //ssd R 0
-        SSD ssd = new SSD();
-        if (!ssd.isValidFile("nand.txt")) {
+        if (!ssd.checkNANDFile()) {
             fail();
         }
 
@@ -129,9 +122,7 @@ class SSDTest {
 
     @Test
     public void read_SSD_resultFile없는경우Read() {
-        //ssd R 0
-        SSD ssd = new SSD();
-        if (!ssd.isValidFile("result.txt")) {
+        if (!ssd.checkResultFile()) {
             fail();
         }
 
@@ -143,38 +134,31 @@ class SSDTest {
 
     @Test
     public void read_SSD_이상한주소값Read() {
-        //ssd R -1
-        //ssd R 111
-        SSD ssd = new SSD();
-        String data = ssd.read(-1);
-        assertThat(data).isEqualTo("Invalid Address");
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.read(-1);
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
 
-        data = ssd.read(111);
-        assertThat(data).isEqualTo("Invalid Address");
+        e = assertThrows(SSDException.class, () -> {
+            ssd.read(111);
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
     }
 
     @Test
     public void read_SSD_같은주소여러번Read() {
-        SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFF");
-        when(ssd.read(1))
-                .thenReturn("0xFFFFFFFF")
-                .thenReturn("0xFFFFFFFF")
-                .thenReturn("0xFFFFFFFF");
 
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
         assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
     public void read_SSD_다른주소연속read() {
-        SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFA");
         ssd.write(2, "0xFFFFFFFB");
         ssd.write(3, "0xFFFFFFFF");
-
-        when(ssd.read(1)).thenReturn("0xFFFFFFFA");
-        when(ssd.read(2)).thenReturn("0xFFFFFFFB");
-        when(ssd.read(3)).thenReturn("0xFFFFFFFF");
 
         assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFA");
         assertThat(ssd.read(2)).isEqualTo("0xFFFFFFFB");
