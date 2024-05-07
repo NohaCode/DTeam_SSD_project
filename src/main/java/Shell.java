@@ -41,12 +41,13 @@ public class Shell {
                 processReadCommand(tokens);
                 break;
             case "exit":
-                System.exit(0);
+                exit();
+                break;
             case "help":
                 help();
                 break;
             case "fullread":
-                fullread();
+                processFullReadCommand(tokens);
                 break;
             case "fullwrite":
                 processFullWriteCommand(tokens);
@@ -81,63 +82,24 @@ public class Shell {
     }
 
     public void exit() {
+        System.exit(0);
     }
 
     public void help() {
-
         String helpContext = fileHandler.fileRead(FileHandler.RESOURCES_PATH + "help.txt");
         System.out.println(helpContext);
     }
 
-    void fullwrite(String value) {
-        if(!isValidHex(value)){
-            System.out.println("INVALID COMMAND");
-
-            return;
-        }
-
-        for (int addreess = 0; addreess < 100; addreess++) {
-            try{
-                ssd.run("ssd W "+addreess+" "+value);
-            }catch (Exception e){
-                System.out.println("INVALID COMMAND");
-            }
-        }
-    }
-
-    void fullread() {
-        for (int addreess = 0; addreess < 100; addreess++) {
-            ssd.run("ssd R " + addreess);
-        }
-
-        printResult(readFile());
-    }
-
-    private void makeReadFileBySSD() {
-
-    }
-
-    private List<String> readFile() {
-        /* result.json 읽어서 List로 반환 (구현필요) */
-        return new ArrayList<>();
-    }
-
-    void printResult(List<String> result) {
-        for (String s : result) {
-            System.out.println(s);
-        }
-    }
-
 
     public void processWriteCommand(String[] tokens) {
-        if (tokens.length != 3) {
+        if (tokens.length != 3 || !isValidInt(Integer.parseInt(tokens[1]))) {
             System.out.println("INVALID COMMAND");
             return;
         }
         try {
             int intValue = Integer.parseInt(tokens[1]);
             if (isValidHex(tokens[2])) {
-                ssd.run("ssd W " + tokens[1] + " "+ tokens[2]);
+                ssd.run("W " + tokens[1] + " "+ tokens[2]);
             } else {
                 System.out.println("INVALID COMMAND");
             }
@@ -154,10 +116,10 @@ public class Shell {
         try {
             int intValue = Integer.parseInt(tokens[1]);
             if (isValidInt(intValue)) {
-                ssd.run("ssd R "+tokens[1]);
+                ssd.run("R "+intValue);
 
-                /* result.json에서 읽어서 출력(구현필요) */
-
+                /* result.txt에서 읽어서 출력 */
+                System.out.println(fileHandler.readRESULT(intValue));
             } else {
                 System.out.println("INVALID COMMAND");
             }
@@ -166,12 +128,29 @@ public class Shell {
         }
     }
 
+    public void processFullReadCommand(String[] tokens) {
+        if (tokens.length != 1) {
+            System.out.println("INVALID COMMAND");
+            return;
+        }
+
+        for (int i = 0; i < 100; i++) {
+            ssd.run("R "+i);
+            /* result.txt 읽어서 출력*/
+            System.out.println("R "+i);
+            System.out.println(fileHandler.readRESULT(i));
+        }
+    }
+
     public void processFullWriteCommand(String[] tokens) throws Exception {
         if (tokens.length != 2 || !isValidHex(tokens[1])) {
             System.out.println("INVALID COMMAND");
             return;
         }
-        fullwrite(tokens[1]);
+
+        for (int addreess = 0; addreess < 100; addreess++) {
+            ssd.run("W "+addreess+" "+tokens[1]);
+        }
     }
 
     private boolean isValidInt(int value) {
