@@ -41,7 +41,8 @@ public class Shell {
                 processReadCommand(tokens);
                 break;
             case "exit":
-                System.exit(0);
+                exit();
+                break;
             case "help":
                 help();
                 break;
@@ -81,6 +82,7 @@ public class Shell {
     }
 
     public void exit() {
+        System.exit(0);
     }
 
     public void help() {
@@ -98,7 +100,7 @@ public class Shell {
 
         for (int addreess = 0; addreess < 100; addreess++) {
             try{
-                ssd.run("ssd W "+addreess+" "+value);
+                ssd.run("W "+addreess+" "+value);
             }catch (Exception e){
                 System.out.println("INVALID COMMAND");
             }
@@ -107,7 +109,7 @@ public class Shell {
 
     void fullread() {
         for (int addreess = 0; addreess < 100; addreess++) {
-            ssd.run("ssd R " + addreess);
+            ssd.run("R " + addreess);
         }
 
         printResult(readFile());
