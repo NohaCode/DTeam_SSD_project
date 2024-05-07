@@ -45,6 +45,11 @@ class SSDTest {
         assertThatThrownBy(() -> {
             ssd.run(SSD.COMMAND_SEPARATOR);
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+
+        assertThatThrownBy(() -> {
+            ssd.run(SSD.COMMAND_SEPARATOR + CORRECT_WRITE_VALUE + SSD.COMMAND_SEPARATOR);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+
     }
 
     @Test
