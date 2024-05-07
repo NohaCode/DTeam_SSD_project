@@ -1,5 +1,6 @@
 import java.io.*;
 
+
 public class SSD {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
     public static final String RESOURCES_PATH = "src/main/resources/";
@@ -8,6 +9,40 @@ public class SSD {
     public static final String DEFAULT_VALUE = "0x00000000";
 
     public SSD() {
+    }
+
+    public String run(String fullCommandArgument){
+        String[] fullCommandArgumentArr = fullCommandArgument.split(" ");
+        String command = fullCommandArgumentArr[0];
+
+        if(command == null || command.isEmpty()){
+            return null;
+        }
+
+        switch (command) {
+            case "write":
+                write(Integer.parseInt(fullCommandArgumentArr[1]), fullCommandArgumentArr[2]);
+                break;
+            case "read":
+                read(Integer.parseInt(fullCommandArgumentArr[1]));
+                break;
+            case "exit":
+                break;
+            case "help":
+                break;
+            case "fullwrite":
+                fullwrite(fullCommandArgumentArr[1]);
+                break;
+            case "fullread":
+                fullread();
+                break;
+        }
+
+        return null;
+    }
+
+    public void fullwrite(String value){
+
     }
 
     public void write(int index, String value) {
@@ -23,6 +58,10 @@ public class SSD {
 
     private boolean IsIncorrectIndex(int index) {
         return index < 0 || index > 99;
+    }
+
+    public String fullread(){
+        return null;
     }
 
     public String read(int index) {
