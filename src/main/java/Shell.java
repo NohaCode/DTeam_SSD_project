@@ -69,7 +69,7 @@ public class Shell {
         }
     }
 
-    void fullwrite(String value) throws Exception {
+    void fullwrite(String value) {
         if(isIncorrectValue(value)){
             System.out.println("10자리 16진수만 입력 가능합니다.");
             return;
@@ -85,7 +85,7 @@ public class Shell {
         }
     }
 
-    void fullread() throws Exception {
+    void fullread() {
         makeReadFileBySSD();
         printResult(readFile());
     }
@@ -100,7 +100,7 @@ public class Shell {
         return new ArrayList<>();
     }
 
-    void printResult(List<String> result) throws Exception {
+    void printResult(List<String> result) {
         for (String s : result) {
             System.out.println(s);
         }

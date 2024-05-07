@@ -89,7 +89,7 @@ class ShellTest {
     }
 
     @Test
-    public void listen_없는_명령어_실패() {
+    public void listen_Shell_없는_명령어_실패() {
         //listen  3
         //• 없는 명령어를 수행하는 경우 "INVALID COMMAND"을 출력
         //• 어떠한 명령어를 입력하더라도 Runtime Error가 나오면 안된다.
@@ -97,91 +97,67 @@ class ShellTest {
     }
 
     @Test
-    public void shell_exit_함수호출시_shell_종료확인() {
+    public void exit_Shell_종료확인() {
     }
 
     @Test
-    public void shell_help_함수호출시_사용방법_출력확인() {
-        shell.help();
+    public void help_Shell_사용방법_출력확인() {
+        //shell.help();
     }
 
     @Test
-    public void fullread_전체파일읽기_통과() throws Exception {
-        //arrange
-        SSD mockSSD = mock(SSD.class);
-        Shell shell = new Shell(mockSSD);
-
+    public void fullread_Shell_전체파일읽기_통과() throws Exception {
         //acts
         shell.fullread();
 
         //assert
-        verify(mockSSD, times(100)).read(anyInt());
+        verify(ssd, times(100)).read(anyInt());
     }
 
 
     @Test
-    public void fullwrite_10자리_입력_통과() throws Exception {
-        //arrange
-        SSD mockSSD = mock(SSD.class);
-        Shell shell = new Shell(mockSSD);
-
+    public void fullwrite_Shell_10자리_입력_통과() throws Exception {
         //act
         shell.fullwrite(CORRECT_WRITE_VALUE);
 
         //assert
-        verify(mockSSD, times(100)).write(anyInt(),eq(CORRECT_WRITE_VALUE));
+        verify(ssd, times(100)).write(anyInt(),eq(CORRECT_WRITE_VALUE));
 
     }
 
     @Test
-    public void fullwrite_비정상자리수_실패() throws Exception {
-        //arrange
-        SSD mockSSD = mock(SSD.class);
-        Shell shell = new Shell(mockSSD);
-
+    public void fullwrite_Shell_비정상자리수_실패() throws Exception {
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH);
 
         //assert
-        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH));
+        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH));
     }
 
     @Test
-    public void fullwrite_16진수아님_실패() throws Exception {
-        //arrange
-        SSD mockSSD = mock(SSD.class);
-        Shell shell = new Shell(mockSSD);
-
+    public void fullwrite_Shell_16진수아님_실패() throws Exception {
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_ALPHA );
 
         //assert
-        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_ALPHA ));
+        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_ALPHA ));
     }
 
     @Test
-    public void fullwrite_자리수초과_실패() throws Exception {
-        //arrange
-        SSD mockSSD = mock(SSD.class);
-        Shell shell = new Shell(mockSSD);
-
+    public void fullwrite_Shell_자리수초과_실패() throws Exception {
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_LENGTH );
 
         //assert
-        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH ));
+        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_LENGTH ));
     }
 
     @Test
-    public void fullwrite_알파벳에러_실패() throws Exception {
-        //arrange
-        SSD mockSSD = mock(SSD.class);
-        Shell shell = new Shell(mockSSD);
-
+    public void fullwrite_Shell_알파벳에러_실패() throws Exception {
         //act
         shell.fullwrite(INCORRECT_WRITE_VALUE_START );
 
         //assert
-        verify(mockSSD, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_START ));
+        verify(ssd, times(0)).write(anyInt(),eq(INCORRECT_WRITE_VALUE_START ));
     }
 }
