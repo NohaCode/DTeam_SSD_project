@@ -1,6 +1,7 @@
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 
 public class FileHandler {
@@ -55,6 +56,17 @@ public class FileHandler {
             return true;
         } catch (Exception ignored) {
             return false;
+        }
+    }
+
+    public void initFile() {
+        File nandFile = new File(NAND_FILE_PATH);
+        File resultFile = new File(RESULT_FILE_PATH);
+        try {
+            Files.deleteIfExists(nandFile.toPath());
+            Files.deleteIfExists(resultFile.toPath());
+            makeFile();
+        } catch (Exception ignored) {
         }
     }
 
