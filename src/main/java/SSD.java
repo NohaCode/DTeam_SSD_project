@@ -1,11 +1,16 @@
+import org.json.JSONObject;
+
 import java.io.*;
+import java.util.HashMap;
 
 public class SSD {
-    public static final String REGEX = "^0x[0-9A-F]{8}$";
+    public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
     public static final String RESOURCES_PATH = "src/main/resources/";
     public static final String NAND_FILE = "nand.txt";
     public static final String RESULT_FILE = "result.txt";
     public static final String DEFAULT_VALUE = "0x00000000";
+    public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
+    public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
 
     public SSD() {
     }
@@ -15,25 +20,75 @@ public class SSD {
             printError();
             return;
         }
+        makeFile();
+        writeNAND(index, value);
+    }
+
+    public String read(int index) {
+        if (IsIncorrectIndex(index))
+            return "Invalid Address";
+
+        makeFile();
+        String data = readNAND(index);
+        writeResult(data);
+
+        return data;
     }
 
     private boolean isIncorrectValue(String value) {
-        return value == null || value.isEmpty() || !value.matches(REGEX);
+        return value == null || value.isEmpty() || !value.matches(CORRECT_VALUE_REGEX);
     }
 
     private boolean IsIncorrectIndex(int index) {
         return index < 0 || index > 99;
     }
 
-    public String read(int index) {
-        if (!(0 <= index && index <= 99))
-            return "Invalid Address";
+    private JSONObject getJSONFromNANDFile() {
+        String data = fileRead(NAND_FILE_PATH);
+        if (data != null) {
+            if (data.isEmpty()) {
+                return new JSONObject(new HashMap<>());
+            } else {
+                return new JSONObject(data);
+            }
+        }
+        return null;
+    }
 
-        makeFile();
-        String data = fileRead(RESOURCES_PATH + NAND_FILE);
-        fileWrite(RESOURCES_PATH + RESULT_FILE, data);
+    private String readNAND(int index) {
+        JSONObject jsonObject = getJSONFromNANDFile();
+        String jsonIndex = "" + index;
+        if (jsonObject != null && jsonObject.has(jsonIndex)) {
+            return (String) jsonObject.get(jsonIndex);
+        }
+        return DEFAULT_VALUE;
+    }
 
-        return readNand(index);
+    private void writeNAND(int index, String data) {
+        JSONObject jsonObject = getJSONFromNANDFile();
+        String jsonIndex = "" + index;
+        if (jsonObject != null) {
+            jsonObject.put(jsonIndex, data);
+            fileWrite(NAND_FILE_PATH, jsonObject.toString());
+        }
+    }
+
+    private void writeResult(String data) {
+        fileWrite(RESULT_FILE_PATH, data);
+    }
+
+    public static void main(String[] args) {
+//        makeFile();
+//        String data = fileRead(NAND_FILE_PATH);
+//        writeResult("TESTTEST");
+    }
+
+    public boolean isValidFile(String file) {
+        return true;
+    }
+
+    public void printError() {
+
     }
 
     private void fileWrite(String filePath, String data) {
@@ -45,9 +100,6 @@ public class SSD {
             writer.close();
         } catch (Exception e) {
         }
-
-
-
     }
 
     private String fileRead(String filePath) {
@@ -72,32 +124,14 @@ public class SSD {
         }
     }
 
-    private String readNand(int index) {
-        return DEFAULT_VALUE;
-    }
-
-    public static void main(String[] args) {
-//        makeFile();
-//        String data = fileRead(RESOURCES_PATH + NAND_FILE);
-//        fileWrite(RESOURCES_PATH + RESULT_FILE, "TESTTEST");
-    }
-
-    public boolean isValidFile(String file) {
-        return true;
-    }
-
-    public void printError() {
-
-    }
-
     private void makeFile() {
-        File resultFile = new File(RESOURCES_PATH + RESULT_FILE);
-        File nandFile = new File(RESOURCES_PATH + NAND_FILE);
-
+        File resultFile = new File(RESULT_FILE_PATH);
+        File nandFile = new File(NAND_FILE_PATH);
         try {
             if (!resultFile.exists()) resultFile.createNewFile();
             if (!nandFile.exists()) nandFile.createNewFile();
         } catch (Exception ignored) {
+            
         }
     }
 }
