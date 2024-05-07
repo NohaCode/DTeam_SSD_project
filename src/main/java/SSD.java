@@ -60,7 +60,7 @@ public class SSD {
             throw new SSDException(INVALID_VALUE_MESSAGE);
         }
         fileHandler.makeFile();
-        writeNAND(index, value);
+        fileHandler.writeNAND(index, value);
     }
 
     public String read(int index) {
@@ -68,63 +68,12 @@ public class SSD {
             throw new SSDException(INVALID_INDEX_MESSAGE);
 
         fileHandler.makeFile();
-        String data = readNAND(index);
-        writeResult(data);
+        String data = fileHandler.readNAND(index);
+        fileHandler.writeResult(data);
 
         return data;
     }
 
-    private String readNAND(int index) {
-        JSONObject jsonObject = getJSONFromNANDFile();
-        String jsonIndex = "" + index;
-        if (jsonObject != null && jsonObject.has(jsonIndex)) {
-            return (String) jsonObject.get(jsonIndex);
-        }
-        return DEFAULT_VALUE;
-    }
 
-    private void writeNAND(int index, String data) {
-        JSONObject jsonObject = getJSONFromNANDFile();
-        String jsonIndex = "" + index;
-        if (jsonObject != null) {
-            jsonObject.put(jsonIndex, data);
-            fileHandler.fileWrite(FileHandler.NAND_FILE_PATH, jsonObject.toString());
-        }
-    }
 
-    private JSONObject getJSONFromNANDFile() {
-        String data = fileRead(NAND_FILE_PATH);
-        if (data != null) {
-            if (data.isEmpty()) {
-                return new JSONObject(new HashMap<>());
-            } else {
-                return new JSONObject(data);
-            }
-        }
-        return null;
-    }
-  
-    private void writeResult(String data) {
-        fileHandler.fileWrite(FileHandler.RESULT_FILE_PATH, data);
-    }
-
-    public static void main(String[] args) {
-//        makeFile();
-//        String data = fileRead(NAND_FILE_PATH);
-//        writeResult("TESTTEST");
-    }
-
-    private void writeResult(String data) {
-        fileWrite(RESULT_FILE_PATH, data);
-    }
-    private void fileWrite(String filePath, String data) {
-        File file = new File(filePath);
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
-            writer.write(data);
-            writer.close();
-        } catch (Exception e) {
-        }
-    }
 }
