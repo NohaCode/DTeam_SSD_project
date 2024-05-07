@@ -4,6 +4,9 @@ import java.util.List;
 import java.io.*;
 import java.util.Objects;
 
+enum COMMAND{
+    write, read, exit, help, fullwrite, fullread
+}
 
 public class Shell {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
@@ -11,6 +14,38 @@ public class Shell {
 
     public Shell(SSD ssd) {
         this.ssd = ssd;
+    }
+
+    public String run(String fullCommandArgument){
+        String[] fullCommandArgumentArr = fullCommandArgument.split(" ");
+        String command = fullCommandArgumentArr[0];
+
+        if(command == null || command.isEmpty()){
+            return null;
+        }
+
+        switch (command) {
+            case "write":
+                write(Integer.parseInt(fullCommandArgumentArr[1]), fullCommandArgumentArr[2]);
+                break;
+            case "read":
+                read(Integer.parseInt(fullCommandArgumentArr[1]));
+                break;
+            case "exit":
+                exit();
+                break;
+            case "help":
+                help();
+                break;
+            case "fullwrite":
+                fullwrite(fullCommandArgumentArr[1]);
+                break;
+            case "fullread":
+                fullread();
+                break;
+        }
+
+        return null;
     }
 
     public void write(int index, String value) {
@@ -69,7 +104,7 @@ public class Shell {
         }
     }
 
-    void fullwrite(String value) throws Exception {
+    void fullwrite(String value) {
         if(isIncorrectValue(value)){
             System.out.println("10자리 16진수만 입력 가능합니다.");
             return;
@@ -85,7 +120,7 @@ public class Shell {
         }
     }
 
-    void fullread() throws Exception {
+    void fullread() {
         makeReadFileBySSD();
         printResult(readFile());
     }
@@ -100,7 +135,7 @@ public class Shell {
         return new ArrayList<>();
     }
 
-    void printResult(List<String> result) throws Exception {
+    void printResult(List<String> result) {
         for (String s : result) {
             System.out.println(s);
         }
