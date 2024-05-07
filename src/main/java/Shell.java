@@ -129,6 +129,7 @@ public class Shell {
                     printHelp();
                     break;
                 case "fullread":
+                    fullread();
                     System.out.println("fullread 실행");
                     break;
                 case "fullwrite":
