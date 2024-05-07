@@ -1,9 +1,9 @@
 import java.util.HashMap;
 
-public class CommandFactory {
-    static HashMap<String, Command> commandMap = new HashMap<>();
+public class SSDCommandFactory {
+    static HashMap<String, SSDCommand> commandMap = new HashMap<>();
 
-    public static Command of(String command) {
+    public static SSDCommand of(String command) {
         if (!commandMap.containsKey(command)) {
             if (command.equals("R")) {
                 commandMap.put(command, new SSDReadCommand());
