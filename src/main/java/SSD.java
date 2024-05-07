@@ -13,7 +13,9 @@ public class SSD {
 
     private final FileHandler fileHandler = new FileHandler();
 
-    public SSD() {}
+    public SSD() {
+        fileHandler.initFile();
+    }
 
     public static void main(String[] args) {
 //        makeFile();
