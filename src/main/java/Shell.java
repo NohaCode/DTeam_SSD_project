@@ -66,7 +66,7 @@ public class Shell {
             printIndexError();
             return;
         }
-        ssd.write(index, value);
+        ssd.run("write " + index + " " + value);
     }
 
     public void printValueError() {
@@ -88,7 +88,7 @@ public class Shell {
     public String read(int index) {
         if (!(0 <= index && index <= 99))
             return "Invalid Address";
-        return ssd.read(index);
+        return ssd.run("read " + index);
     }
 
     public String listen(int index) {
