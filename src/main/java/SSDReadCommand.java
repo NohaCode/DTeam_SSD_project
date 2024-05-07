@@ -31,7 +31,7 @@ public class SSDReadCommand implements Command {
 
         int index = Integer.parseInt(commandOptionList.get(POS_INDEX));
         String data = fileHandler.readNAND(index);
-        fileHandler.writeResult(data);
+        fileHandler.writeResult(index, data);
     }
 
     private boolean isInvalidLengthParameter(ArrayList<String> commandOptionList) {
