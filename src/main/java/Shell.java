@@ -193,11 +193,4 @@ public class Shell {
         return hex.matches("0x[0-9A-Fa-f]{8}");
     }
 
-    private void readJsonFileByAddress(int address){
-
-    }
-
-    private void readAllJsonFile(){
-
-    }
 }
