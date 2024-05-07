@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class SSD {
     public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
     public static final String DEFAULT_VALUE = "0x00000000";
@@ -23,74 +26,23 @@ public class SSD {
 //        writeResult("TESTTEST");
     }
 
-    public void run(String fullCommandArgument) {
-        try {
-            if (isBlank(fullCommandArgument)) {
-                throw new SSDException(INVALID_COMMAND_MESSAGE);
-            }
-
-            String[] fullCommandArgumentArr = fullCommandArgument.trim().split(COMMAND_SEPARATOR);
-            String command = fullCommandArgumentArr[0];
-
-            switch (command) {
-                case WRITE_COMMAND_SHORTCUT:
-                    if (isInvalidLengthParameter(fullCommandArgumentArr, 3)) {
-                        throw new SSDException(INVALID_LENGTH_PARAMETER_MESSAGE);
-                    }
-                    write(Integer.parseInt(fullCommandArgumentArr[1]), fullCommandArgumentArr[2]);
-                    break;
-                case READ_COMMAND_SHORTCUT:
-                    if (isInvalidLengthParameter(fullCommandArgumentArr, 2)) {
-                        throw new SSDException(INVALID_LENGTH_PARAMETER_MESSAGE);
-                    }
-                    read(Integer.parseInt(fullCommandArgumentArr[1]));
-                    break;
-                default:
-                    throw new SSDException(INVALID_COMMAND_MESSAGE);
-            }
-        } catch (Exception e) {
-            throw new SSDException(e);
+    public void run(String commandLine) {
+        if (isValidCommand(commandLine)) {
+            throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
-    }
 
-    private static boolean isBlank(String fullCommandArgument) {
-        return fullCommandArgument == null || fullCommandArgument.trim().isEmpty();
-    }
+        ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
+        String commandStr = commandOptionList.get(0);
 
-    private static boolean isInvalidLengthParameter(String[] fullCommandArgumentArr, int expected) {
-        return fullCommandArgumentArr.length != expected;
-    }
-
-    private boolean isIncorrectValue(String value) {
-        return isBlank(value) || !value.trim().matches(CORRECT_VALUE_REGEX);
-    }
-
-    private boolean IsIncorrectIndex(int index) {
-        return index < 0 || index > 99;
-    }
-
-    public void write(int index, String value) {
-        if (IsIncorrectIndex(index)) {
-            throw new SSDException(INVALID_INDEX_MESSAGE);
+        Command command = CommandFactory.of(commandStr);
+        if (!command.isValidCommand(commandOptionList)) {
+            return;
         }
-        if (isIncorrectValue(value)) {
-            throw new SSDException(INVALID_VALUE_MESSAGE);
-        }
-        fileHandler.makeFile();
-        fileHandler.writeNAND(index, value);
+
+        command.run(commandOptionList);
     }
 
-    public String read(int index) {
-        if (IsIncorrectIndex(index))
-            throw new SSDException(INVALID_INDEX_MESSAGE);
-
-        fileHandler.makeFile();
-        String data = fileHandler.readNAND(index);
-        fileHandler.writeResult(data);
-
-        return data;
+    private static boolean isValidCommand(String commandLine) {
+        return commandLine == null || commandLine.trim().isEmpty();
     }
-
-
-
 }

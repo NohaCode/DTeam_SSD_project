@@ -90,7 +90,6 @@ public class Shell {
         System.out.println(helpContext);
     }
 
-
     public void processWriteCommand(String[] tokens) {
         if (tokens.length != 3 || !isValidInt(Integer.parseInt(tokens[1]))) {
             System.out.println("INVALID COMMAND");
