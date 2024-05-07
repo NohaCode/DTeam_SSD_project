@@ -14,18 +14,6 @@ public class Shell {
         this.ssd = ssd;
     }
 
-    public void write(int index, String value) {
-        if (isIncorrectValue(value)) {
-            printValueError();
-            return;
-        }
-        if (IsIncorrectIndex(index)) {
-            printIndexError();
-            return;
-        }
-        ssd.write(index, value);
-    }
-
     public void printValueError() {
         System.out.println("10자리 16진수만 입력 가능합니다.");
     }
@@ -40,12 +28,6 @@ public class Shell {
 
     private static boolean IsIncorrectIndex(int index) {
         return index < 0 || index > 99;
-    }
-
-    public String read(int index) {
-        if(!(0 <= index && index <= 99))
-            return "Invalid Address";
-        return ssd.read(index);
     }
 
     public String listen(int index) {
@@ -140,7 +122,7 @@ public class Shell {
             }
         }
     }
-    private void processWriteCommand(String[] tokens) {
+    public void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
             return;
@@ -157,7 +139,7 @@ public class Shell {
         }
     }
 
-    private void processReadCommand(String[] tokens) {
+    public void processReadCommand(String[] tokens) {
         if (tokens.length != 2) {
             System.out.println("INVALID COMMAND");
             return;
@@ -177,7 +159,7 @@ public class Shell {
         }
     }
 
-    private void processFullWriteCommand(String[] tokens) throws Exception {
+    public void processFullWriteCommand(String[] tokens) throws Exception {
         if (tokens.length != 2 || !isValidHex(tokens[1])) {
             System.out.println("INVALID COMMAND");
             return;
