@@ -32,10 +32,6 @@ public class SSD {
             String[] fullCommandArgumentArr = fullCommandArgument.trim().split(COMMAND_SEPARATOR);
             String command = fullCommandArgumentArr[0];
 
-            if (isBlank(command)) {
-                throw new SSDException(INVALID_COMMAND_MESSAGE);
-            }
-
             switch (command) {
                 case WRITE_COMMAND_SHORTCUT:
                     if (isInvalidLengthParameter(fullCommandArgumentArr, 3)) {
@@ -49,6 +45,8 @@ public class SSD {
                     }
                     read(Integer.parseInt(fullCommandArgumentArr[1]));
                     break;
+                default:
+                    throw new SSDException(INVALID_COMMAND_MESSAGE);
             }
         } catch (Exception e) {
             throw new SSDException(e);

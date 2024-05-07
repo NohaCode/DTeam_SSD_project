@@ -33,20 +33,42 @@ class SSDTest {
     }
 
     private static String getWriteCommandArgument(int index, String value) {
-        return SSD.WRITE_COMMAND_SHORTCUT + " " + index + " " + value;
+        return SSD.WRITE_COMMAND_SHORTCUT + SSD.COMMAND_SEPARATOR + index + SSD.COMMAND_SEPARATOR + value;
     }
 
     private static String getReadCommandArgument(int index) {
-        return SSD.READ_COMMAND_SHORTCUT + " " + index;
+        return SSD.READ_COMMAND_SHORTCUT + SSD.COMMAND_SEPARATOR + index;
     }
 
     @Test
-    public void write_SSD_데이터_없는_곳에_쓰기_성공() {
-        assertDoesNotThrow(() -> {
-            ssd.run(getReadCommandArgument(CORRECT_WRITE_INDEX));
-            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE));
-        });
+    public void write_SSD_잘못된_요청_실패() {
+        assertThatThrownBy(() -> {
+            ssd.run(SSD.COMMAND_SEPARATOR);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
+
+    @Test
+    public void write_SSD_없는_커맨드_실패() {
+        assertThatThrownBy(() -> {
+            ssd.run(SSD.COMMAND_SEPARATOR + CORRECT_WRITE_INDEX);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    public void write_SSD_부족한_파라미터_쓰기_실패() {
+        assertThatThrownBy(() -> {
+            ssd.run(SSD.WRITE_COMMAND_SHORTCUT + SSD.COMMAND_SEPARATOR + CORRECT_WRITE_INDEX);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
+    }
+
+    @Test
+    public void write_SSD_부족한_파라미터_읽기_실패() {
+        assertThatThrownBy(() -> {
+            ssd.run(SSD.READ_COMMAND_SHORTCUT + SSD.COMMAND_SEPARATOR);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
+    }
+
+
 
     @Test
     public void write_SSD_데이터_있는_곳에_쓰기_성공() {
