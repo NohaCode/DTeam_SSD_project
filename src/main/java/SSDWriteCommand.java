@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class SSDWriteCommand implements Command {
+public class SSDWriteCommand implements SSDCommand {
     private static final Integer POS_INDEX = 1;
     private static final Integer VALUE_INDEX = 2;
 

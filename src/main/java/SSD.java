@@ -27,14 +27,14 @@ public class SSD {
     }
 
     public void run(String commandLine) {
-        if (isValidCommand(commandLine)) {
+        if (isValidCommandLine(commandLine)) {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
 
         ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
         String commandStr = commandOptionList.get(0);
 
-        Command command = CommandFactory.of(commandStr);
+        SSDCommand command = SSDCommandFactory.of(commandStr);
         if (!command.isValidCommand(commandOptionList)) {
             return;
         }
@@ -42,7 +42,7 @@ public class SSD {
         command.run(commandOptionList);
     }
 
-    private static boolean isValidCommand(String commandLine) {
+    private static boolean isValidCommandLine(String commandLine) {
         return commandLine == null || commandLine.trim().isEmpty();
     }
 }

@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class SSDReadCommand implements Command {
+public class SSDReadCommand implements SSDCommand {
     private static final Integer POS_INDEX = 1;
     FileHandler fileHandler;
 
