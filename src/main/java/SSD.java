@@ -1,4 +1,5 @@
 import org.json.JSONObject;
+import org.omg.CORBA.INVALID_ACTIVITY;
 
 import java.io.*;
 import java.util.HashMap;
@@ -11,6 +12,9 @@ public class SSD {
     public static final String DEFAULT_VALUE = "0x00000000";
     public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
+
+    public static final String INVALID_INDEX_MESSAGE = "Invalid Address";
+    public static final String INVALID_VALUE_MESSAGE = "Invalid Value";
 
     public SSD() {
     }
@@ -53,21 +57,20 @@ public class SSD {
 
     }
 
-    public String write(int index, String value) {
+    public void write(int index, String value) {
         if (IsIncorrectIndex(index)) {
-            throw new SSDException("Invalid Address");
+            throw new SSDException(INVALID_INDEX_MESSAGE);
         }
         if (isIncorrectValue(value)) {
-            throw new SSDException("Invalid Value");
+            throw new SSDException(INVALID_VALUE_MESSAGE);
         }
         makeFile();
         writeNAND(index, value);
-        return "";
     }
 
     public String read(int index) {
         if (IsIncorrectIndex(index))
-            throw new SSDException("Invalid Address");
+            throw new SSDException(INVALID_INDEX_MESSAGE);
 
         makeFile();
         String data = readNAND(index);
