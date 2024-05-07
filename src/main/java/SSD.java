@@ -53,18 +53,21 @@ public class SSD {
 
     }
 
-    public void write(int index, String value) {
-        if (IsIncorrectIndex(index) || isIncorrectValue(value)) {
-            printError();
-            return;
+    public String write(int index, String value) {
+        if (IsIncorrectIndex(index)) {
+            throw new SSDException("Invalid Address");
+        }
+        if (isIncorrectValue(value)) {
+            throw new SSDException("Invalid Value");
         }
         makeFile();
         writeNAND(index, value);
+        return "";
     }
 
     public String read(int index) {
         if (IsIncorrectIndex(index))
-            return "Invalid Address";
+            throw new SSDException("Invalid Address");
 
         makeFile();
         String data = readNAND(index);
