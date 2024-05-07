@@ -119,8 +119,11 @@ public class FileHandler {
         return null;
     }
 
-    public void writeResult(String data) {
-        fileWrite(RESULT_FILE_PATH, data);
+    public void writeResult(int index, String data) {
+        JSONObject jsonObject = new JSONObject();
+        String jsonIndex = "" + index;
+        jsonObject.put(jsonIndex, data);
+        fileWrite(RESULT_FILE_PATH, jsonObject.toString());
     }
 
     private JSONObject getJSONFromRESULTFile() {
