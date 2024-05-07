@@ -15,6 +15,44 @@ public class SSD {
     public SSD() {
     }
 
+    public String run(String fullCommandArgument){
+        String[] fullCommandArgumentArr = fullCommandArgument.split(" ");
+        String command = fullCommandArgumentArr[0];
+
+        if(command == null || command.isEmpty()){
+            return null;
+        }
+
+        switch (command) {
+            case "write":
+                write(Integer.parseInt(fullCommandArgumentArr[1]), fullCommandArgumentArr[2]);
+                break;
+            case "read":
+                read(Integer.parseInt(fullCommandArgumentArr[1]));
+                break;
+            case "exit":
+                break;
+            case "help":
+                break;
+            case "fullwrite":
+                fullwrite(fullCommandArgumentArr[1]);
+                break;
+            case "fullread":
+                fullread();
+                break;
+        }
+
+        return null;
+    }
+
+    public String fullread(){
+        return null;
+    }
+
+    public void fullwrite(String value){
+
+    }
+
     public void write(int index, String value) {
         if (IsIncorrectIndex(index) || isIncorrectValue(value)) {
             printError();
