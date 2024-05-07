@@ -1,11 +1,12 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,79 +22,92 @@ class SSDTest {
     public static final String NULL_WRITE_VALUE = null;
     public static final String EMPTY_WRITE_VALUE = "";
 
-    @Mock
+    @Spy
     SSD ssd;
+
+    FileHandler fileHandler;
+
+    @BeforeEach
+    void setUp() {
+        fileHandler = new FileHandler();
+    }
+
+    private static String getWriteCommandArgument(int index, String value) {
+        return SSD.WRITE_COMMAND_SHORTCUT + " " + index + " " + value;
+    }
+
+    private static String getReadCommandArgument(int index) {
+        return SSD.READ_COMMAND_SHORTCUT + " " + index;
+    }
 
     @Test
     public void write_SSD_데이터_없는_곳에_쓰기_성공() {
-        ssd.write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
-
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
+        assertDoesNotThrow(() -> {
+            ssd.run(getReadCommandArgument(CORRECT_WRITE_INDEX));
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE));
+        });
     }
 
     @Test
     public void write_SSD_데이터_있는_곳에_쓰기_성공() {
-        ssd.write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
-
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
+        assertDoesNotThrow(() -> {
+            ssd.run(getReadCommandArgument(CORRECT_WRITE_INDEX));
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE));
+        });
     }
 
     @Test
-    public void write_SSD_알맞은_범위에_쓰기_성공() {
-        ssd.write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
-
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
-    }
-
-    @Test
-    public void write_SSD_알맞은_값으로_쓰기_성공() {
-        ssd.write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
-
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE);
+    public void write_SSD_알맞은_범위와_값에_쓰기_성공() {
+        assertDoesNotThrow(() -> {
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, CORRECT_WRITE_VALUE));
+        });
     }
 
     @Test
     public void write_SSD_알맞지_않은_범위에_쓰기_실패() {
-        ssd.write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
-        ssd.write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_INDEX_MESSAGE);
 
-        verify(ssd, times(1)).write(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE);
-        verify(ssd, times(1)).write(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE);
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_INDEX_MESSAGE);
     }
 
     @Test
     public void write_SSD_알맞지_않은_값으로_쓰기_실패() {
-        ssd.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START);
-        ssd.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA);
-        ssd.write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH);
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START);
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA);
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH);
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
     }
 
     @Test
     public void write_SSD_값이_누락되어_쓰기_실패() {
-        ssd.write(CORRECT_WRITE_INDEX, NULL_WRITE_VALUE);
-        ssd.write(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE);
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, NULL_WRITE_VALUE));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
 
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, NULL_WRITE_VALUE);
-        verify(ssd, times(1)).write(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE);
+        assertThatThrownBy(() -> {
+            ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE));
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
     }
 
     @Test
     public void read_SSD_Write하지않은상태로Read() {
-        //ssd R 0
-        SSD ssd = new SSD();
-        String readedValue = ssd.read(10);
-        assertThat(readedValue).isEqualTo("0x00000000");
+        String dataByIndex = ssd.read(10);
+        assertThat(dataByIndex).isEqualTo("0x00000000");
     }
 
     @Test
     public void read_SSD_Write한주소를Read() {
-        //ssd W 1 0xFFFFFFFF
-        //ssd R 1
-
-        SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFF");
         when(ssd.read(1)).thenReturn("0xFFFFFFFF");
 
@@ -102,9 +116,7 @@ class SSDTest {
 
     @Test
     public void read_SSD_NandFile없는경우Read() {
-        //ssd R 0
-        SSD ssd = new SSD();
-        if (!ssd.isValidFile("nand.txt")) {
+        if (!fileHandler.checkNANDFile()) {
             fail();
         }
 
@@ -116,9 +128,7 @@ class SSDTest {
 
     @Test
     public void read_SSD_resultFile없는경우Read() {
-        //ssd R 0
-        SSD ssd = new SSD();
-        if (!ssd.isValidFile("result.txt")) {
+        if (!fileHandler.checkResultFile()) {
             fail();
         }
 
@@ -130,38 +140,31 @@ class SSDTest {
 
     @Test
     public void read_SSD_이상한주소값Read() {
-        //ssd R -1
-        //ssd R 111
-        SSD ssd = new SSD();
-        String data = ssd.read(-1);
-        assertThat(data).isEqualTo("Invalid Address");
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.read(-1);
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
 
-        data = ssd.read(111);
-        assertThat(data).isEqualTo("Invalid Address");
+        e = assertThrows(SSDException.class, () -> {
+            ssd.read(111);
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
     }
 
     @Test
     public void read_SSD_같은주소여러번Read() {
-        SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFF");
-        when(ssd.read(1))
-                .thenReturn("0xFFFFFFFF")
-                .thenReturn("0xFFFFFFFF")
-                .thenReturn("0xFFFFFFFF");
 
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
+        assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
         assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
     public void read_SSD_다른주소연속read() {
-        SSD ssd = mock(SSD.class);
         ssd.write(1, "0xFFFFFFFA");
         ssd.write(2, "0xFFFFFFFB");
         ssd.write(3, "0xFFFFFFFF");
-
-        when(ssd.read(1)).thenReturn("0xFFFFFFFA");
-        when(ssd.read(2)).thenReturn("0xFFFFFFFB");
-        when(ssd.read(3)).thenReturn("0xFFFFFFFF");
 
         assertThat(ssd.read(1)).isEqualTo("0xFFFFFFFA");
         assertThat(ssd.read(2)).isEqualTo("0xFFFFFFFB");

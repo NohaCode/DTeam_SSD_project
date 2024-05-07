@@ -9,9 +9,24 @@ import java.util.Scanner;
 public class Shell {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
     private SSD ssd;
+    private FileHandler fileHandler = new FileHandler();
 
     public Shell(SSD ssd) {
         this.ssd = ssd;
+    }
+
+    public static void main(String[] args) {
+        Shell shell = new Shell(new SSD());
+        Scanner scanner = new Scanner(System.in);
+        String commandLine;
+        while (true) {
+            commandLine = scanner.nextLine();
+            try {
+                shell.run(commandLine);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void printValueError() {
@@ -42,19 +57,15 @@ public class Shell {
     }
 
     public void help() {
-        try {
-            ClassLoader classLoader = Shell.class.getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource("help.txt")).getFile());
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            bufferedReader.lines().forEach(System.out::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        String helpContext = fileHandler.fileRead(FileHandler.RESOURCES_PATH + "help.txt");
+        System.out.println(helpContext);
     }
 
     void fullwrite(String value) {
         if(!isValidHex(value)){
             System.out.println("INVALID COMMAND");
+
             return;
         }
 
@@ -122,7 +133,7 @@ public class Shell {
             }
         }
     }
-    public void processWriteCommand(String[] tokens) {
+    private void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
             return;
