@@ -82,7 +82,7 @@ public class FileHandler {
         String jsonIndex = "" + index;
         if (jsonObject != null) {
             jsonObject.put(jsonIndex, data);
-            fileWrite(FileHandler.NAND_FILE_PATH, jsonObject.toString());
+            fileWrite(NAND_FILE_PATH, jsonObject.toString());
         }
     }
 
@@ -99,6 +99,6 @@ public class FileHandler {
     }
 
     public void writeResult(String data) {
-        fileWrite(FileHandler.RESULT_FILE_PATH, data);
+        fileWrite(RESULT_FILE_PATH, data);
     }
 }
