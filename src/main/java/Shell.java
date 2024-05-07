@@ -9,9 +9,52 @@ import java.util.Scanner;
 public class Shell {
     public static final String REGEX = "^0x[0-9A-F]{8}$";
     private SSD ssd;
+    private FileHandler fileHandler = new FileHandler();
 
     public Shell(SSD ssd) {
         this.ssd = ssd;
+    }
+
+    public static void main(String[] args) {
+        Shell shell = new Shell(new SSD());
+        Scanner scanner = new Scanner(System.in);
+        String commandLine;
+        while (true) {
+            commandLine = scanner.nextLine();
+            try {
+                shell.run(commandLine);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void run(String commandLine) throws Exception {
+        String[] tokens = commandLine.split(" ");
+        String cmd = tokens[0];
+
+        switch (cmd) {
+            case "write":
+                processWriteCommand(tokens);
+                break;
+            case "read":
+                processReadCommand(tokens);
+                break;
+            case "exit":
+                System.exit(0);
+            case "help":
+                help();
+                break;
+            case "fullread":
+                fullread();
+                System.out.println("fullread 실행");
+                break;
+            case "fullwrite":
+                processFullWriteCommand(tokens);
+                break;
+            default:
+                System.out.println("INVALID COMMAND");
+        }
     }
 
     public void write(int index, String value) {
@@ -43,7 +86,7 @@ public class Shell {
     }
 
     public String read(int index) {
-        if(!(0 <= index && index <= 99))
+        if (!(0 <= index && index <= 99))
             return "Invalid Address";
         return ssd.read(index);
     }
@@ -60,19 +103,15 @@ public class Shell {
     }
 
     public void help() {
-        try {
-            ClassLoader classLoader = Shell.class.getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource("help.txt")).getFile());
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            bufferedReader.lines().forEach(System.out::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        String helpContext = fileHandler.fileRead(FileHandler.RESOURCES_PATH + "help.txt");
+        System.out.println(helpContext);
     }
 
     void fullwrite(String value) {
         if(!isValidHex(value)){
             System.out.println("INVALID COMMAND");
+
             return;
         }
 
@@ -108,38 +147,7 @@ public class Shell {
         }
     }
 
-    public void run() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        
-        while(scanner.hasNextLine()){
-            String commandLine = scanner.nextLine();
-            String[] tokens = commandLine.split(" ");
 
-            String cmd = tokens[0];
-
-            switch (cmd) {
-                case "write":
-                    processWriteCommand(tokens);
-                    break;
-                case "read":
-                    processReadCommand(tokens);
-                    break;
-                case "exit":
-                    System.exit(0);
-                case "help":
-                    help();
-                    break;
-                case "fullread":
-                    fullread();
-                    break;
-                case "fullwrite":
-                    processFullWriteCommand(tokens);
-                    break;
-                default:
-                    System.out.println("INVALID COMMAND");
-            }
-        }
-    }
     private void processWriteCommand(String[] tokens) {
         if (tokens.length != 3) {
             System.out.println("INVALID COMMAND");
