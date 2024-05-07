@@ -1,5 +1,5 @@
 .idea/
-!**/src/main/java/resources/
+!**/src/main/resources/
 
 
 target/
