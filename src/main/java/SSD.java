@@ -12,6 +12,9 @@ public class SSD {
     public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
 
+    public static final String INVALID_INDEX_MESSAGE = "Invalid Address";
+    public static final String INVALID_VALUE_MESSAGE = "Invalid Value";
+
     public SSD() {
     }
 
@@ -54,9 +57,11 @@ public class SSD {
     }
 
     public void write(int index, String value) {
-        if (IsIncorrectIndex(index) || isIncorrectValue(value)) {
-            printError();
-            return;
+        if (IsIncorrectIndex(index)) {
+            throw new SSDException(INVALID_INDEX_MESSAGE);
+        }
+        if (isIncorrectValue(value)) {
+            throw new SSDException(INVALID_VALUE_MESSAGE);
         }
         makeFile();
         writeNAND(index, value);
@@ -64,7 +69,7 @@ public class SSD {
 
     public String read(int index) {
         if (IsIncorrectIndex(index))
-            return "Invalid Address";
+            throw new SSDException(INVALID_INDEX_MESSAGE);
 
         makeFile();
         String data = readNAND(index);
