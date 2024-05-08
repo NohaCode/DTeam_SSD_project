@@ -9,6 +9,8 @@ public class SSDCommandFactory {
                 commandMap.put(command, new SSDReadCommand());
             } else if (command.equals("W")) {
                 commandMap.put(command, new SSDWriteCommand());
+            } else if (command.equals("E")) {
+                commandMap.put(command, new SSDEraseCommand());
             }
         }
         return commandMap.get(command);
