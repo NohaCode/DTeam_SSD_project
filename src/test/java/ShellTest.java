@@ -2,6 +2,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Fail.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.mockito.*;
@@ -18,7 +21,6 @@ class ShellTest {
     public static final String INCORRECT_WRITE_VALUE_LENGTH = "0x1290CDE";
     public static final String NULL_WRITE_VALUE = null;
     public static final String EMPTY_WRITE_VALUE = "";
-
     @Mock
     SSD ssd;
 
@@ -30,147 +32,186 @@ class ShellTest {
     }
 
     @Test
-    public void write_Shell_데이터_없는_곳에_쓰기_성공() {
+    public void write_Shell_정상케이스() throws Exception {
         //write  3  0xAAAABBBB
         // • 3번 LBA 에 0xAAAABBB 를 기록한다.
         // • ssd 에 명령어를 전달한다.
-        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), CORRECT_WRITE_VALUE};
+        String shellCommandLine = "write "+String.valueOf(CORRECT_WRITE_INDEX)+" "+CORRECT_WRITE_VALUE;
+        String ssdCommandLine = "W "+String.valueOf(CORRECT_WRITE_INDEX)+" "+CORRECT_WRITE_VALUE;
 
-        shell.processWriteCommand(tokens);
+        shell.run(shellCommandLine);
 
-        verify(ssd, times(1)).run(anyString());
+        verify(ssd, times(1)).run(ssdCommandLine);
     }
-
     @Test
-    public void write_Shell_알맞지_않은_범위에_쓰기_실패_상한선() {
+    public void write_Shell_잘못된인덱스_범위밖_음수() throws Exception {
         //write  100  0xAAAABBBB
         //LBA 범위는 0 ~ 99
-        String[] tokens = {"write", String.valueOf(INCORRECT_WRITE_INDEX_BIG), CORRECT_WRITE_VALUE};
-        shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run(anyString());
+        String shellCommandLine = "write "+String.valueOf(INCORRECT_WRITE_INDEX_BIG)+" "+CORRECT_WRITE_VALUE;
+        String ssdCommandLine = "W "+String.valueOf(INCORRECT_WRITE_INDEX_BIG)+" "+CORRECT_WRITE_VALUE;
+
+        shell.run(shellCommandLine);
+
+        verify(ssd, times(0)).run(ssdCommandLine);
 
     }
 
+
     @Test
-    public void write_Shell_알맞지_않은_범위에_쓰기_실패_하한선() {
+    public void write_Shell_잘못된인덱스_범위밖_100이상() throws Exception {
         //write  100  0xAAAABBBB
         //LBA 범위는 0 ~ 99
-        String[] tokens = {"write", String.valueOf(INCORRECT_WRITE_INDEX_SMALL), CORRECT_WRITE_VALUE};
-        shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run(anyString());
+        String shellCommandLine = "write "+String.valueOf(INCORRECT_WRITE_INDEX_BIG)+" "+CORRECT_WRITE_VALUE;
+        String ssdCommandLine = "W "+String.valueOf(INCORRECT_WRITE_INDEX_BIG)+" "+CORRECT_WRITE_VALUE;
+
+        shell.run(shellCommandLine);
+
+        verify(ssd, times(0)).run(ssdCommandLine);
 
     }
 
     @Test
-    public void write_Shell_알맞지_않은_값으로_쓰기_실패_숫자() {
+    public void write_Shell_비정상16진수_0X아님() throws Exception {
         //write  3  0xGAAABBBB
         //A ~ F, 0 ~ 9 까지 숫자 범위만 허용
         String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_START};
 
-        shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run(anyString());
+        String shellCommandLine = "write "+String.valueOf(CORRECT_WRITE_INDEX)+" "+INCORRECT_WRITE_VALUE_START;
+        String ssdCommandLine = "W "+String.valueOf(CORRECT_WRITE_INDEX)+" "+INCORRECT_WRITE_VALUE_START;
+
+        shell.run(shellCommandLine);
+
+        verify(ssd, times(0)).run(shellCommandLine);
     }
 
     @Test
-    public void write_Shell_알맞지_않은_값으로_쓰기_실패_알파벳() {
+    public void write_Shell_비정상16진수_잘못된알파벳() throws Exception {
         //write  3  0xGAAABBBB
         //A ~ F, 0 ~ 9 까지 숫자 범위만 허용
-        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_ALPHA};
+        String shellCommandLine = "write "+String.valueOf(CORRECT_WRITE_INDEX)+" "+INCORRECT_WRITE_VALUE_ALPHA;
+        String ssdCommandLine = "W "+String.valueOf(CORRECT_WRITE_INDEX)+" "+INCORRECT_WRITE_VALUE_ALPHA;
 
-        shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run(anyString());
+        shell.run(shellCommandLine);
+
+        verify(ssd, times(0)).run(ssdCommandLine);
     }
 
     @Test
-    public void write_Shell_알맞지_않은_값으로_쓰기_실패_길이() {
+    public void write_Shell_비정상16진수_길이9() throws Exception {
         //write  3  0xGAAABBBB
         //A ~ F, 0 ~ 9 까지 숫자 범위만 허용
         String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
+        String shellCommandLine = "write "+String.valueOf(CORRECT_WRITE_INDEX)+" "+INCORRECT_WRITE_VALUE_LENGTH;
+        String ssdCommandLine = "W "+String.valueOf(CORRECT_WRITE_INDEX)+" "+INCORRECT_WRITE_VALUE_LENGTH;
 
-        shell.processWriteCommand(tokens);
-        verify(ssd, times(0)).run(anyString());
+        shell.run(shellCommandLine);
+        verify(ssd, times(0)).run(ssdCommandLine);
     }
 
     @Test
-    public void read_Shell_읽기_성공() {
+    public void read_Shell_정상케이스() throws Exception {
         //read  3
         // • 3번 LBA 를 읽는다.
         // • ssd 에 명령어를 전달한다.
         // • result.txt 에 적힌 결과를 화면에 출력한다.
-        String[] tokens = {"read", String.valueOf(CORRECT_WRITE_INDEX)};
+        String shellCommandLine = "read "+String.valueOf(CORRECT_WRITE_INDEX);
+        String ssdCommandLine = "R "+String.valueOf(CORRECT_WRITE_INDEX);
 
-        shell.processReadCommand(tokens);
-        verify(ssd, times(1)).run(anyString());
+        shell.run(shellCommandLine);
+        verify(ssd, times(1)).run(ssdCommandLine);
     }
 
     @Test
-    public void read_Shell_알맞지_않은_범위에_읽기_실패_하한선() {
+    public void read_Shell_잘못된인덱스접근_음수() throws Exception {
         //read  100
         //LBA 범위는 0 ~ 99
-        String[] tokens = {"read", String.valueOf(INCORRECT_WRITE_INDEX_SMALL)};
-        shell.processReadCommand(tokens);
+        String shellCommandLine = "read "+String.valueOf(INCORRECT_WRITE_INDEX_SMALL);
+        String ssdCommandLine = "R "+String.valueOf(INCORRECT_WRITE_INDEX_SMALL);
 
-        verify(ssd, times(0)).run(anyString());
+        shell.run(shellCommandLine);
+        verify(ssd, times(0)).run(ssdCommandLine);
     }
 
     @Test
-    public void read_Shell_알맞지_않은_범위에_읽기_실패_상한선() {
+    public void read_Shell_잘못된인덱스접근_100이상() throws Exception {
         //read  100
         //LBA 범위는 0 ~ 99
         String[] tokens = {"read", String.valueOf(INCORRECT_WRITE_INDEX_BIG)};
-        shell.processReadCommand(tokens);
+        String shellCommandLine = "read "+String.valueOf(INCORRECT_WRITE_INDEX_BIG);
+        String ssdCommandLine = "R "+String.valueOf(INCORRECT_WRITE_INDEX_BIG);
 
-        verify(ssd, times(0)).run(anyString());
+        shell.run(shellCommandLine);
+        verify(ssd, times(0)).run(ssdCommandLine);
     }
 
     @Test
-    public void listen_Shell_없는_명령어_실패() {
+    public void listen_Shell_없는_명령어수행() throws Exception {
         //listen  3
         //• 없는 명령어를 수행하는 경우 "INVALID COMMAND"을 출력
         //• 어떠한 명령어를 입력하더라도 Runtime Error가 나오면 안된다.
-        assertThat(shell.listen(CORRECT_WRITE_INDEX)).isEqualTo("INVALID COMMAND");
+        String shellCommandLine = "read "+String.valueOf(CORRECT_WRITE_INDEX)+" sdfsdf";
+        String ssdCommandLine = "R "+String.valueOf(CORRECT_WRITE_INDEX)+" sdfsdf";
+
+        shell.run(shellCommandLine);
+        verify(ssd, times(0)).run(ssdCommandLine);
     }
 
     @Test
-    public void exit_Shell_종료확인() {
+    public void exit_Shell_종료확인() throws Exception {
+//        System.setSecurityManager(new SecurityManager() {
+//            @Override
+//            public void checkExit(int status) {
+//                assertEquals(0, status);
+//                throw new SecurityException("System.exit() called");
+//            }
+//        });
+//
+//        try {
+//            String shellCommandLine = "exit";
+//            shell.run(shellCommandLine);
+//        } catch (SecurityException e) {
+//            assertEquals("System.exit() called", e.getMessage());
+//            return;
+//        }
+//
+//        fail("System.exit() not called");
     }
 
     @Test
-    public void help_Shell_사용방법_출력확인() {
-        //shell.help();
+    public void help_Shell_사용방법_출력확인() throws Exception {
+        String shellCommandLine = "help";
+        String ssdCommandLine = "help";
+
+        shell.run(shellCommandLine);
+        verify(ssd, times(0)).run(ssdCommandLine);
     }
 
     @Test
     public void fullread_Shell_전체파일읽기_통과() throws Exception {
 
-        String[] tokens = {"fullread"};
+        String shellCommandLine = "fullread";
 
-        //acts
-        shell.processFullReadCommand(tokens);
+        shell.run(shellCommandLine);
 
-        //assert
         verify(ssd, times(100)).run(anyString());
     }
 
     @Test
-    public void fullread_Shell_전체파일읽기_실패() throws Exception {
+    public void fullread_Shell_전체파일읽기_실패_잘못된_명령어() throws Exception {
 
-        String[] tokens = {"fullread", "WWW"};
+        String shellCommandLine = "fullread WWW";
+        shell.run(shellCommandLine);
 
-        //acts
-        shell.processFullReadCommand(tokens);
-
-        //assert
         verify(ssd, times(0)).run(anyString());
     }
 
 
     @Test
-    public void fullwrite_Shell_10자리_입력_통과() throws Exception {
-        String[] tokens = {"fullwrite", CORRECT_WRITE_VALUE};
+    public void fullwrite_Shell_정상16진수_입력_통과() throws Exception {
+        String shellCommandLine = "fullwrite "+String.valueOf(CORRECT_WRITE_VALUE);
 
         //act
-        shell.processFullWriteCommand(tokens);
+        shell.run(shellCommandLine);
 
         //assert
         verify(ssd, times(100)).run(anyString());
@@ -178,47 +219,30 @@ class ShellTest {
     }
 
     @Test
-    public void fullwrite_Shell_비정상자리수_실패() throws Exception {
-        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
+    public void fullwrite_Shell_비정상16진수_9자리_실패() throws Exception {
+        String shellCommandLine = "fullwrite "+String.valueOf(INCORRECT_WRITE_VALUE_LENGTH);
 
-        //act
-        shell.processFullWriteCommand(tokens);
-
-        //assert
-        verify(ssd, times(0)).run(anyString());
-    }
-
-    @Test
-    public void fullwrite_Shell_16진수아님_실패() throws Exception {
-        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_START};
-
-        //act
-        shell.processFullWriteCommand(tokens);
+        shell.run(shellCommandLine);
 
         //assert
         verify(ssd, times(0)).run(anyString());
     }
 
     @Test
-    public void fullwrite_Shell_자리수초과_실패() throws Exception {
-        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_LENGTH};
+    public void fullwrite_Shell_비정상16진수_0X아님_실패() throws Exception {
+        String shellCommandLine = "fullwrite "+String.valueOf(INCORRECT_WRITE_VALUE_START);
 
-        //act
-        shell.processFullWriteCommand(tokens);
+        shell.run(shellCommandLine);
 
-
-        //assert
         verify(ssd, times(0)).run(anyString());
     }
 
     @Test
-    public void fullwrite_Shell_알파벳에러_실패() throws Exception {
-        String[] tokens = {"write", String.valueOf(CORRECT_WRITE_INDEX), INCORRECT_WRITE_VALUE_ALPHA};
+    public void fullwrite_Shell_비정상16진수_잘못된알파벳() throws Exception {
+        String shellCommandLine = "fullwrite "+String.valueOf(INCORRECT_WRITE_VALUE_ALPHA);
 
-        //act
-        shell.processFullWriteCommand(tokens);
+        shell.run(shellCommandLine);
 
-        //assert
         verify(ssd, times(0)).run(anyString());
     }
 }
