@@ -1,17 +1,14 @@
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,13 +18,30 @@ class RunnerTest {
     private static final String TESTAPP1 = "testapp1";
     private static final String TESTAPP2 = "testapp2";
 
+    ByteArrayOutputStream outputStream;
+    PrintStream originalOut;
+
     @BeforeEach
     void setUp() {
         arrayList = new ArrayList<>();
+
+        outputStream = new ByteArrayOutputStream();
+        originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setOut(originalOut);
+    }
+
+    private String getNowPrintResult() {
+        return outputStream.toString();
     }
 
     @Test
     void test_runner_testapp1_호출시_shell() throws Exception {
+
         Shell shell = mock(Shell.class);
         shell.run(TESTAPP1);
         verify(shell, times(1)).run(anyString());
@@ -44,14 +58,16 @@ class RunnerTest {
     void test_runner_testapp1_호출시_shell_command() {
         ShellCommand fullReadShellCommand = spy(ShellFullReadCommand.class);
         ShellCommand fullWriteShellCommand = spy(ShellFullWriteCommand.class);
-
         SSD ssd = mock(SSD.class);
+
         arrayList.add("fullwrite");
         arrayList.add("0xABCDFFFF");
         fullWriteShellCommand.run(ssd, arrayList);
         arrayList.clear();
+
         arrayList.add("fullread");
         fullReadShellCommand.run(ssd, arrayList);
+        arrayList.clear();
 
         verify(fullReadShellCommand, times(1)).run(ssd, arrayList);
         verify(fullWriteShellCommand, times(1)).run(ssd, arrayList);
@@ -61,7 +77,6 @@ class RunnerTest {
     void test_runner_testapp2_호출시_shell_command() {
         ShellCommand shellReadCommand = spy(ShellReadCommand.class);
         ShellCommand shellWriteCommand = spy(ShellWriteCommand.class);
-
         SSD ssd = mock(SSD.class);
 
         for (int i = 0; i < 30; i++) {
