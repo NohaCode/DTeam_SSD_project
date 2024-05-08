@@ -30,6 +30,7 @@ class ShellTest {
     public static final int ERASE_INDEX_ONE = 1;
     public static final int ERASE_INDEX_ELEVEN = 11;
     public static final int ERASE_INDEX_FIFTY_ONE = 51;
+    public static final int ERASE_INDEX_SEVEN = 7;
     public static final String RESOURCES_PATH = "src/main/resources/";
     public static final String TEST_RESOURCES_PATH = "src/test/resources/";
     public static final String RUN_LIST_FILE = "run_list.lst";
@@ -277,12 +278,29 @@ class ShellTest {
     }
 
     @Test
-    public void erase_range_Shell_정상케이스() throws Exception {
+    public void erase_range_Shell_정상케이스_1에서_51까지() throws Exception {
         String shellCommandLine = "erase_range " + String.valueOf(ERASE_INDEX_ONE) + " " + String.valueOf(ERASE_INDEX_FIFTY_ONE);
 
         shell.run(shellCommandLine);
 
         erase_range_Shell_Test(ERASE_INDEX_ONE, ERASE_INDEX_FIFTY_ONE);
+    }
+
+    @Test
+    public void erase_range_Shell_정상케이스_1에서_7까지() throws Exception {
+        String shellCommandLine = "erase_range " + String.valueOf(ERASE_INDEX_ONE) + " " + String.valueOf(ERASE_INDEX_SEVEN);
+
+        shell.run(shellCommandLine);
+
+        erase_range_Shell_Test(ERASE_INDEX_ONE, ERASE_INDEX_SEVEN);
+    }
+
+    @Test
+    public void erase_range_Shell_정상케이스_1에서_11까지() throws Exception {
+        String shellCommandLine = "erase_range " + String.valueOf(ERASE_INDEX_ONE) + " " + String.valueOf(ERASE_INDEX_ELEVEN);
+
+        shell.run(shellCommandLine);
+
         erase_range_Shell_Test(ERASE_INDEX_ONE, ERASE_INDEX_ELEVEN);
     }
 
