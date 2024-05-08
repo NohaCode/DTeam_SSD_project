@@ -4,6 +4,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
@@ -19,6 +23,13 @@ class ShellTest {
     public static final String INCORRECT_WRITE_VALUE_LENGTH = "0x1290CDE";
     public static final String NULL_WRITE_VALUE = null;
     public static final String EMPTY_WRITE_VALUE = "";
+
+    public static final String RESOURCES_PATH = "src/main/resources/";
+    public static final String TEST_RESOURCES_PATH = "src/test/resources/";
+    public static final String RUN_LIST_FILE = "run_list.lst";
+    public static final String RUN_LIST_FILE_PATH = RESOURCES_PATH + RUN_LIST_FILE;
+    public static final String TEST_RUN_LIST_FILE_PATH = TEST_RESOURCES_PATH + RUN_LIST_FILE;
+
     @Spy
     SSD ssd;
 
@@ -230,5 +241,29 @@ class ShellTest {
         shell.run(shellCommandLine);
 
         verify(ssd, times(0)).run(anyString());
+    }
+
+    @Test
+    void runner_정상테스트케이스() throws Exception {
+        shell.run("run_list.lst");
+    }
+
+    @Test
+    void runner_정상케이스_runner_process수행() throws Exception {
+        ShellRunnerCommand runnerCommand = (ShellRunnerCommand) ShellCommandFactory.of("run_list.lst");
+        ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList("run_list.lst"));
+
+        assertThat(runnerCommand.isValidCommand(commandOptionList)).isEqualTo(true);
+        assertThat(runnerCommand.testRun(RUN_LIST_FILE_PATH)).isEqualTo("Pass");
+
+    }
+
+    @Test
+    void runner_오류테스트케이스(){
+        ShellRunnerCommand runnerCommand = (ShellRunnerCommand) ShellCommandFactory.of("run_list.lst");
+        ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList("run_list.lst"));
+
+        assertThat(runnerCommand.isValidCommand(commandOptionList)).isEqualTo(true);
+        assertThat(runnerCommand.testRun(TEST_RUN_LIST_FILE_PATH)).isEqualTo("Fail");
     }
 }
