@@ -14,17 +14,12 @@ public class SSDReadCommand implements SSDCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidLengthParameter(commandOptionList)) {
-            return false;
-        }
+        if(!isValidLengthParameter(commandOptionList)) {return false;}
 
-        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {
-            return false;
-        }
+        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
 
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
-        if (!isValidIndex(pos))
-            return false;
+        if(!isValidIndex(pos)) {return false;}
 
         return true;
     }

@@ -18,19 +18,15 @@ public class SSDWriteCommand implements SSDCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidLengthParameter(commandOptionList)) {
-            return false;
-        }
+        if(!isValidLengthParameter(commandOptionList)) {return false;}
+
+        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
 
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
-        if (!isValidIndex(pos)) {
-            return false;
-        }
+        if(!isValidIndex(pos)) {return false;}
 
         String value = commandOptionList.get(VALUE_INDEX);
-        if (!isValidValue(value)) {
-            return false;
-        }
+        if(!isValidValue(value)) {return false;}
         return true;
     }
 
@@ -47,9 +43,18 @@ public class SSDWriteCommand implements SSDCommand {
         return commandOptionList.size() == 3;
     }
 
-    private boolean isValidValue(String value) {
-        return value != null && !value.isEmpty() && value.matches(CORRECT_VALUE_REGEX);
+    private boolean isValidIntegerParameter(ArrayList<String> commandOptionList, int index){
+        try{
+            Integer.parseInt(commandOptionList.get(index));
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
     }
 
     private boolean isValidIndex(int index) { return index >= 0 && index <= 99; }
+
+    private boolean isValidValue(String value) {
+        return value != null && !value.isEmpty() && value.matches(CORRECT_VALUE_REGEX);
+    }
 }

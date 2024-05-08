@@ -12,7 +12,7 @@ public class ShellTestApp1Command implements ShellCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidCommandOptionListSize(commandOptionList)) {
+        if(!isValidCommandOptionListSize(commandOptionList)) {
             return false;
         }
         return true;
