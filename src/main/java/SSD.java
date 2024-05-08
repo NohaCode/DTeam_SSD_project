@@ -14,7 +14,7 @@ public class SSD {
     public static final String WRITE_COMMAND_SHORTCUT = "W";
     public static final String COMMAND_SEPARATOR = " ";
 
-    private final FileHandler fileHandler = new FileHandler();
+    private final FileHandler fileHandler = FileHandler.get();
 
     public SSD() {
         fileHandler.initFile();
