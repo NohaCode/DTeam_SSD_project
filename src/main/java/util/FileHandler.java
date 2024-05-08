@@ -16,6 +16,10 @@ public class FileHandler {
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
     public static final String RUN_LIST_FILE_PATH = RESOURCES_PATH + RUN_LIST_FILE;
     public static final String DEFAULT_VALUE = "0x00000000";
+    public static final String LOG_FILE = "latest.log";
+    public static final String LOG_DIR = "logs/";
+    public static final String LOG_PATH = RESOURCES_PATH + LOG_DIR;
+    public static final String LOG_FILE_PATH = RESOURCES_PATH + LOG_DIR + LOG_FILE;
 
     private FileHandler() {}
 
