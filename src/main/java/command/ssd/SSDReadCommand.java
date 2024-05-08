@@ -1,3 +1,7 @@
+package command.ssd;
+
+import util.FileHandler;
+
 import java.util.ArrayList;
 
 public class SSDReadCommand implements SSDCommand {

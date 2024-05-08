@@ -1,3 +1,8 @@
+package command.shell;
+
+import app.SSD;
+import util.FileHandler;
+
 import java.util.ArrayList;
 
 public class ShellHelpCommand implements ShellCommand{

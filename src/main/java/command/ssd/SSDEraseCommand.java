@@ -1,4 +1,10 @@
+package command.ssd;
+
+import util.FileHandler;
+
 import java.util.ArrayList;
+
+import static util.FileHandler.DEFAULT_VALUE;
 
 public class SSDEraseCommand implements SSDCommand{
 
@@ -46,7 +52,7 @@ public class SSDEraseCommand implements SSDCommand{
 
         for(int index = pos; index < pos + size; index++){
             if(index > 99) break;
-            fileHandler.writeNAND(index, SSD.DEFAULT_VALUE);
+            fileHandler.writeNAND(index, DEFAULT_VALUE);
         }
     }
 

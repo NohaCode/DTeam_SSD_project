@@ -1,10 +1,14 @@
+package app;
+
+import command.ssd.SSDCommand;
+import command.ssd.SSDCommandFactory;
+import exception.SSDException;
+import util.FileHandler;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SSD {
-    public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
-    public static final String DEFAULT_VALUE = "0x00000000";
-
     public static final String INVALID_COMMAND_MESSAGE = "INVALID COMMAND";
 
     public static final String READ_COMMAND_SHORTCUT = "R";

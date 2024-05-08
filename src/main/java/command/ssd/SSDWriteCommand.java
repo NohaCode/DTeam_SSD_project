@@ -1,8 +1,14 @@
+package command.ssd;
+
+import util.FileHandler;
+
 import java.util.ArrayList;
 
 public class SSDWriteCommand implements SSDCommand {
     private static final Integer POS_INDEX = 1;
     private static final Integer VALUE_INDEX = 2;
+
+    public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
 
     FileHandler fileHandler;
 
@@ -42,7 +48,7 @@ public class SSDWriteCommand implements SSDCommand {
     }
 
     private boolean isIncorrectValue(String value) {
-        return value == null || value.isEmpty() || !value.matches(SSD.CORRECT_VALUE_REGEX);
+        return value == null || value.isEmpty() || !value.matches(CORRECT_VALUE_REGEX);
     }
 
     private boolean isIncorrectIndex(int pos) {

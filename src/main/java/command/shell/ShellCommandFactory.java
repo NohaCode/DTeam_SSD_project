@@ -1,3 +1,5 @@
+package command.shell;
+
 import java.util.HashMap;
 
 public class ShellCommandFactory {

@@ -1,3 +1,8 @@
+import app.SSD;
+import app.Shell;
+import command.shell.ShellCommandFactory;
+import command.shell.ShellRunnerCommand;
+import exception.SSDException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
