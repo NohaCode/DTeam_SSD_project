@@ -73,8 +73,6 @@ class SSDTest {
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
     }
 
-
-
     @Test
     public void write_SSD_데이터_있는_곳에_쓰기_성공() {
         assertDoesNotThrow(() -> {
