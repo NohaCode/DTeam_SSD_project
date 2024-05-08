@@ -144,4 +144,8 @@ public class FileHandler {
         }
         return DEFAULT_VALUE;
     }
+
+    public String readScenario () {
+        return fileRead(RUN_LIST_FILE_PATH);
+    }
 }
