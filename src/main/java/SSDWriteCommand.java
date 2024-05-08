@@ -30,9 +30,6 @@ public class SSDWriteCommand implements SSDCommand {
 
     @Override
     public void run(ArrayList<String> commandOptionList) {
-        if (!isValidCommand(commandOptionList))
-            return;
-
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
         String value = commandOptionList.get(VALUE_INDEX);
 

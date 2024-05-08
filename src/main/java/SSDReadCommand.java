@@ -23,9 +23,6 @@ public class SSDReadCommand implements SSDCommand {
 
     @Override
     public void run(ArrayList<String> commandOptionList) {
-        if(!isValidCommand(commandOptionList))
-            return;
-
         fileHandler.makeFile();
 
         int index = Integer.parseInt(commandOptionList.get(POS_INDEX));
