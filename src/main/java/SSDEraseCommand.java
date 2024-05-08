@@ -46,14 +46,8 @@ public class SSDEraseCommand implements SSDCommand{
 
         for(int index = pos; index < pos + size; index++){
             if(index > 99) break;
-            if(isSSDReadEmpty(index)) continue;
             fileHandler.writeNAND(index, SSD.DEFAULT_VALUE);
         }
-    }
-
-    private boolean isSSDReadEmpty(int index) {
-        String data = fileHandler.readNAND(index);
-        return data.equals(SSD.DEFAULT_VALUE);
     }
 
     private boolean isInvalidLengthParameter(ArrayList<String> commandOptionList) {
