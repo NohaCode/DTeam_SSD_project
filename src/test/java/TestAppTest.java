@@ -81,7 +81,7 @@ class TestAppTest {
     void test_runner_testapp2_호출시_shell_command() {
         ShellCommand shellReadCommand = spy(ShellReadCommand.class);
         ShellCommand shellWriteCommand = spy(ShellWriteCommand.class);
-        SSD ssd = spy(SSD.class);
+        SSD ssd = mock(SSD.class);
         String firstWriteValue = "0xAAAABBBB";
         String overwriteValue = "0x12345678";
 
@@ -122,7 +122,7 @@ class TestAppTest {
     @Test
     void test_runner_testapp1_호출시_실제_파일입출력_shell_command() {
         Shell shell = spy(Shell.class);
-        SSD ssd = spy(SSD.class);
+        SSD ssd = shell.getSsd();
         String firstFullWriteValue = "0xABCDFFFF";
 
         assertDoesNotThrow(() -> {
@@ -138,7 +138,7 @@ class TestAppTest {
     @Test
     void test_runner_testapp2_호출시_실제_파일입출력_shell_command() {
         Shell shell = spy(Shell.class);
-        SSD ssd = spy(SSD.class);
+        SSD ssd = shell.getSsd();
         String overwriteValue = "0x12345678";
 
         assertDoesNotThrow(() -> {

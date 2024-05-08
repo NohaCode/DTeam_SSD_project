@@ -24,6 +24,12 @@ public class ShellCommandFactory {
             else if(command.equals("erase")){
                 commandMap.put(command, new ShellEraseCommand());
             }
+            else if (command.equals("testapp1")) {
+                commandMap.put(command, new ShellTestApp1Command());
+            }
+            else if (command.equals("testapp2")) {
+                commandMap.put(command, new ShellTestApp2Command());
+            }
             else if(command.equals("erase_range")){
                 commandMap.put(command, new ShellEraseRangeCommand());
             }
