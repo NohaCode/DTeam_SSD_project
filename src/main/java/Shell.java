@@ -28,12 +28,41 @@ public class Shell {
         }
     }
 
+    private void testApp1() throws Exception {
+        run("fullwrite 0xABCDFFFF");
+        run("fullread");
+    }
+
+    private void testApp2() throws Exception {
+        for (int i = 0; i < 30 ; i++) {
+            for (int j = 0; j < 6; j++) {
+                run("write " + j + " 0xAAAABBBB");
+            }
+        }
+
+        for (int j = 0; j < 6; j++) {
+            run("write " + j + " 0x12345678");
+        }
+
+        for (int j = 0; j < 6; j++) {
+            run("read " + j);
+        }
+    }
+
     public void run(String commandLine) throws Exception {
         if (isValidCommandLine(commandLine))
             return;
 
         ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
         String commandStr = commandOptionList.get(0);
+
+        if (commandStr.equals("testapp1")) {
+            testApp1();
+            return;
+        } else if (commandStr.equals("testapp2")) {
+            testApp2();
+            return;
+        }
 
         ShellCommand command = ShellCommandFactory.of(commandStr);
         if (!command.isValidCommand(commandOptionList)) {
