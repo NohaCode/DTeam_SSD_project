@@ -19,7 +19,6 @@ class TestAppTest {
 
     ArrayList<String> arrayList;
     ByteArrayOutputStream outputStream;
-    PrintStream originalOut;
     FileHandler fileHandler = FileHandler.get();
 
     @BeforeEach
@@ -28,19 +27,6 @@ class TestAppTest {
             arrayList = new ArrayList<>();
         }
         arrayList.clear();
-
-//        outputStream = new ByteArrayOutputStream();
-//        originalOut = System.out;
-//        System.setOut(new PrintStream(outputStream));
-    }
-
-    @AfterEach
-    void tearDown() {
-//        System.setOut(originalOut);
-    }
-
-    private String getNowPrintResult() {
-        return outputStream.toString();
     }
 
     @Test
