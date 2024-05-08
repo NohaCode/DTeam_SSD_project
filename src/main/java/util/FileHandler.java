@@ -53,7 +53,7 @@ public class FileHandler {
             try {
                 if (br != null) br.close();
             } catch (IOException ex) {
-                return DEFAULT_VALUE;
+                return "";
             }
             return sb.toString();
         }
