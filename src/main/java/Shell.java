@@ -24,7 +24,7 @@ public class Shell {
         }
     }
 
-    public void run(String commandLine) {
+    public void run(String commandLine) throws Exception {
         if (isValidCommandLine(commandLine))
             return;
 
