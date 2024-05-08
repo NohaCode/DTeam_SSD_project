@@ -63,14 +63,14 @@ class SSDTest {
     public void write_SSD_부족한_파라미터_쓰기_실패() {
         assertThatThrownBy(() -> {
             ssd.run(SSD.WRITE_COMMAND_SHORTCUT + SSD.COMMAND_SEPARATOR + CORRECT_WRITE_INDEX);
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
     public void write_SSD_부족한_파라미터_읽기_실패() {
         assertThatThrownBy(() -> {
             ssd.run(SSD.READ_COMMAND_SHORTCUT + SSD.COMMAND_SEPARATOR);
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
@@ -92,37 +92,37 @@ class SSDTest {
     public void write_SSD_알맞지_않은_범위에_쓰기_실패() {
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(INCORRECT_WRITE_INDEX_BIG, CORRECT_WRITE_VALUE));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_INDEX_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(INCORRECT_WRITE_INDEX_SMALL, CORRECT_WRITE_VALUE));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_INDEX_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
     public void write_SSD_알맞지_않은_값으로_쓰기_실패() {
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
     public void write_SSD_값이_누락되어_쓰기_실패() {
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, NULL_WRITE_VALUE));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_VALUE_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, EMPTY_WRITE_VALUE));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
@@ -173,12 +173,12 @@ class SSDTest {
         SSDException e = assertThrows(SSDException.class, () -> {
             ssd.run("R -1");
         });
-        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
 
         e = assertThrows(SSDException.class, () -> {
             ssd.run("R 111");
         });
-        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_INDEX_MESSAGE);
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
