@@ -18,17 +18,17 @@ public class SSDWriteCommand implements SSDCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (isInvalidLengthParameter(commandOptionList)) {
+        if (!isValidLengthParameter(commandOptionList)) {
             return false;
         }
 
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
-        if (isIncorrectIndex(pos)) {
+        if (!isValidIndex(pos)) {
             return false;
         }
 
         String value = commandOptionList.get(VALUE_INDEX);
-        if (isIncorrectValue(value)) {
+        if (!isValidValue(value)) {
             return false;
         }
         return true;
@@ -43,15 +43,13 @@ public class SSDWriteCommand implements SSDCommand {
         fileHandler.writeNAND(pos, value);
     }
 
-    private boolean isInvalidLengthParameter(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() != 3;
+    private boolean isValidLengthParameter(ArrayList<String> commandOptionList) {
+        return commandOptionList.size() == 3;
     }
 
-    private boolean isIncorrectValue(String value) {
-        return value == null || value.isEmpty() || !value.matches(CORRECT_VALUE_REGEX);
+    private boolean isValidValue(String value) {
+        return value != null && !value.isEmpty() && value.matches(CORRECT_VALUE_REGEX);
     }
 
-    private boolean isIncorrectIndex(int pos) {
-        return pos < 0 || pos > 99;
-    }
+    private boolean isValidIndex(int index) { return index >= 0 && index <= 99; }
 }
