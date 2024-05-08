@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -270,17 +270,15 @@ class ShellTest {
     @Test
     public void erase_Shell_잘못된사이즈_10초과() throws Exception {
         String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + INCORRECT_ERASE_SIZE;
-        String ssdCommandLine = "E " + String.valueOf(ERASE_INDEX_ONE) + " " + INCORRECT_ERASE_SIZE;
 
-        shell.run(shellCommandLine);
-
-        verify(ssd, times(0)).run(ssdCommandLine);
+        assertThatThrownBy(() -> {
+            shell.run(shellCommandLine);
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
     public void erase_range_Shell_정상케이스() throws Exception {
         String shellCommandLine = "erase_range " + String.valueOf(ERASE_INDEX_ONE) + " " + String.valueOf(ERASE_INDEX_FIFTY_ONE);
-        String ssdCommandLine;
 
         shell.run(shellCommandLine);
 
@@ -291,14 +289,28 @@ class ShellTest {
     private void erase_range_Shell_Test(int start, int end) {
         String ssdCommandLine;
 
-        while(end - start > 10) {
+        while (end - start > 10) {
             ssdCommandLine = "E " + String.valueOf(start) + " 10";
             verify(ssd, times(1)).run(ssdCommandLine);
             start += 10;
         }
         ssdCommandLine = "E " + String.valueOf(start) + " " + String.valueOf(end - start);
         verify(ssd, times(1)).run(ssdCommandLine);
+    }
 
+
+    @Test
+    public void erase_range_Shell_잘못된인덱스_범위밖_100이상() throws Exception {
+        String shellCommandLine = "erase_range " + String.valueOf(ERASE_INDEX_ONE) + " " + String.valueOf(INCORRECT_WRITE_INDEX_BIG);
+        String ssdCommandLine = "E " + String.valueOf(ERASE_INDEX_ONE) + " 10";
+
+        shell.run(shellCommandLine);
+
+        verify(ssd, times(0)).run(ssdCommandLine);
+
+    }
+
+    @Test
     void runner_정상테스트케이스() throws Exception {
         shell.run("run_list.lst");
     }
@@ -311,21 +323,10 @@ class ShellTest {
         assertThat(runnerCommand.isValidCommand(commandOptionList)).isEqualTo(true);
         assertThat(runnerCommand.testRun(RUN_LIST_FILE_PATH)).isEqualTo("Pass");
 
-
     }
 
     @Test
-
-    public void erase_range_Shell_잘못된인덱스_범위밖_100이상() throws Exception {
-        String shellCommandLine = "erase_range " + String.valueOf(ERASE_INDEX_ONE) + " " + String.valueOf(INCORRECT_WRITE_INDEX_BIG);
-        String ssdCommandLine = "E " + String.valueOf(ERASE_INDEX_ONE) + " 10";
-
-        shell.run(shellCommandLine);
-
-        verify(ssd, times(0)).run(ssdCommandLine);
-
-
-    void runner_오류테스트케이스(){
+    void runner_오류테스트케이스() {
         ShellRunnerCommand runnerCommand = (ShellRunnerCommand) ShellCommandFactory.of("run_list.lst");
         ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList("run_list.lst"));
 
