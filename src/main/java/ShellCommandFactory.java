@@ -21,6 +21,15 @@ public class ShellCommandFactory {
             else if(command.equals("fullread")){
                 commandMap.put(command, new ShellFullReadCommand());
             }
+            else if(command.equals("erase")){
+                commandMap.put(command, new ShellEraseCommand());
+            }
+            else if(command.equals("erase_range")){
+                commandMap.put(command, new ShellEraseRangeCommand());
+            }
+            else if(command.equals("run_list.lst")){
+                commandMap.put(command, new ShellRunnerCommand());
+            }
         }
         return commandMap.get(command);
     }

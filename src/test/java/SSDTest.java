@@ -216,4 +216,103 @@ class SSDTest {
         //ssd R
         //ssd R 2 0xFFFFFFFF
     }
+
+    @Test
+    void erase_SSD_Write한값_1개_지우기_성공() {
+        ssd.run("W 1 0xFFFFFFFF");
+
+        String data = fileHandler.readNAND(1);
+        assertThat(data).isEqualTo("0xFFFFFFFF");
+
+        ssd.run("E 1 1");
+
+        data = fileHandler.readNAND(1);
+        assertThat(data).isEqualTo(SSD.DEFAULT_VALUE);
+    }
+
+    @Test
+    void erase_SSD_Write한값들_10개_지우기_성공() {
+        String data;
+        for(int i = 0; i < 10; i++){
+            ssd.run("W " + String.valueOf(i) + " 0xFFFFFFFF");
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo("0xFFFFFFFF");
+        }
+
+        ssd.run("E 0 10");
+
+        for(int i = 0; i < 10; i++){
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo(SSD.DEFAULT_VALUE);
+        }
+    }
+
+    @Test
+    void erase_SSD_Write한값들_마지막5개_지우기_성공() {
+        String data;
+        for(int i = 90; i < 100; i++){
+            ssd.run("W " + String.valueOf(i) + " 0xFFFFFFFF");
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo("0xFFFFFFFF");
+        }
+
+        ssd.run("E 95 10");
+
+        for(int i = 90; i < 95; i++){
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo("0xFFFFFFFF");
+        }
+
+        for(int i = 95; i < 100; i++){
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo(SSD.DEFAULT_VALUE);
+        }
+    }
+
+    @Test
+    void erase_SSD_명령어위반_부족한_파라미터_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void erase_SSD_명령어위반_잘못된명령어_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E ABC 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+
+        e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 1 ABC");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void erase_SSD_명령어위반_알맞지_않은_주소값_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E -1 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+
+        e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 111 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void erase_SSD_명령어위반_알맞지_않은_사이즈_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 1 -1");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+
+        e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 1 11");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
 }

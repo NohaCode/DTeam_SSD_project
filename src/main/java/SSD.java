@@ -9,6 +9,7 @@ public class SSD {
 
     public static final String READ_COMMAND_SHORTCUT = "R";
     public static final String WRITE_COMMAND_SHORTCUT = "W";
+    public static final String ERASE_COMMAND_SHORTCUT = "E";
     public static final String COMMAND_SEPARATOR = " ";
 
     private final FileHandler fileHandler = FileHandler.get();

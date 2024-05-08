@@ -6,6 +6,10 @@ public class Shell {
     private SSD ssd;
     public static final String COMMAND_SEPARATOR = " ";
 
+    public Shell(){
+        this.ssd = new SSD();
+    }
+
     public Shell(SSD ssd) {
         this.ssd = ssd;
     }
