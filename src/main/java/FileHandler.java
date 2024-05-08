@@ -12,13 +12,14 @@ public class FileHandler {
     public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
 
-    private static FileHandler fileHandler;
+    private FileHandler() {}
 
-    public static FileHandler get(){
-        if(fileHandler == null){
-            fileHandler = new FileHandler();
-        }
-        return fileHandler;
+    private static class Holder {
+        private static final FileHandler INSTANCE = new FileHandler();
+    }
+
+    public static FileHandler get() {
+        return Holder.INSTANCE;
     }
 
     public void fileWrite(String filePath, String data) {
