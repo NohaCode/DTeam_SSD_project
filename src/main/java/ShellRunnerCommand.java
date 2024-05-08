@@ -33,6 +33,7 @@ public class ShellRunnerCommand implements ShellCommand {
             ));
 
             for (String testCommand : runList) {
+                System.out.print(testCommand + " --- Run ... ");
                 m.invoke(shellObject, testCommand);
                 System.out.println("Pass");
             }
