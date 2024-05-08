@@ -58,10 +58,11 @@ class RunnerTest {
     void test_runner_testapp1_호출시_shell_command() {
         ShellCommand fullReadShellCommand = spy(ShellFullReadCommand.class);
         ShellCommand fullWriteShellCommand = spy(ShellFullWriteCommand.class);
+        String firstFullWriteValue = "0xABCDFFFF";
         SSD ssd = mock(SSD.class);
 
         arrayList.add("fullwrite");
-        arrayList.add("0xABCDFFFF");
+        arrayList.add(firstFullWriteValue);
         fullWriteShellCommand.run(ssd, arrayList);
         arrayList.clear();
 
@@ -78,12 +79,14 @@ class RunnerTest {
         ShellCommand shellReadCommand = spy(ShellReadCommand.class);
         ShellCommand shellWriteCommand = spy(ShellWriteCommand.class);
         SSD ssd = mock(SSD.class);
+        String firstWriteValue = "0xAAAABBBB";
+        String overwriteValue = "0x12345678";
 
         for (int i = 0; i < 30; i++) {
             for (int j = 0; j < 6; j++) {
                 arrayList.add("write");
                 arrayList.add("" + j);
-                arrayList.add("0xAAAABBBB");
+                arrayList.add(firstWriteValue);
                 shellWriteCommand.run(ssd, arrayList);
                 arrayList.clear();
             }
@@ -92,7 +95,7 @@ class RunnerTest {
         for (int i = 0; i < 6; i++) {
             arrayList.add("write");
             arrayList.add("" + i);
-            arrayList.add("0x12345678");
+            arrayList.add(overwriteValue);
             shellWriteCommand.run(ssd, arrayList);
             arrayList.clear();
         }
