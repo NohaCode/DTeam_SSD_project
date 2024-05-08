@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class ShellRunnerCommand implements ShellCommand {
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidCommandSize(commandOptionList))
+        if(!isValidCommandSize(commandOptionList))
             return false;
 
         return true;
