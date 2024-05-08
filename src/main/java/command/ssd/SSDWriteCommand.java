@@ -10,12 +10,6 @@ public class SSDWriteCommand implements SSDCommand {
 
     public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
 
-    FileHandler fileHandler;
-
-    public SSDWriteCommand(){
-        fileHandler = FileHandler.get();
-    }
-
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
         if (isInvalidLengthParameter(commandOptionList)) {

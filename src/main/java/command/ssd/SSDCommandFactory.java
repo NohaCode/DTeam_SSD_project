@@ -13,6 +13,8 @@ public class SSDCommandFactory {
                 commandMap.put(command, new SSDWriteCommand());
             } else if (command.equals("E")) {
                 commandMap.put(command, new SSDEraseCommand());
+            } else if(command.equals("F")){
+                commandMap.put(command, new SSDFlushCommand());
             }
         }
         return commandMap.get(command);
