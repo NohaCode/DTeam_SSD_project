@@ -279,18 +279,15 @@ class ShellTest {
 
     private void erase_range_Shell_Test(int start, int end) {
         String ssdCommandLine;
-        if(end - start > 10) {
-            while(end - start > 10) {
-                ssdCommandLine = "E " + String.valueOf(start) + " 10";
-                verify(ssd, times(1)).run(ssdCommandLine);
-                start += 10;
-            }
-            ssdCommandLine = "E " + String.valueOf(start) + " " + String.valueOf(end - start);
+
+        while(end - start > 10) {
+            ssdCommandLine = "E " + String.valueOf(start) + " 10";
             verify(ssd, times(1)).run(ssdCommandLine);
-        } else {
-            ssdCommandLine = "E " + String.valueOf(start) + " " + String.valueOf(end - start);
-            verify(ssd, times(1)).run(ssdCommandLine);
+            start += 10;
         }
+        ssdCommandLine = "E " + String.valueOf(start) + " " + String.valueOf(end - start);
+        verify(ssd, times(1)).run(ssdCommandLine);
+
     }
 
     @Test

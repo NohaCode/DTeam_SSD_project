@@ -18,15 +18,12 @@ public class ShellEraseRangeCommand implements ShellCommand{
         int start = Integer.parseInt(commandOptionList.get(1));
         int end = Integer.parseInt(commandOptionList.get(2));
 
-        if(end - start > 10) {
-            while(end - start > 10) {
-                ssd.run("E " + String.valueOf(start) + " 10");
-                start += 10;
-            }
-            ssd.run("E " + String.valueOf(start) + " " + String.valueOf(end - start));
-        } else {
-            ssd.run("E " + String.valueOf(start) + " " + String.valueOf(end - start));
+        while(end - start > 10) {
+            ssd.run("E " + String.valueOf(start) + " 10");
+            start += 10;
         }
+        ssd.run("E " + String.valueOf(start) + " " + String.valueOf(end - start));
+
     }
 
     private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {

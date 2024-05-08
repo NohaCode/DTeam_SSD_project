@@ -15,7 +15,9 @@ public class ShellEraseCommand implements ShellCommand{
 
     @Override
     public void run(SSD ssd, ArrayList<String> commandOptionList) {
-        ssd.run("E " + commandOptionList.get(1) + " " + commandOptionList.get(2));
+        String index = commandOptionList.get(1);
+        String size = commandOptionList.get(2);
+        ssd.run("E " + index + " " + size);
     }
 
     private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
