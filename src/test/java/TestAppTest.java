@@ -6,11 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import util.FileHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,7 +23,7 @@ class TestAppTest {
 
     ArrayList<String> arrayList;
     ByteArrayOutputStream outputStream;
-    PrintStream originalOut;
+    FileHandler fileHandler = FileHandler.get();
 
     @BeforeEach
     void setUp() {
@@ -28,19 +31,6 @@ class TestAppTest {
             arrayList = new ArrayList<>();
         }
         arrayList.clear();
-
-        outputStream = new ByteArrayOutputStream();
-        originalOut = System.out;
-        System.setOut(new PrintStream(outputStream));
-    }
-
-    @AfterEach
-    void tearDown() {
-        System.setOut(originalOut);
-    }
-
-    private String getNowPrintResult() {
-        return outputStream.toString();
     }
 
     @Test
@@ -107,12 +97,48 @@ class TestAppTest {
             arrayList.add("read");
             arrayList.add("" + i);
             shellReadCommand.run(ssd, arrayList);
+            arrayList.clear();
         }
 
-        // 0 ~ 5 번 LBA 에 0xAAAABBBB 값으로 총 30번 Write를 수행한다. = 180
-        // 0 ~ 5 번 LBA 에 0x12345678 값으로 1 회 Over Write를 수행한다. = 6
+        // 0 ~ 5 번 LBA 에 0xAAAABBBB 값으로 총 30번 Write를 수행한다. = 6 * 30 = 180
+        // 0 ~ 5 번 LBA 에 0x12345678 값으로 1 회 Over Write를 수행한다. = 1 * 6 = 6
         verify(shellWriteCommand, times(186)).run(ssd, arrayList);
-        // 0 ~ 5 번 LBA Read 했을 때 정상적으로 값이 읽히는지 확인한다
+        // 0 ~ 5 번 LBA Read 했을 때 정상적으로 값이 읽히는지 확인한다 = 1 * 6 = 6
         verify(shellReadCommand, times(6)).run(ssd, arrayList);
+
+
+    }
+
+    @Test
+    void test_runner_testapp1_호출시_실제_파일입출력_shell_command() {
+        Shell shell = spy(Shell.class);
+        SSD ssd = shell.getSsd();
+        String firstFullWriteValue = "0xABCDFFFF";
+
+        assertDoesNotThrow(() -> {
+            shell.run(TESTAPP1);
+        });
+
+        for (int i = 0; i < 100; i++) {
+            ssd.run("R " + i);
+            assertThat(fileHandler.readRESULT(i)).isEqualTo(firstFullWriteValue);
+        }
+    }
+
+    @Test
+    void test_runner_testapp2_호출시_실제_파일입출력_shell_command() {
+        Shell shell = spy(Shell.class);
+        SSD ssd = shell.getSsd();
+        String overwriteValue = "0x12345678";
+
+        assertDoesNotThrow(() -> {
+            shell.run(TESTAPP2);
+        });
+
+        for (int i = 0; i < 6; i++) {
+            ssd.run("R " + i);
+            assertThat(fileHandler.readRESULT(i)).isEqualTo(overwriteValue);
+        }
+
     }
 }
