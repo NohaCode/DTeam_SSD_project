@@ -148,4 +148,8 @@ public class FileHandler {
     public String readScenario () {
         return fileRead(RUN_LIST_FILE_PATH);
     }
+
+    public void writeScenario (String command) {
+        fileWrite(RUN_LIST_FILE_PATH, command);
+    }
 }

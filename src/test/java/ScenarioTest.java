@@ -15,55 +15,22 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ScenarioTest {
 
-    @Mock
+    @Spy
     private Scenario scenario;
 
     @Test
-    void readScenario_알맞은_위치_성공() {
-        int index = 0;
-        doReturn("write 55 0x0000000A").when(scenario).read(index);
-        assertDoesNotThrow(() -> {
-            scenario.read(index);
-        });
+    void testScenario() {
+        scenario.create("write 55 0x0000000A");
+        scenario.read(0);
+        scenario.insert(0, "read 55");
+        scenario.create("write 55 0x0000000A");
+        scenario.update(0, "write 55 0x0000000A");
+        scenario.create("write 57 0x0000000A");
+        scenario.create("write 59 0x0000000A");
+        scenario.deleteAll();
+        scenario.create("write 55 0x0000000A");
+        scenario.create("write 57 0x0000000A");
+        scenario.create("write 59 0x0000000A");
+        scenario.insert(2, "read 55");
     }
-
-    @Test
-    void readScenario_없는_위치_실패() {
-        int index = -1;
-        doThrow(ShellException.class).when(scenario).read(index);
-        assertThrows(ShellException.class, () -> {
-            scenario.read(index);
-        });
-    }
-
-    @Test
-    @Disabled
-    void readAllScenario() {
-
-    }
-
-    @Test
-    @Disabled
-    void createScenario() {
-
-    }
-
-    @Test
-    @Disabled
-    void updateScenario() {
-
-    }
-
-    @Test
-    @Disabled
-    void deleteScenario() {
-
-    }
-
-    @Test
-    @Disabled
-    void deleteAllScenario() {
-
-    }
-
 }
