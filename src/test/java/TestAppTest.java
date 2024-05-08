@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class RunnerTest {
+class TestAppTest {
     private static final String TESTAPP1 = "testapp1";
     private static final String TESTAPP2 = "testapp2";
 
