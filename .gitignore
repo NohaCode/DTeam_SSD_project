@@ -1,4 +1,6 @@
 .idea/
+!**/src/main/resources/
+
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -38,3 +40,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+src/main/resources/*.txt
