@@ -9,8 +9,10 @@ public class FileHandler {
     public static final String RESOURCES_PATH = "src/main/resources/";
     public static final String NAND_FILE = "nand.txt";
     public static final String RESULT_FILE = "result.txt";
+    public static final String RUN_LIST_FILE = "run_list.lst";
     public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
+    public static final String RUN_LIST_FILE_PATH = RESOURCES_PATH + RUN_LIST_FILE;
 
     private FileHandler() {}
 
