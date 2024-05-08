@@ -13,26 +13,23 @@ public class SSDWriteCommand implements SSDCommand {
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
         if (isInvalidLengthParameter(commandOptionList)) {
-            throw new SSDException(SSD.INVALID_LENGTH_PARAMETER_MESSAGE);
+            return false;
         }
 
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
         if (isIncorrectIndex(pos)) {
-            throw new SSDException(SSD.INVALID_INDEX_MESSAGE);
+            return false;
         }
 
         String value = commandOptionList.get(VALUE_INDEX);
         if (isIncorrectValue(value)) {
-            throw new SSDException(SSD.INVALID_VALUE_MESSAGE);
+            return false;
         }
         return true;
     }
 
     @Override
     public void run(ArrayList<String> commandOptionList) {
-        if (!isValidCommand(commandOptionList))
-            return;
-
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
         String value = commandOptionList.get(VALUE_INDEX);
 

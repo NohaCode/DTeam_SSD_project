@@ -35,15 +35,20 @@ public class SSD {
         String commandStr = commandOptionList.get(0);
 
         SSDCommand command = SSDCommandFactory.of(commandStr);
-        if (isInvalidCommand(command, commandOptionList)) {
+
+        if (isInvalidCommand(command)) {
+            throw new SSDException(INVALID_COMMAND_MESSAGE);
+        }
+
+        if (command.isValidCommand(commandOptionList)) {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
 
         command.run(commandOptionList);
     }
 
-    private static boolean isInvalidCommand(SSDCommand command, ArrayList<String> commandOptionList) {
-        return command == null || !command.isValidCommand(commandOptionList);
+    private static boolean isInvalidCommand(SSDCommand command) {
+        return command == null;
     }
 
     private static boolean isInvalidCommandLine(String commandLine) {
