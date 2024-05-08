@@ -31,27 +31,18 @@ public class Shell {
 
     private void testApp2() throws Exception {
         for (int i = 0; i < 30 ; i++) {
-            run("write 0 0xAAAABBBB");
-            run("write 1 0xAAAABBBB");
-            run("write 2 0xAAAABBBB");
-            run("write 3 0xAAAABBBB");
-            run("write 4 0xAAAABBBB");
-            run("write 5 0xAAAABBBB");
+            for (int j = 0; j < 6; j++) {
+                run("write " + j + " 0xAAAABBBB");
+            }
         }
 
-        run("write 0 0x12345678");
-        run("write 1 0x12345678");
-        run("write 2 0x12345678");
-        run("write 3 0x12345678");
-        run("write 4 0x12345678");
-        run("write 5 0x12345678");
+        for (int j = 0; j < 6; j++) {
+            run("write " + j + " 0x12345678");
+        }
 
-        run("read 0");
-        run("read 1");
-        run("read 2");
-        run("read 3");
-        run("read 4");
-        run("read 5");
+        for (int j = 0; j < 6; j++) {
+            run("read " + j);
+        }
     }
 
     public void run(String commandLine) throws Exception {

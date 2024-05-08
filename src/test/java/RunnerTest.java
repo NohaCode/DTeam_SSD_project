@@ -27,6 +27,9 @@ class RunnerTest {
 
     ArrayList<String> arrayList;
 
+    private static final String TESTAPP1 = "testapp1";
+    private static final String TESTAPP2 = "testapp2";
+
     @BeforeEach
     void setUp() {
         arrayList = new ArrayList<>();
@@ -34,14 +37,13 @@ class RunnerTest {
 
     @Test
     void test_runner_testapp1_호출시_shell() throws Exception {
-        shell.run("testapp1");
+        shell.run(TESTAPP1);
         verify(shell, times(1)).run(anyString());
     }
 
     @Test
     void test_runner_testapp2_호출시_shell() throws Exception {
-        shell.run("testapp2");
+        shell.run(TESTAPP2);
         verify(shell, times(1)).run(anyString());
     }
-
 }
