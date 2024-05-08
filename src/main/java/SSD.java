@@ -40,7 +40,10 @@ public class SSD {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
 
-        command.isValidCommand(commandOptionList);
+        if (command.isValidCommand(commandOptionList)) {
+            throw new SSDException(INVALID_COMMAND_MESSAGE);
+        }
+
         command.run(commandOptionList);
     }
 
