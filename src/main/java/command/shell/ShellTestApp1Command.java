@@ -1,3 +1,9 @@
+package command.shell;
+
+import app.SSD;
+import exception.ShellException;
+import util.FileHandler;
+
 import java.util.ArrayList;
 
 public class ShellTestApp1Command implements ShellCommand {

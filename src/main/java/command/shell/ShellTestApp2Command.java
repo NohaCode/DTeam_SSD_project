@@ -1,4 +1,11 @@
+package command.shell;
+
+import app.SSD;
+import exception.ShellException;
+import util.FileHandler;
+
 import java.util.ArrayList;
+
 
 public class ShellTestApp2Command implements ShellCommand {
 
@@ -35,7 +42,7 @@ public class ShellTestApp2Command implements ShellCommand {
             }
         }
 //        if (false) {
-//            throw new ShellException();
+//            throw new exception.ShellException();
 //        }
     }
 
