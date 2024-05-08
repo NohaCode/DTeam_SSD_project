@@ -1,4 +1,3 @@
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,17 +12,19 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RunnerTest {
-    ArrayList<String> arrayList;
-
     private static final String TESTAPP1 = "testapp1";
     private static final String TESTAPP2 = "testapp2";
 
+    ArrayList<String> arrayList;
     ByteArrayOutputStream outputStream;
     PrintStream originalOut;
 
     @BeforeEach
     void setUp() {
-        arrayList = new ArrayList<>();
+        if (arrayList == null) {
+            arrayList = new ArrayList<>();
+        }
+        arrayList.clear();
 
         outputStream = new ByteArrayOutputStream();
         originalOut = System.out;
@@ -41,7 +42,6 @@ class RunnerTest {
 
     @Test
     void test_runner_testapp1_호출시_shell() throws Exception {
-
         Shell shell = mock(Shell.class);
         shell.run(TESTAPP1);
         verify(shell, times(1)).run(anyString());
