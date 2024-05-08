@@ -1,3 +1,5 @@
+package util;
+
 import org.json.JSONObject;
 
 import java.io.*;
@@ -13,6 +15,7 @@ public class FileHandler {
     public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
     public static final String RUN_LIST_FILE_PATH = RESOURCES_PATH + RUN_LIST_FILE;
+    public static final String DEFAULT_VALUE = "0x00000000";
 
     private FileHandler() {}
 
@@ -50,7 +53,7 @@ public class FileHandler {
             try {
                 if (br != null) br.close();
             } catch (IOException ex) {
-                return SSD.DEFAULT_VALUE;
+                return DEFAULT_VALUE;
             }
             return sb.toString();
         }
@@ -98,7 +101,7 @@ public class FileHandler {
         if (jsonObject != null && jsonObject.has(jsonIndex)) {
             return (String) jsonObject.get(jsonIndex);
         }
-        return SSD.DEFAULT_VALUE;
+        return DEFAULT_VALUE;
     }
 
     public void writeNAND(int index, String data) {
@@ -139,6 +142,6 @@ public class FileHandler {
         if (jsonObject != null && jsonObject.has(jsonIndex)) {
             return (String) jsonObject.get(jsonIndex);
         }
-        return SSD.DEFAULT_VALUE;
+        return DEFAULT_VALUE;
     }
 }

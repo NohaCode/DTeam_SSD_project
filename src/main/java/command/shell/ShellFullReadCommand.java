@@ -1,3 +1,7 @@
+package command.shell;
+
+import app.SSD;
+
 import java.util.ArrayList;
 
 public class ShellFullReadCommand implements ShellCommand{
