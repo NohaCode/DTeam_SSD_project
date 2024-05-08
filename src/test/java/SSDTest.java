@@ -1,13 +1,16 @@
+import app.SSD;
+import exception.SSDException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import util.FileHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static util.FileHandler.DEFAULT_VALUE;
 
 @ExtendWith(MockitoExtension.class)
 class SSDTest {
@@ -227,7 +230,7 @@ class SSDTest {
         ssd.run("E 1 1");
 
         data = fileHandler.readNAND(1);
-        assertThat(data).isEqualTo(SSD.DEFAULT_VALUE);
+        assertThat(data).isEqualTo(DEFAULT_VALUE);
     }
 
     @Test
@@ -243,7 +246,7 @@ class SSDTest {
 
         for(int i = 0; i < 10; i++){
             data = fileHandler.readNAND(i);
-            assertThat(data).isEqualTo(SSD.DEFAULT_VALUE);
+            assertThat(data).isEqualTo(DEFAULT_VALUE);
         }
     }
 
@@ -265,7 +268,7 @@ class SSDTest {
 
         for(int i = 95; i < 100; i++){
             data = fileHandler.readNAND(i);
-            assertThat(data).isEqualTo(SSD.DEFAULT_VALUE);
+            assertThat(data).isEqualTo(DEFAULT_VALUE);
         }
     }
 

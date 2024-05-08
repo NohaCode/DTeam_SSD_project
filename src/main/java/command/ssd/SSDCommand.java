@@ -1,3 +1,5 @@
+package command.ssd;
+
 import java.util.ArrayList;
 
 public interface SSDCommand {

@@ -1,4 +1,7 @@
+package command.shell;
+
 import java.util.ArrayList;
+import app.SSD;
 
 public class ShellEraseCommand implements ShellCommand{
     @Override
