@@ -79,7 +79,7 @@ public class Logger {
         //로그 라인추가
         addLogLine(logLine);
 
-        sleep(150);
+        sleep(10);
 
         // 파일 사이즈 체크 &&  10KB 넘어가면 이름 변경
 

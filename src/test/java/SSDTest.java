@@ -52,6 +52,11 @@ class SSDTest {
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
+            ssd.run(null);
+            ssd.run("F");
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+
+        assertThatThrownBy(() -> {
             ssd.run(SSD.COMMAND_SEPARATOR + CORRECT_WRITE_VALUE + SSD.COMMAND_SEPARATOR);
             ssd.run("F");
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
@@ -329,6 +334,14 @@ class SSDTest {
 
         e = assertThrows(SSDException.class, () -> {
             ssd.run("E 1 11");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void flush_SSD_명령어위반_알맞지_않은_사이즈_실패(){
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("F 1");
         });
         assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
     }

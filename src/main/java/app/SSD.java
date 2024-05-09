@@ -22,9 +22,6 @@ public class SSD {
 
     public SSD() {}
 
-    public static void main(String[] args) {
-    }
-
     public void run(String commandLine) {
         if (isInvalidCommandLine(commandLine)) {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
