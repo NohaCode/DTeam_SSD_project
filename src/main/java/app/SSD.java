@@ -1,6 +1,7 @@
 package app;
 
 import command.ssd.SSDCommand;
+import command.ssd.SSDCommandBuffer;
 import command.ssd.SSDCommandFactory;
 import exception.SSDException;
 import util.FileHandler;
@@ -17,13 +18,11 @@ public class SSD {
     public static final String COMMAND_SEPARATOR = " ";
 
     private final FileHandler fileHandler = FileHandler.get();
+    private final ArrayList<ArrayList<String>> commandBuffer = SSDCommandBuffer.get();
 
     public SSD() {}
 
     public static void main(String[] args) {
-//        makeFile();
-//        String data = fileRead(NAND_FILE_PATH);
-//        writeResult("TESTTEST");
     }
 
     public void run(String commandLine) {
@@ -31,27 +30,29 @@ public class SSD {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
         }
 
-        ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
+        ArrayList<String> commandOptionList = getCommandOptionList(commandLine);
         String commandStr = commandOptionList.get(0);
-
         SSDCommand command = SSDCommandFactory.of(commandStr);
 
-        if (isInvalidCommand(command)) {
-            throw new SSDException(INVALID_COMMAND_MESSAGE);
-        }
-
-        if (!command.isValidCommand(commandOptionList)) {
-            throw new SSDException(INVALID_COMMAND_MESSAGE);
-        }
-
-        command.run(commandOptionList);
+        command.process(commandOptionList);
     }
 
-    private static boolean isInvalidCommand(SSDCommand command) {
-        return command == null;
+    private boolean isInvalidCommandLine(String commandLine) {
+        if(commandLine == null || commandLine.trim().isEmpty())
+            return true;
+
+        ArrayList<String> commandOptionList = getCommandOptionList(commandLine);
+        String commandStr = commandOptionList.get(0);
+        if(!commandStr.equals("R") &&
+                !commandStr.equals("W") &&
+                !commandStr.equals("E") &&
+                !commandStr.equals("F"))
+            return true;
+
+        return false;
     }
 
-    private static boolean isInvalidCommandLine(String commandLine) {
-        return commandLine == null || commandLine.trim().isEmpty();
+    private ArrayList<String> getCommandOptionList(String commandLine) {
+        return new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
     }
 }
