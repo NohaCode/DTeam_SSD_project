@@ -362,7 +362,7 @@ class ShellTest {
         ShellRunnerCommand runnerCommand = (ShellRunnerCommand) ShellCommandFactory.of("run_list.lst");
         ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList("run_list.lst"));
 
-        assertThat(runnerCommand.isValidCommand(commandOptionList)).isEqualTo(true);
+        assertThat(runnerCommand.isValidCommandImpl(commandOptionList)).isEqualTo(true);
         assertThat(runnerCommand.testRun(RUN_LIST_FILE_PATH)).isEqualTo("Pass");
 
     }
@@ -372,7 +372,7 @@ class ShellTest {
         ShellRunnerCommand runnerCommand = (ShellRunnerCommand) ShellCommandFactory.of("run_list.lst");
         ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList("run_list.lst"));
 
-        assertThat(runnerCommand.isValidCommand(commandOptionList)).isEqualTo(true);
+        assertThat(runnerCommand.isValidCommandImpl(commandOptionList)).isEqualTo(true);
         assertThat(runnerCommand.testRun(TEST_RUN_LIST_FILE_PATH)).isEqualTo("Fail");
     }
 }
