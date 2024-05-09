@@ -7,7 +7,7 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 
-public class TestApp1 extends ShellCommand {
+public class testapp1 extends ShellCommand {
 
     private FileHandler fileHandler = FileHandler.get();
 

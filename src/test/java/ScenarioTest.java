@@ -31,6 +31,11 @@ public class ScenarioTest {
     public void test() throws Exception {
         Shell shell = new Shell();
         shell.run("run_list.lst");
+    }
 
+    @Test
+    public void test1() throws Exception {
+        Shell shell = new Shell();
+        shell.run("TestApp3");
     }
 }
