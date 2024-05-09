@@ -44,11 +44,7 @@ public class Shell {
         String commandStr = commandOptionList.get(0);
 
         ShellCommand command = ShellCommandFactory.of(commandStr);
-        if (!command.isValidCommand(commandOptionList)) {
-            return;
-        }
-
-        command.run(ssd, commandOptionList);
+        command.process(ssd, commandOptionList);
     }
 
     private boolean isValidCommandLine(String commandLine) {

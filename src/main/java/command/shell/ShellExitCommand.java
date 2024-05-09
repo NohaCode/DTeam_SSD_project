@@ -4,14 +4,14 @@ import app.SSD;
 
 import java.util.ArrayList;
 
-public class ShellExitCommand implements ShellCommand{
+public class ShellExitCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         return true;
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         System.exit(0);
     }
 }
