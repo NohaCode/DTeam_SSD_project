@@ -15,7 +15,7 @@ public class ShellScenarioDeleteAllCommand implements ShellCommand {
     }
 
     private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() != 2;
+        return commandOptionList.size() != 1;
     }
 
     @Override
