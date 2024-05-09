@@ -55,8 +55,10 @@ public class Logger {
         String logMessage = "[" +
                 getNowTime(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")) +
                 "] " +
+                getClassName(clazz)+
+                "." +
                 addSpace(getMethodName(clazz)) +
-                " : " +
+                "() : " +
                 message;
 
         return logMessage;
@@ -188,7 +190,12 @@ public class Logger {
 
     public String getMethodName(Class<? extends Object> clazz) {
         String methodName = clazz.getEnclosingMethod().getName(); //new Object() {}.getClass();
-        return methodName + "()";
+        return methodName;
+    }
+
+    public String getClassName(Class<? extends Object> clazz) {
+        String className = clazz.getEnclosingClass().getName(); //new Object() {}.getClass();
+        return className;
     }
 
     public String getNowTime(DateTimeFormatter formatter) {
