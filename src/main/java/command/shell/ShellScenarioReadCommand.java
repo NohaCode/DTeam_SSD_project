@@ -5,9 +5,9 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 import static util.CommandValidation.*;
-public class ShellScenarioReadCommand implements ShellCommand {
+public class ShellScenarioReadCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if (!isValidLengthParameter(commandOptionList, 2)) {
             return false;
         }
@@ -15,7 +15,7 @@ public class ShellScenarioReadCommand implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         FileHandler fileHandler = FileHandler.get();
         String allScenarioString = fileHandler.readScenario().trim();
         int index = Integer.parseInt(commandOptionList.get(1));

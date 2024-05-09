@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 import static util.CommandValidation.*;
 
-public class ShellScenarioDeleteAllCommand implements ShellCommand {
+public class ShellScenarioDeleteAllCommand extends ShellCommand {
 
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if (!isValidLengthParameter(commandOptionList, 1)) {
             return false;
         }
@@ -18,7 +18,7 @@ public class ShellScenarioDeleteAllCommand implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         FileHandler fileHandler = FileHandler.get();
         fileHandler.writeScenario("");
     }

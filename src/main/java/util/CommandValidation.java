@@ -50,7 +50,7 @@ public class CommandValidation {
         for (int i = commandStartIndex; i < commandOptionList.size(); i++) {
             newCommandOptionList.add(commandOptionList.get(i));
         }
-        String command = commandOptionList.get(1);
+        String command = newCommandOptionList.get(0);
         ShellCommand newCommand = ShellCommandFactory.of(command);
         if (newCommand == null || !newCommand.isValidCommand(newCommandOptionList)) {
             return true;

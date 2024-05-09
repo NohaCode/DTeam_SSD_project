@@ -1,4 +1,5 @@
 import app.Shell;
+import exception.SSDException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class ScenarioTest {
@@ -44,33 +46,29 @@ public class ScenarioTest {
 
     @Test
     void testScenarioWithNotValidCommand() throws Exception {
-        outputStream = new ByteArrayOutputStream();
-        originalOut = System.out;
-        System.setOut(new PrintStream(outputStream));
-
         assertDoesNotThrow(() -> {
             shell.run("scenario_read_all");
         });
-
-        String originString = outputStream.toString();
-        System.setOut(originalOut);
-
-
-        outputStream = new ByteArrayOutputStream();
-        originalOut = System.out;
-        System.setOut(new PrintStream(outputStream));
-        assertDoesNotThrow(() -> {
+        assertThrows(Exception.class, () -> {
             shell.run("scenario_read");
+        });
+        assertThrows(Exception.class, () -> {
             shell.run("scenario_append write 0x0000000A");
+        });
+        assertThrows(Exception.class, () -> {
             shell.run("scenario_append write 59");
+        });
+        assertThrows(Exception.class, () -> {
             shell.run("scenario_insert 2 read");
+        });
+        assertThrows(Exception.class, () -> {
+            shell.run("scenario_insert read");
+        });
+        assertThrows(Exception.class, () -> {
             shell.run("scenario_delete");
+        });
+        assertDoesNotThrow(() -> {
             shell.run("scenario_read_all");
         });
-        String noChangeString = outputStream.toString();
-        System.setOut(originalOut);
-
-
-        assertThat(originString).isEqualTo(noChangeString);
     }
 }

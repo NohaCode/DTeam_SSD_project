@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 import static util.CommandValidation.*;
 
-public class ShellScenarioReadAllCommand implements ShellCommand {
+public class ShellScenarioReadAllCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if (!isValidLengthParameter(commandOptionList, 1)) {
             return false;
         }
@@ -17,7 +17,7 @@ public class ShellScenarioReadAllCommand implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         FileHandler fileHandler = FileHandler.get();
         String allScenarioString = fileHandler.readScenario().trim();
         String[] scenarioList = allScenarioString.split("\n");

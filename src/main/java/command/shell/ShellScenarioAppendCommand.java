@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 import static util.CommandValidation.isInvalidScenario;
 
-public class ShellScenarioAppendCommand implements ShellCommand {
+public class ShellScenarioAppendCommand extends ShellCommand {
 
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if (commandOptionList.size() < 2) {
             return false;
         }
@@ -21,7 +21,7 @@ public class ShellScenarioAppendCommand implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         StringBuilder command = new StringBuilder();
         for (int i = 1; i < commandOptionList.size(); i++) {
             if (i != 1) {
