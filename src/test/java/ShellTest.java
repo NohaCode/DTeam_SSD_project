@@ -31,7 +31,9 @@ class ShellTest {
 
     public static final int CORRECT_ERASE_SIZE_ONE = 1;
     public static final int CORRECT_ERASE_SIZE_TEN = 10;
-    public static final int INCORRECT_ERASE_SIZE = 11;
+    public static final int CORRECT_ERASE_SIZE_ELEVEN = 11;
+    public static final int CORRECT_ERASE_SIZE_HUNDRED = 100;
+    public static final int INCORRECT_ERASE_SIZE_ZERO = 0;
     public static final int ERASE_INDEX_ONE = 1;
     public static final int ERASE_INDEX_ELEVEN = 11;
     public static final int ERASE_INDEX_FIFTY_ONE = 51;
@@ -257,7 +259,7 @@ class ShellTest {
     }
 
     @Test
-    public void erase_Shell_정상케이스() throws Exception {
+    public void erase_Shell_정상케이스_사이즈_10_이하() throws Exception {
         String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + CORRECT_ERASE_SIZE_ONE;
         String ssdCommandLine = "E " + String.valueOf(ERASE_INDEX_ONE) + " " + CORRECT_ERASE_SIZE_ONE;
 
@@ -274,9 +276,26 @@ class ShellTest {
     }
 
     @Test
-    public void erase_Shell_잘못된사이즈_10초과() throws Exception {
-        String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + INCORRECT_ERASE_SIZE;
+    public void erase_Shell_정상케이스_사이즈_11() throws Exception {
+        String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + CORRECT_ERASE_SIZE_ELEVEN;
 
+        shell.run(shellCommandLine);
+
+        erase_range_Shell_Test(ERASE_INDEX_ONE, ERASE_INDEX_ONE + CORRECT_ERASE_SIZE_ELEVEN);
+    }
+
+    @Test
+    public void erase_Shell_정상케이스_사이즈_100() throws Exception {
+        String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + CORRECT_ERASE_SIZE_HUNDRED;
+
+        shell.run(shellCommandLine);
+
+        erase_range_Shell_Test(ERASE_INDEX_ONE, ERASE_INDEX_ONE + CORRECT_ERASE_SIZE_HUNDRED);
+    }
+
+    @Test
+    public void erase_Shell_비정상케이스_사이즈_0() throws Exception {
+        String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + INCORRECT_ERASE_SIZE_ZERO;
         assertThatThrownBy(() -> {
             shell.run(shellCommandLine);
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
