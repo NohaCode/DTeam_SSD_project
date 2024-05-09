@@ -16,7 +16,7 @@ public class Scenario {
     }
 
     public void readAll() {
-        String allScenarioString = readFile();
+        String allScenarioString = fileHandler.readScenario().trim();;
         String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
         for (int i=0 ; i < scenarioList.length ; i++) {
             System.out.println("[" + i + "] " + scenarioList[i]);
@@ -24,7 +24,7 @@ public class Scenario {
     }
 
     public void readRange(int start, int end) {
-        String allScenarioString = readFile();
+        String allScenarioString = fileHandler.readScenario().trim();;
         String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
         int maxLength = scenarioList.length;
         if (start > end) {
@@ -37,13 +37,8 @@ public class Scenario {
         }
     }
 
-
-    private String readFile() {
-        return fileHandler.readScenario().trim();
-    }
-
     public void read(int index) {
-        String allScenarioString = readFile();
+        String allScenarioString = fileHandler.readScenario().trim();;
         if (isEmptyScenario(allScenarioString)) {
             System.out.println("테스트 시나리오 없음");
             return;
@@ -69,7 +64,7 @@ public class Scenario {
     }
 
     public void append(String command) {
-        String allScenarioString = readFile();
+        String allScenarioString = fileHandler.readScenario().trim();;
         if (isEmptyScenario(allScenarioString)) {
             allScenarioString = command;
         } else {
@@ -89,7 +84,7 @@ public class Scenario {
     }
 
     private String[] getScenarioList() {
-        String allScenarioString = readFile();
+        String allScenarioString = fileHandler.readScenario().trim();;
         return allScenarioString.split(LINE_SEPARATOR);
     }
 
