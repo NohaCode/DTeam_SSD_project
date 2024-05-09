@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 public class Scenario {
     private FileHandler fileHandler;
     public static final String LINE_SEPARATOR = "\n";
