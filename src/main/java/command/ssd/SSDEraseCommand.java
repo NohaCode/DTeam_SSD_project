@@ -1,6 +1,7 @@
 package command.ssd;
 
 import util.FileHandler;
+import util.CommandValidation;
 
 import java.util.ArrayList;
 
@@ -10,6 +11,7 @@ public class SSDEraseCommand implements SSDCommand{
 
     private static final Integer POS_INDEX = 1;
     private static final Integer SIZE_INDEX = 2;
+    private static final Integer COMMAND_OPTION_LIST_LENGTH = 3;
 
     FileHandler fileHandler;
 
@@ -19,16 +21,13 @@ public class SSDEraseCommand implements SSDCommand{
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if(!isValidLengthParameter(commandOptionList)) {return false;}
+        if(!CommandValidation.isValidLengthParameter(commandOptionList, COMMAND_OPTION_LIST_LENGTH)) {return false;}
 
-        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
-        if(!isValidIntegerParameter(commandOptionList, SIZE_INDEX)){return false;}
+        if(!CommandValidation.isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
+        if(!CommandValidation.isValidIntegerParameter(commandOptionList, SIZE_INDEX)){return false;}
 
-        int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
-        int size = Integer.parseInt(commandOptionList.get(SIZE_INDEX));
-
-        if(!isValidIndex(pos)) {return false;}
-        if(!isValidSize(size)) {return false;}
+        if(!CommandValidation.isValidIndex(commandOptionList, POS_INDEX)) {return false;}
+        if(!CommandValidation.isValidEraseSize(commandOptionList, SIZE_INDEX)) {return false;}
 
         return true;
     }
@@ -43,22 +42,4 @@ public class SSDEraseCommand implements SSDCommand{
             fileHandler.writeNAND(index, DEFAULT_VALUE);
         }
     }
-
-    private boolean isValidLengthParameter(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() == 3;
-    }
-
-    private boolean isValidIntegerParameter(ArrayList<String> commandOptionList, int index){
-        try{
-            Integer.parseInt(commandOptionList.get(index));
-            return true;
-        } catch (NumberFormatException e){
-            return false;
-        }
-    }
-
-    private boolean isValidIndex(int index) { return index >= 0 && index <= 99; }
-
-    private boolean isValidSize(int size) { return size >= 1 && size <= 10; }
-
 }
