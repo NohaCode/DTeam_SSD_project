@@ -1,30 +1,36 @@
+import app.SSD;
+import app.Shell;
 import command.scenario.Scenario;
+import exception.SSDException;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @ExtendWith(MockitoExtension.class)
 public class ScenarioTest {
 
+    ByteArrayOutputStream outputStream;
+    PrintStream originalOut;
+
     @Spy
-    private Scenario scenario;
+    private Shell shell;
 
     @Test
-    void testScenario() {
-        scenario.append("write 55 0x0000000A");
-        scenario.read(0);
-        scenario.insert(0, "read 55");
-        scenario.append("write 55 0x0000000A");
-        scenario.update(0, "write 55 0x0000000A");
-        scenario.append("write 57 0x0000000A");
-        scenario.append("write 59 0x0000000A");
-        scenario.deleteAll();
-        scenario.append("write 55 0x0000000A");
-        scenario.append("write 57 0x0000000A");
-        scenario.append("write 59 0x0000000A");
-        scenario.insert(2, "read 55");
-        scenario.delete(2);
-        scenario.readAll();
+    public void test() throws Exception {
+        Shell shell = new Shell();
+        shell.run("run_list.lst");
+
     }
 }

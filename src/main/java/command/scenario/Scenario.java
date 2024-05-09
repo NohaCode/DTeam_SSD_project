@@ -1,125 +1,81 @@
 package command.scenario;
 
-import util.FileHandler;
+import app.SSD;
+import exception.ShellException;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Deprecated
 public class Scenario {
-    private FileHandler fileHandler;
-    public static final String LINE_SEPARATOR = "\n";
+    private static final String filePath = "src/main/java/command/scenario/test/";
+    private static ConcurrentHashMap<String, Boolean> scenarioMap;
 
     public Scenario() {
-        fileHandler = FileHandler.get();
+        scenarioMap = new ConcurrentHashMap<>();
     }
 
-    public void readAll() {
-        String allScenarioString = readFile();
-        String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
-        for (int i=0 ; i < scenarioList.length ; i++) {
-            System.out.println("[" + i + "] " + scenarioList[i]);
+    public static void findScenario()  {
+        try {
+            scenarioMap.clear();
+            Files.walk(Paths.get(filePath)).forEach(path -> {
+                if (Files.isRegularFile(path) && path.toString().endsWith(".java")) {
+                    String className = new File(path.toString()).getName().replace(".java", "");
+                    scenarioMap.put(className, true);
+                }
+            });
+        } catch (Exception e) {
+            throw new ShellException();
         }
     }
 
-    public void readRange(int start, int end) {
-        String allScenarioString = readFile();
-        String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
-        int maxLength = scenarioList.length;
-        if (start > end) {
-            return;
-        }
-        int newStartIndex = Math.min(start, maxLength);
-        int newEndIndex = Math.min(end, maxLength);
-        for (; newStartIndex < newEndIndex ; newStartIndex++) {
-            System.out.println("[" + newStartIndex+ "] " + scenarioList[newStartIndex]);
-        }
+    public static boolean hasScenario(String name) {
+        return scenarioMap.containsKey(name);
     }
 
+    public static void runScenario(String fileName, SSD ssd, ArrayList<String> commandOptionList) throws Exception {
 
-    private String readFile() {
-        return fileHandler.readScenario().trim();
+        if (!scenarioMap.containsKey(fileName)) { return;}
+
+        String javaFilePath = filePath + fileName + ".java";
+
+        Files.walk(Paths.get(filePath)).forEach(path -> {
+            if (Files.isRegularFile(path) && path.toString().endsWith(".class")) {
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("Deleted: " + path);
+            }
+        });
+
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+
+        compiler.run(null, null, null, javaFilePath);
+
+        URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{new File(javaFilePath).toURI().toURL()});
+
+        String className = new File(javaFilePath).getName().replace(".java", "");
+
+        Class<?> loadedClass = classLoader.loadClass("command.scenario.test." + className);
+
+        Object instance = loadedClass.getDeclaredConstructor().newInstance();
+
+        Method method = loadedClass.getDeclaredMethod("isValidCommandImpl", ArrayList.class);
+        method.invoke(instance, commandOptionList);
+
+        method = loadedClass.getDeclaredMethod("runImpl", SSD.class, ArrayList.class);
+        method.invoke(instance, ssd, commandOptionList);
+
     }
-
-    public void read(int index) {
-        String allScenarioString = readFile();
-        if (isEmptyScenario(allScenarioString)) {
-            System.out.println("테스트 시나리오 없음");
-            return;
-        }
-        String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
-        if (isInvalidReadIndex(index, scenarioList)) {
-            System.out.println();
-            return;
-        }
-        System.out.println("[" + index + "] " + scenarioList[index]);
-    }
-
-    private static boolean isEmptyScenario(String allScenarioString) {
-        return allScenarioString == null || allScenarioString.isEmpty();
-    }
-
-    private static boolean isInvalidReadIndex(int index, String[] scenarioList) {
-        return scenarioList.length <= index;
-    }
-
-    private static boolean isInvalidWriteIndex(int index, String[] scenarioList) {
-        return scenarioList.length < index;
-    }
-
-    public void append(String command) {
-        String allScenarioString = readFile();
-        if (isEmptyScenario(allScenarioString)) {
-            allScenarioString = command;
-        } else {
-            allScenarioString = allScenarioString + LINE_SEPARATOR + command;
-        }
-        fileHandler.writeScenario(allScenarioString);
-    }
-
-    public void insert(int index, String command) {
-        String[] scenarioList = getScenarioList();
-        if (isInvalidWriteIndex(index, scenarioList)) {
-            return;
-        }
-        List<String> list = new ArrayList<>(Arrays.asList(scenarioList));
-        list.add(index, command);
-        writeScenario(list);
-    }
-
-    private String[] getScenarioList() {
-        String allScenarioString = readFile();
-        return allScenarioString.split(LINE_SEPARATOR);
-    }
-
-    public void deleteAll() {
-        fileHandler.writeScenario("");
-    }
-
-    public void delete(int index) {
-        String[] scenarioList = getScenarioList();
-        if (isInvalidReadIndex(index, scenarioList)) {
-            return;
-        }
-        List<String> list = new ArrayList<>(Arrays.asList(scenarioList));
-        list.remove(index);
-        writeScenario(list);
-    }
-
-    public void update(int index, String command) {
-        String[] scenarioList = getScenarioList();
-        if (isInvalidReadIndex(index, scenarioList)) {
-            return;
-        }
-        List<String> list = new ArrayList<>(Arrays.asList(scenarioList));
-        list.set(index, command);
-        writeScenario(list);
-    }
-
-    private void writeScenario(List<String> list) {
-        String[] scenarioList = list.toArray(new String[0]);
-        fileHandler.writeScenario(String.join(LINE_SEPARATOR, scenarioList));
-    }
-
 }

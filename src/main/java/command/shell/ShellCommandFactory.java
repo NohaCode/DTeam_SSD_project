@@ -1,10 +1,12 @@
 package command.shell;
 
+import command.scenario.Scenario;
+
 import java.util.HashMap;
 
 public class ShellCommandFactory {
     static HashMap<String, ShellCommand> commandMap = new HashMap<>();
-
+    private static Scenario scenario = new Scenario();
     public static ShellCommand of(String command) {
         if (!commandMap.containsKey(command)) {
             if (command.equals("read")) {
@@ -21,30 +23,15 @@ public class ShellCommandFactory {
                 commandMap.put(command, new ShellFullReadCommand());
             } else if (command.equals("erase")) {
                 commandMap.put(command, new ShellEraseCommand());
-            } else if (command.equals("testapp1")) {
-                commandMap.put(command, new ShellTestApp1Command());
-            } else if (command.equals("testapp2")) {
-                commandMap.put(command, new ShellTestApp2Command());
             } else if (command.equals("erase_range")) {
                 commandMap.put(command, new ShellEraseRangeCommand());
             } else if (command.equals("run_list.lst")) {
+                Scenario.findScenario();
                 commandMap.put(command, new ShellRunnerCommand());
-            } else if (command.equals("scenario_append")) {
-
-            } else if (command.equals("scenario_insert")) {
-
-            } else if (command.equals("scenario_read")) {
-
-            } else if (command.equals("scenario_read_all")) {
-
-            } else if (command.equals("scenario_read_range")) {
-
-            } else if (command.equals("scenario_update")) {
-
-            } else if (command.equals("scenario_delete")) {
-
-            } else if (command.equals("scenario_delete_all")) {
-
+            } else {
+                if(Scenario.hasScenario(command)) {
+                    commandMap.put(command, new ShellTestAppCommand());
+                }
             }
         }
         return commandMap.get(command);
