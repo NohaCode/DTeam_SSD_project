@@ -13,12 +13,12 @@ public abstract class ShellCommand {
     abstract void runImpl(SSD ssd, ArrayList<String> commandOptionList);
 
     public boolean isValidCommand(ArrayList<String> commandOptionList){
-        logger.log("validation 시작", new Object() {}.getClass());
+        logger.log("ShellCommand - Validation Start", this.getClass());
         return isValidCommandImpl(commandOptionList);
     }
 
     public void run(SSD ssd, ArrayList<String> commandOptionList){
-        logger.log("run 시작", new Object() {}.getClass());
+        logger.log("ShellCommand - Run Start", this.getClass());
         runImpl(ssd, commandOptionList);
     }
 
