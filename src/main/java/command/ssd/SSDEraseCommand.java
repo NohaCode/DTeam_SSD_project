@@ -1,6 +1,5 @@
 package command.ssd;
 
-import util.FileHandler;
 import util.CommandValidation;
 
 import java.util.ArrayList;
@@ -68,8 +67,7 @@ public class SSDEraseCommand extends SSDCommand {
         int bufferedStartIndex = Integer.parseInt(bufferedCommandOptionList.get(1));
         int bufferedEndIndex = bufferedStartIndex + Integer.parseInt(bufferedCommandOptionList.get(2));
 
-        if (bufferedEndIndex == startIndex
-        ) {
+        if (bufferedEndIndex == startIndex) {
             commandBuffer.remove(commandBuffer.size() - 1);
             bufferedCommandOptionList.set(1, bufferedCommandOptionList.get(1));
             bufferedCommandOptionList.set(2, String.valueOf(Integer.parseInt(commandOptionList.get(2)) + Integer.parseInt(bufferedCommandOptionList.get(2))));

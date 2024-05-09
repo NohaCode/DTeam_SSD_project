@@ -1,6 +1,8 @@
 package command.shell;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import app.SSD;
 import exception.SSDException;
 import util.Logger;
@@ -13,12 +15,12 @@ public abstract class ShellCommand {
     protected abstract void runImpl(SSD ssd, ArrayList<String> commandOptionList);
 
     public boolean isValidCommand(ArrayList<String> commandOptionList){
-        logger.log("validation 시작", new Object() {}.getClass());
+        logger.log(makeCommandMessage(commandOptionList), this.getClass());
         return isValidCommandImpl(commandOptionList);
     }
 
     public void run(SSD ssd, ArrayList<String> commandOptionList){
-        logger.log("run 시작", new Object() {}.getClass());
+        logger.log(makeCommandMessage(commandOptionList), this.getClass());
         runImpl(ssd, commandOptionList);
     }
 
@@ -28,5 +30,9 @@ public abstract class ShellCommand {
         }
 
         run(ssd, commandOptionList);
+    }
+
+    private String makeCommandMessage(ArrayList<String> commandOptionList){
+        return commandOptionList.stream().collect(Collectors.joining(" "));
     }
 }

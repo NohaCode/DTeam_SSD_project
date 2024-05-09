@@ -1,3 +1,4 @@
+import command.shell.ShellCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.Logger;
@@ -72,5 +73,10 @@ class LoggerTest {
     @Test
     void renameFileLogToZip(){
         logger.renameFile("until_240508_16h_58m_51s.log", "11122.zip");
+    }
+
+    @Test
+    void makeLogMessage(){
+        System.out.println(logger.makeLogMessage("sdfs", "Class Name", "Method Name"));
     }
 }
