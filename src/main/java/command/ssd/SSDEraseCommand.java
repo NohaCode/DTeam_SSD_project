@@ -19,28 +19,16 @@ public class SSDEraseCommand implements SSDCommand{
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidLengthParameter(commandOptionList)) {
-            return false;
-        }
+        if(!isValidLengthParameter(commandOptionList)) {return false;}
 
-        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {
-            return false;
-        }
-
-        if(!isValidIntegerParameter(commandOptionList, SIZE_INDEX)){
-            return false;
-        }
+        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
+        if(!isValidIntegerParameter(commandOptionList, SIZE_INDEX)){return false;}
 
         int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
         int size = Integer.parseInt(commandOptionList.get(SIZE_INDEX));
 
-        if (!isValidIndex(pos)) {
-            return false;
-        }
-
-        if (!isValidSize(size)) {
-            return false;
-        }
+        if(!isValidIndex(pos)) {return false;}
+        if(!isValidSize(size)) {return false;}
 
         return true;
     }

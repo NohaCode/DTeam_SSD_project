@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class ShellEraseRangeCommand implements ShellCommand{
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if(!isValidCommandOptionListSize(commandOptionList)){
-            return false;
-        }
-        if(!isValidIndex(commandOptionList)){
-            return false;
-        }
+        if(!isValidCommandOptionListSize(commandOptionList)) {return false;}
+
+        if(!isValidIntegerParameter(commandOptionList, 1)) {return false;}
+        if(!isValidIntegerParameter(commandOptionList, 2)) {return false;}
+
+        if(!isValidIndex(commandOptionList)) {return false;}
 
         return true;
     }
@@ -32,6 +32,15 @@ public class ShellEraseRangeCommand implements ShellCommand{
 
     private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
         return commandOptionList.size() == 3;
+    }
+
+    private boolean isValidIntegerParameter(ArrayList<String> commandOptionList, int index){
+        try{
+            Integer.parseInt(commandOptionList.get(index));
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
     }
 
     private boolean isValidIndex(ArrayList<String> commandOptionList) {
