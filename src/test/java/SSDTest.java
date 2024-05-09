@@ -47,10 +47,12 @@ class SSDTest {
     public void write_SSD_잘못된_요청_실패() {
         assertThatThrownBy(() -> {
             ssd.run(SSD.COMMAND_SEPARATOR);
+            ssd.run("F");
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(SSD.COMMAND_SEPARATOR + CORRECT_WRITE_VALUE + SSD.COMMAND_SEPARATOR);
+            ssd.run("F");
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
     }
@@ -142,7 +144,8 @@ class SSDTest {
     public void read_SSD_Write한주소를Read() {
         ssd.run("W 1 0xFFFFFFFF");
 
-        String data = fileHandler.readNAND(1);
+        ssd.run("R 1");
+        String data = fileHandler.readRESULT(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
@@ -187,6 +190,7 @@ class SSDTest {
     @Test
     public void read_SSD_같은주소여러번Read() {
         ssd.run("W 1 0xFFFFFFFF");
+        ssd.run("F");
 
         String data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
@@ -204,13 +208,16 @@ class SSDTest {
         ssd.run("W 2 0xFFFFFFFB");
         ssd.run("W 3 0xFFFFFFFF");
 
-        String data = fileHandler.readNAND(1);
+        ssd.run("R 1");
+        String data = fileHandler.readRESULT(1);
         assertThat(data).isEqualTo("0xFFFFFFFA");
 
-        data = fileHandler.readNAND(2);
+        ssd.run("R 2");
+        data = fileHandler.readRESULT(2);
         assertThat(data).isEqualTo("0xFFFFFFFB");
 
-        data = fileHandler.readNAND(3);
+        ssd.run("R 3");
+        data = fileHandler.readRESULT(3);
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
@@ -223,11 +230,13 @@ class SSDTest {
     @Test
     void erase_SSD_Write한값_1개_지우기_성공() {
         ssd.run("W 1 0xFFFFFFFF");
+        ssd.run("F");
 
         String data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
 
         ssd.run("E 1 1");
+        ssd.run("F");
 
         data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo(DEFAULT_VALUE);
@@ -237,12 +246,14 @@ class SSDTest {
     void erase_SSD_Write한값들_10개_지우기_성공() {
         String data;
         for(int i = 0; i < 10; i++){
-            ssd.run("W " + String.valueOf(i) + " 0xFFFFFFFF");
+            ssd.run("W " + i + " 0xFFFFFFFF");
+            ssd.run("F");
             data = fileHandler.readNAND(i);
             assertThat(data).isEqualTo("0xFFFFFFFF");
         }
 
         ssd.run("E 0 10");
+        ssd.run("F");
 
         for(int i = 0; i < 10; i++){
             data = fileHandler.readNAND(i);
@@ -255,11 +266,13 @@ class SSDTest {
         String data;
         for(int i = 90; i < 100; i++){
             ssd.run("W " + String.valueOf(i) + " 0xFFFFFFFF");
+            ssd.run("F");
             data = fileHandler.readNAND(i);
             assertThat(data).isEqualTo("0xFFFFFFFF");
         }
 
         ssd.run("E 95 10");
+        ssd.run("F");
 
         for(int i = 90; i < 95; i++){
             data = fileHandler.readNAND(i);

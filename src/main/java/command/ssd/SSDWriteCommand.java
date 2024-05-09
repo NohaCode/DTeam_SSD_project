@@ -4,7 +4,7 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 
-public class SSDWriteCommand implements SSDCommand {
+public class SSDWriteCommand extends SSDCommand {
     private static final Integer POS_INDEX = 1;
     private static final Integer VALUE_INDEX = 2;
 
@@ -35,6 +35,26 @@ public class SSDWriteCommand implements SSDCommand {
 
         fileHandler.makeFile();
         fileHandler.writeNAND(pos, value);
+    }
+
+    @Override
+    boolean flushAndCheckAbleBuffering(ArrayList<String> commandOptionList) {
+        String commandIndex = commandOptionList.get(1);
+
+//        성능최적화 예시1. Ignore Write
+        ignoreWrite(commandIndex);
+        return true;
+    }
+
+    private void ignoreWrite(String commandIndex) {
+        for (int i = commandBuffer.size() - 1; i >= 0; i--) {
+            ArrayList<String> bufferedCommandOptionList = commandBuffer.get(i);
+            String bufferedCommandStr = bufferedCommandOptionList.get(0);
+            String bufferedCommandIndex = bufferedCommandOptionList.get(1);
+            if ("W".equals(bufferedCommandStr) && commandIndex.equals(bufferedCommandIndex)) {
+                commandBuffer.remove(i);
+            }
+        }
     }
 
     private boolean isInvalidLengthParameter(ArrayList<String> commandOptionList) {

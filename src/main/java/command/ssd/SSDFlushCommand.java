@@ -3,12 +3,13 @@ package command.ssd;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SSDFlushCommand implements SSDCommand{
+public class SSDFlushCommand extends SSDCommand{
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
         if(!isValidListSize(commandOptionList))
             return false;
+
         return true;
     }
 
@@ -18,12 +19,14 @@ public class SSDFlushCommand implements SSDCommand{
             String bufferedCommandStr = bufferedCommandOptionList.get(0);
             SSDCommand bufferCommand = SSDCommandFactory.of(bufferedCommandStr);
 
-            if(!bufferCommand.isValidCommand(bufferedCommandOptionList))
-                continue;
-
             bufferCommand.run(bufferedCommandOptionList);
         }
         commandBuffer.clear();
+    }
+
+    @Override
+    boolean flushAndCheckAbleBuffering(ArrayList<String> commandOptionList) {
+        return false;
     }
 
     private boolean isValidListSize(ArrayList<String> commandOptionList) {
