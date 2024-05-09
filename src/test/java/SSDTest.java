@@ -116,13 +116,13 @@ class SSDTest {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_START));
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
-        /*assertThatThrownBy(() -> {
+        assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_ALPHA));
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(getWriteCommandArgument(CORRECT_WRITE_INDEX, INCORRECT_WRITE_VALUE_LENGTH));
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);*/
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
