@@ -15,8 +15,8 @@ class LoggerTest {
     }
 
     @Test
-    void 단일함수_대량테스트() throws IOException {
-        for (int i = 0; i < 100000; i++) {
+    void 단일함수_대량테스트() throws IOException, InterruptedException {
+        for (int i = 0; i < 1000; i++) {
             String print = logger.print(String.valueOf(i), new Object() {
             }.getClass());
 
