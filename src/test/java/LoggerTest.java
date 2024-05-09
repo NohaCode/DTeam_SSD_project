@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 class LoggerTest {
 
-    Logger logger = new Logger();
+    Logger logger = Logger.get();
 
     @BeforeEach
     void setUp() throws IOException {

@@ -4,9 +4,9 @@ import app.SSD;
 
 import java.util.ArrayList;
 
-public class ShellFullWriteCommand implements ShellCommand{
+public class ShellFullWriteCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if(!isValidCommandOptionListSize(commandOptionList))
             return false;
         if(!isValidHexData(commandOptionList))
@@ -16,7 +16,7 @@ public class ShellFullWriteCommand implements ShellCommand{
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         for (int addreess = 0; addreess < 100; addreess++) {
             ssd.run("W " + addreess + " " + commandOptionList.get(1));
         }
