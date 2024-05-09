@@ -5,6 +5,8 @@ import command.shell.ShellCommandFactory;
 
 import java.util.*;
 
+import static app.SSD.INVALID_COMMAND_MESSAGE;
+
 
 public class Shell {
     private SSD ssd;
@@ -28,23 +30,23 @@ public class Shell {
         String commandLine;
         while (true) {
             commandLine = scanner.nextLine();
-            try {
-                shell.run(commandLine);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            shell.run(commandLine);
         }
     }
 
-    public void run(String commandLine) throws Exception {
-        if (isValidCommandLine(commandLine))
-            return;
+    public void run(String commandLine) {
+        try {
+            if (isValidCommandLine(commandLine))
+                return;
 
-        ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
-        String commandStr = commandOptionList.get(0);
+            ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
+            String commandStr = commandOptionList.get(0);
 
-        ShellCommand command = ShellCommandFactory.of(commandStr);
-        command.process(ssd, commandOptionList);
+            ShellCommand command = ShellCommandFactory.of(commandStr);
+            command.process(ssd, commandOptionList);
+        } catch (Exception e) {
+            System.out.println(INVALID_COMMAND_MESSAGE);
+        }
     }
 
     private boolean isValidCommandLine(String commandLine) {
