@@ -26,8 +26,6 @@ public class ShellCommandFactory {
                 commandMap.put(command, new ShellEraseCommand());
             } else if (command.equals("erase_range")) {
                 commandMap.put(command, new ShellEraseRangeCommand());
-            } else if (command.equals("testapp1")) {
-                commandMap.put(command, new ShellTestApp1Command());
             } else if (command.equals("run_list.lst")) {
                 commandMap.put(command, new ShellRunnerCommand());
             } else {
