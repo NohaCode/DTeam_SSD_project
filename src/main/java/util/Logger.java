@@ -59,9 +59,7 @@ public class Logger {
         String logMessage = "[" +
                 getNowTime(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")) +
                 "] " +
-                className+
-                "." +
-                addSpace(methodName) +
+                addSpace(className+ "." + methodName) +
                 ": " +
                 message;
 
@@ -209,6 +207,6 @@ public class Logger {
     }
 
     public String addSpace(String methodName) {
-        return String.format("%-" + 30 + "s", methodName);
+        return String.format("%-" + 100 + "s", methodName);
     }
 }
