@@ -44,21 +44,24 @@ public class Logger {
         return testLogger;
     }
 
-    public void log(String message, Class<? extends Object> clazz)  {
-        String logMessage = makeLogMessage(message, clazz);
+    public void log(String message, Class<?> clazz)  {
+        String className = clazz.getName();
+        StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        String methodName = stackTrace.length >= 2 ? stackTrace[1].getMethodName() + "()" : "";
+        String logMessage = makeLogMessage(message, className, methodName);
         if (mode.equals(PRODUCTION)) {
             print(logMessage, clazz);
         }
         manageLogFile(logMessage);
     }
 
-    public String makeLogMessage(String message, Class<? extends Object> clazz) {
+    public String makeLogMessage(String message, String className, String methodName) {
         String logMessage = "[" +
                 getNowTime(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")) +
                 "] " +
-                getClassName(clazz)+
+                className+
                 "." +
-                addSpace(getMethodName(clazz)) +
+                addSpace(methodName) +
                 ": " +
                 message;
 
@@ -197,8 +200,7 @@ public class Logger {
     }
 
     public String getClassName(Class<? extends Object> clazz) {
-        String className = clazz.getEnclosingClass().getName(); //new Object() {}.getClass();
-        return className;
+        return clazz.getName();
     }
 
     public String getNowTime(DateTimeFormatter formatter) {
