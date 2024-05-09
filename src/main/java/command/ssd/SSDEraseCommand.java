@@ -11,6 +11,7 @@ public class SSDEraseCommand implements SSDCommand{
 
     private static final Integer POS_INDEX = 1;
     private static final Integer SIZE_INDEX = 2;
+    private static final Integer COMMAND_OPTION_LIST_LENGTH = 3;
 
     FileHandler fileHandler;
 
@@ -20,7 +21,7 @@ public class SSDEraseCommand implements SSDCommand{
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if(!CommandValidation.isValidLengthParameter(commandOptionList, 3)) {return false;}
+        if(!CommandValidation.isValidLengthParameter(commandOptionList, COMMAND_OPTION_LIST_LENGTH)) {return false;}
 
         if(!CommandValidation.isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
         if(!CommandValidation.isValidIntegerParameter(commandOptionList, SIZE_INDEX)){return false;}

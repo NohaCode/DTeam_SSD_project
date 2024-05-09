@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 public class SSDReadCommand implements SSDCommand {
     private static final Integer POS_INDEX = 1;
+    private static final Integer COMMAND_OPTION_LIST_LENGTH = 2;
+
     FileHandler fileHandler;
 
     public SSDReadCommand(){
@@ -15,7 +17,7 @@ public class SSDReadCommand implements SSDCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if(!CommandValidation.isValidLengthParameter(commandOptionList, 2)) {return false;}
+        if(!CommandValidation.isValidLengthParameter(commandOptionList, COMMAND_OPTION_LIST_LENGTH)) {return false;}
 
         if(!CommandValidation.isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
 
