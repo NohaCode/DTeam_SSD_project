@@ -57,7 +57,7 @@ public class FileHandler {
             try {
                 if (br != null) br.close();
             } catch (IOException ex) {
-                return DEFAULT_VALUE;
+                return "";
             }
             return sb.toString();
         }
@@ -147,5 +147,13 @@ public class FileHandler {
             return (String) jsonObject.get(jsonIndex);
         }
         return DEFAULT_VALUE;
+    }
+
+    public String readScenario () {
+        return fileRead(RUN_LIST_FILE_PATH);
+    }
+
+    public void writeScenario (String command) {
+        fileWrite(RUN_LIST_FILE_PATH, command);
     }
 }
