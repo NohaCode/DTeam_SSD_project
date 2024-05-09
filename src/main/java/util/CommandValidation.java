@@ -1,5 +1,8 @@
 package util;
 
+import command.shell.ShellCommand;
+import command.shell.ShellCommandFactory;
+
 import java.util.ArrayList;
 
 public class CommandValidation {
@@ -40,5 +43,18 @@ public class CommandValidation {
         } catch (NumberFormatException e){
             return false;
         }
+    }
+
+    public static boolean isInvalidScenario(ArrayList<String> commandOptionList, int commandStartIndex) {
+        ArrayList<String> newCommandOptionList = new ArrayList<>();
+        for (int i = commandStartIndex; i < commandOptionList.size(); i++) {
+            newCommandOptionList.add(commandOptionList.get(i));
+        }
+        String command = commandOptionList.get(1);
+        ShellCommand newCommand = ShellCommandFactory.of(command);
+        if (newCommand == null || !newCommand.isValidCommand(newCommandOptionList)) {
+            return true;
+        }
+        return false;
     }
 }

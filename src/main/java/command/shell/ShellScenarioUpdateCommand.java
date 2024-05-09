@@ -13,6 +13,9 @@ public class ShellScenarioUpdateCommand implements ShellCommand {
         if (commandOptionList.size() < 3) {
             return false;
         }
+        if (isInvalidScenario(commandOptionList, 2)) {
+            return false;
+        }
         return true;
     }
 

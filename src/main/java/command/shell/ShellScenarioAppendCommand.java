@@ -1,18 +1,20 @@
 package command.shell;
 
 import app.SSD;
-import util.CommandValidation;
 import util.FileHandler;
 
 import java.util.ArrayList;
 
-import static util.CommandValidation.*;
+import static util.CommandValidation.isInvalidScenario;
 
 public class ShellScenarioAppendCommand implements ShellCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
         if (commandOptionList.size() < 2) {
+            return false;
+        }
+        if (isInvalidScenario(commandOptionList, 1)) {
             return false;
         }
         return true;
