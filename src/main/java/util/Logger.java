@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 
+import static java.lang.Thread.sleep;
+
 public class Logger {
     FileHandler fileHandler;
 
@@ -33,15 +35,17 @@ public class Logger {
         return logLine;
     }
 
-    public void manageLogFile(String logLine) throws IOException {
+    public void manageLogFile(String logLine) throws IOException, InterruptedException {
         //파일 체크 없으면  새로 생성
         makeLatestFileIfNotPresent();
 
         //로그 라인추가
         addLogLine(logLine);
 
+        sleep(150);
+
         // 파일 사이즈 체크 &&  10KB 넘어가면 이름 변경
-        if(getFileKBSize() > 10){
+        if(getFileKBSize() >= 10){
             renameFile(FileHandler.LOG_FILE, getNowTimeFileName()); //latest.log -> until_xxx.log
         }
 
