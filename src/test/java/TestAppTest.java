@@ -31,6 +31,7 @@ class TestAppTest {
             arrayList = new ArrayList<>();
         }
         arrayList.clear();
+        fileHandler.initFile();
     }
 
     @Test

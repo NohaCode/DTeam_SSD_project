@@ -33,6 +33,7 @@ class SSDTest {
     @BeforeEach
     void setUp() {
         fileHandler = FileHandler.get();
+        fileHandler.initFile();
     }
 
     private static String getWriteCommandArgument(int index, String value) {
