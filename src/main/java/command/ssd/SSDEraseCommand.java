@@ -50,6 +50,9 @@ public class SSDEraseCommand extends SSDCommand {
     }
 
     private boolean mergeErase() {
+        if(commandBuffer.size() <= 1)
+            return false;
+
         ArrayList<String> commandOptionList = commandBuffer.get(commandBuffer.size() - 1);
         commandBuffer.remove(commandBuffer.size() - 1);
 
