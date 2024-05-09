@@ -34,10 +34,10 @@ public class Shell {
         }
     }
 
-    public void run(String commandLine) {
+    public String run(String commandLine) {
         try {
             if (isValidCommandLine(commandLine))
-                return;
+                return commandLine;
 
             ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
             String commandStr = commandOptionList.get(0);
@@ -46,7 +46,12 @@ public class Shell {
             command.process(ssd, commandOptionList);
         } catch (Exception e) {
             System.out.println(INVALID_COMMAND_MESSAGE);
+            //throw new RuntimeException();
+            //throw new SSDException(INVALID_COMMAND_MESSAGE);
+            return INVALID_COMMAND_MESSAGE;
+
         }
+        return commandLine;
     }
 
     private boolean isValidCommandLine(String commandLine) {

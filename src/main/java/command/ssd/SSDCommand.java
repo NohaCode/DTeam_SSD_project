@@ -11,13 +11,18 @@ public abstract class SSDCommand {
     FileHandler fileHandler = FileHandler.get();
     ArrayList<ArrayList<String>> commandBuffer = SSDCommandBuffer.get();
 
-    abstract boolean isValidCommand(ArrayList<String> commandOptionList);
+    boolean isValidCommand(ArrayList<String> commandOptionList) {
+        return false;
+    }
 
-    abstract void run(ArrayList<String> commandOptionList);
+    void run(ArrayList<String> commandOptionList) {
+    }
 
-    abstract boolean flushAndCheckAbleBuffering(ArrayList<String> commandOptionList);
+    boolean flushAndCheckAbleBuffering(ArrayList<String> commandOptionList) {
+        return false;
+    }
 
-    public void process(ArrayList<String> commandOptionList) {
+    public void process(ArrayList<String> commandOptionList)  {
         if (!isValidCommand(commandOptionList)) {
             throw new SSDException(INVALID_COMMAND_MESSAGE);
         }

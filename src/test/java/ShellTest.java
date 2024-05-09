@@ -12,9 +12,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class ShellTest {
@@ -97,27 +100,21 @@ class ShellTest {
 
     @Test
     public void write_Shell_비정상16진수_0X아님() {
-        assertThatThrownBy(() -> {
-            String shellCommandLine = "write " + CORRECT_WRITE_INDEX + " " + INCORRECT_WRITE_VALUE_START;
-            shell.run(shellCommandLine);
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+        String shellCommandLine = "write " + CORRECT_WRITE_INDEX + " " + INCORRECT_WRITE_VALUE_START;
+        assertThat(shell.run(shellCommandLine)).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
     public void write_Shell_비정상16진수_잘못된알파벳() {
-        assertThatThrownBy(() -> {
-            String shellCommandLine = "write " + CORRECT_WRITE_INDEX + " " + INCORRECT_WRITE_VALUE_ALPHA;
-            shell.run(shellCommandLine);
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+        String shellCommandLine = "write " + CORRECT_WRITE_INDEX + " " + INCORRECT_WRITE_VALUE_ALPHA;
+        assertThat(shell.run(shellCommandLine)).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
 
     }
 
     @Test
     public void write_Shell_비정상16진수_길이9() throws Exception {
-        assertThatThrownBy(() -> {
-            String shellCommandLine = "write " + String.valueOf(CORRECT_WRITE_INDEX) + " " + INCORRECT_WRITE_VALUE_LENGTH;
-            shell.run(shellCommandLine);
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+        String shellCommandLine = "write " + CORRECT_WRITE_INDEX + " " + INCORRECT_WRITE_VALUE_LENGTH;
+        assertThat(shell.run(shellCommandLine)).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
@@ -296,9 +293,7 @@ class ShellTest {
     @Test
     public void erase_Shell_비정상케이스_사이즈_0() throws Exception {
         String shellCommandLine = "erase " + String.valueOf(ERASE_INDEX_ONE) + " " + INCORRECT_ERASE_SIZE_ZERO;
-        assertThatThrownBy(() -> {
-            shell.run(shellCommandLine);
-        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+        assertThat(shell.run(shellCommandLine)).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
     }
 
     @Test
