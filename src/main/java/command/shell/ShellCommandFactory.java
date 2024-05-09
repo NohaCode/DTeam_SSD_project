@@ -30,21 +30,21 @@ public class ShellCommandFactory {
             } else if (command.equals("run_list.lst")) {
                 commandMap.put(command, new ShellRunnerCommand());
             } else if (command.equals("scenario_append")) {
-
+                commandMap.put(command, new ShellScenarioAppendCommand());
             } else if (command.equals("scenario_insert")) {
-
+                commandMap.put(command, new ShellScenarioInsertCommand());
             } else if (command.equals("scenario_read")) {
-
+                commandMap.put(command, new ShellScenarioReadCommand());
             } else if (command.equals("scenario_read_all")) {
-
+                commandMap.put(command, new ShellScenarioReadAllCommand());
             } else if (command.equals("scenario_read_range")) {
-
+                commandMap.put(command, new ShellScenarioReadCommand());
             } else if (command.equals("scenario_update")) {
-
+                commandMap.put(command, new ShellScenarioUpdateCommand());
             } else if (command.equals("scenario_delete")) {
-
+                commandMap.put(command, new ShellScenarioDeleteCommand());
             } else if (command.equals("scenario_delete_all")) {
-
+                commandMap.put(command, new ShellScenarioDeleteAllCommand());
             }
         }
         return commandMap.get(command);
