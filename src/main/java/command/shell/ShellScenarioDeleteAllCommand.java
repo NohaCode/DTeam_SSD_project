@@ -5,17 +5,16 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 
+import static util.CommandValidation.*;
+
 public class ShellScenarioDeleteAllCommand implements ShellCommand {
+
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidCommandOptionListSize(commandOptionList)) {
+        if (!isValidLengthParameter(commandOptionList, 1)) {
             return false;
         }
         return true;
-    }
-
-    private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() != 1;
     }
 
     @Override

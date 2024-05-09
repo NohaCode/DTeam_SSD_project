@@ -4,18 +4,14 @@ import app.SSD;
 import util.FileHandler;
 
 import java.util.ArrayList;
-
+import static util.CommandValidation.*;
 public class ShellScenarioReadCommand implements ShellCommand {
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidCommandOptionListSize(commandOptionList)) {
+        if (!isValidLengthParameter(commandOptionList, 2)) {
             return false;
         }
         return true;
-    }
-
-    private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() != 2;
     }
 
     @Override

@@ -15,6 +15,7 @@ public class Scenario {
         fileHandler = FileHandler.get();
     }
 
+    @Deprecated
     public void readAll() {
         String allScenarioString = fileHandler.readScenario().trim();;
         String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
@@ -23,20 +24,21 @@ public class Scenario {
         }
     }
 
-    public void readRange(int start, int end) {
-        String allScenarioString = fileHandler.readScenario().trim();;
-        String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
-        int maxLength = scenarioList.length;
-        if (start > end) {
-            return;
-        }
-        int newStartIndex = Math.min(start, maxLength);
-        int newEndIndex = Math.min(end, maxLength);
-        for (; newStartIndex < newEndIndex ; newStartIndex++) {
-            System.out.println("[" + newStartIndex+ "] " + scenarioList[newStartIndex]);
-        }
-    }
+//    public void readRange(int start, int end) {
+//        String allScenarioString = fileHandler.readScenario().trim();;
+//        String[] scenarioList = allScenarioString.split(LINE_SEPARATOR);
+//        int maxLength = scenarioList.length;
+//        if (start > end) {
+//            return;
+//        }
+//        int newStartIndex = Math.min(start, maxLength);
+//        int newEndIndex = Math.min(end, maxLength);
+//        for (; newStartIndex < newEndIndex ; newStartIndex++) {
+//            System.out.println("[" + newStartIndex+ "] " + scenarioList[newStartIndex]);
+//        }
+//    }
 
+    @Deprecated
     public void read(int index) {
         String allScenarioString = fileHandler.readScenario().trim();;
         if (isEmptyScenario(allScenarioString)) {
@@ -63,6 +65,7 @@ public class Scenario {
         return scenarioList.length < index;
     }
 
+    @Deprecated
     public void append(String command) {
         String allScenarioString = fileHandler.readScenario().trim();;
         if (isEmptyScenario(allScenarioString)) {
@@ -73,6 +76,7 @@ public class Scenario {
         fileHandler.writeScenario(allScenarioString);
     }
 
+    @Deprecated
     public void insert(int index, String command) {
         String[] scenarioList = getScenarioList();
         if (isInvalidWriteIndex(index, scenarioList)) {
@@ -88,10 +92,12 @@ public class Scenario {
         return allScenarioString.split(LINE_SEPARATOR);
     }
 
+    @Deprecated
     public void deleteAll() {
         fileHandler.writeScenario("");
     }
 
+    @Deprecated
     public void delete(int index) {
         String[] scenarioList = getScenarioList();
         if (isInvalidReadIndex(index, scenarioList)) {
@@ -102,6 +108,7 @@ public class Scenario {
         writeScenario(list);
     }
 
+    @Deprecated
     public void update(int index, String command) {
         String[] scenarioList = getScenarioList();
         if (isInvalidReadIndex(index, scenarioList)) {

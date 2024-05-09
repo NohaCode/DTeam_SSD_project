@@ -6,18 +6,14 @@ import util.FileHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import static util.CommandValidation.*;
 public class ShellScenarioUpdateCommand implements ShellCommand {
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidCommandOptionListSize(commandOptionList)) {
+        if (!isValidLengthParameter(commandOptionList, 3)) {
             return false;
         }
         return true;
-    }
-
-    private boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() != 3;
     }
 
     @Override
