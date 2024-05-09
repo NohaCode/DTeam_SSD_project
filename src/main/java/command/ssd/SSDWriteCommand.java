@@ -1,5 +1,6 @@
 package command.ssd;
 
+import util.CommandValidation;
 import util.FileHandler;
 
 import java.util.ArrayList;
@@ -8,7 +9,6 @@ public class SSDWriteCommand implements SSDCommand {
     private static final Integer POS_INDEX = 1;
     private static final Integer VALUE_INDEX = 2;
 
-    public static final String CORRECT_VALUE_REGEX = "^0x[0-9A-F]{8}$";
 
     FileHandler fileHandler;
 
@@ -18,15 +18,13 @@ public class SSDWriteCommand implements SSDCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if(!isValidLengthParameter(commandOptionList)) {return false;}
+        if(!CommandValidation.isValidLengthParameter(commandOptionList, 3)) {return false;}
 
-        if(!isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
+        if(!CommandValidation.isValidIntegerParameter(commandOptionList, POS_INDEX)) {return false;}
 
-        int pos = Integer.parseInt(commandOptionList.get(POS_INDEX));
-        if(!isValidIndex(pos)) {return false;}
+        if(!CommandValidation.isValidIndex(commandOptionList, POS_INDEX)) {return false;}
 
-        String value = commandOptionList.get(VALUE_INDEX);
-        if(!isValidValue(value)) {return false;}
+        if(!CommandValidation.isValidValue(commandOptionList, VALUE_INDEX)) {return false;}
         return true;
     }
 
@@ -39,22 +37,4 @@ public class SSDWriteCommand implements SSDCommand {
         fileHandler.writeNAND(pos, value);
     }
 
-    private boolean isValidLengthParameter(ArrayList<String> commandOptionList) {
-        return commandOptionList.size() == 3;
-    }
-
-    private boolean isValidIntegerParameter(ArrayList<String> commandOptionList, int index){
-        try{
-            Integer.parseInt(commandOptionList.get(index));
-            return true;
-        } catch (NumberFormatException e){
-            return false;
-        }
-    }
-
-    private boolean isValidIndex(int index) { return index >= 0 && index <= 99; }
-
-    private boolean isValidValue(String value) {
-        return value != null && !value.isEmpty() && value.matches(CORRECT_VALUE_REGEX);
-    }
 }
