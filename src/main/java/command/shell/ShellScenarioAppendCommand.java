@@ -12,7 +12,7 @@ public class ShellScenarioAppendCommand implements ShellCommand {
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
-        if (!isValidLengthParameter(commandOptionList, 2)) {
+        if (commandOptionList.size() < 2) {
             return false;
         }
         return true;
@@ -20,12 +20,18 @@ public class ShellScenarioAppendCommand implements ShellCommand {
 
     @Override
     public void run(SSD ssd, ArrayList<String> commandOptionList) {
-        String command = commandOptionList.get(1);
+        StringBuilder command = new StringBuilder();
+        for (int i = 1; i < commandOptionList.size(); i++) {
+            if (i != 1) {
+                command.append(" ");
+            }
+            command.append(commandOptionList.get(i));
+        }
         FileHandler fileHandler = FileHandler.get();
         String allScenarioString = fileHandler.readScenario().trim();
 
         if (isEmptyScenario(allScenarioString)) {
-            allScenarioString = command;
+            allScenarioString = command.toString();
         } else {
             allScenarioString = allScenarioString + "\n" + command;
         }
