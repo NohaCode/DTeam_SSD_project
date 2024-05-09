@@ -44,11 +44,12 @@ public class Logger {
         return testLogger;
     }
 
-    public void log(String message, Class<? extends Object> clazz) {
+    public void log(String message, Class<? extends Object> clazz)  {
+        String logMessage = makeLogMessage(message, clazz);
         if (mode.equals(PRODUCTION)) {
-            print(message, clazz);
+            print(logMessage, clazz);
         }
-        makeLogMessage(message, clazz);
+        manageLogFile(logMessage);
     }
 
     public String makeLogMessage(String message, Class<? extends Object> clazz) {
@@ -58,28 +59,30 @@ public class Logger {
                 getClassName(clazz)+
                 "." +
                 addSpace(getMethodName(clazz)) +
-                "() : " +
+                ": " +
                 message;
 
         return logMessage;
     }
 
-    public String print(String message, Class<? extends Object> clazz) {
-        String logLine = makeLogMessage(message, clazz);
-
+    public String print(String logLine, Class<? extends Object> clazz) {
         System.out.println(logLine); //출력
 
         return logLine;
     }
 
-    public void manageLogFile(String logLine) throws IOException, InterruptedException {
+    public void manageLogFile(String logLine) {
         //파일 체크 없으면  새로 생성
         makeLatestFileIfNotPresent();
 
         //로그 라인추가
         addLogLine(logLine);
 
-        sleep(10);
+        try {
+            sleep(150);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         // 파일 사이즈 체크 &&  10KB 넘어가면 이름 변경
 
@@ -190,7 +193,7 @@ public class Logger {
 
     public String getMethodName(Class<? extends Object> clazz) {
         String methodName = clazz.getEnclosingMethod().getName(); //new Object() {}.getClass();
-        return methodName;
+        return methodName + "()";
     }
 
     public String getClassName(Class<? extends Object> clazz) {
