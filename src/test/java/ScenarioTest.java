@@ -36,6 +36,6 @@ public class ScenarioTest {
     @Test
     public void test1() throws Exception {
         Shell shell = new Shell();
-        shell.run("testapp1");
+        shell.run("TestApp3");
     }
 }
