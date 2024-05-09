@@ -5,15 +5,10 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 
-public class SSDReadCommand implements SSDCommand {
+public class SSDReadCommand extends SSDCommand {
     private static final Integer POS_INDEX = 1;
     private static final Integer COMMAND_OPTION_LIST_LENGTH = 2;
 
-    FileHandler fileHandler;
-
-    public SSDReadCommand(){
-        fileHandler = FileHandler.get();
-    }
 
     @Override
     public boolean isValidCommand(ArrayList<String> commandOptionList) {
@@ -34,4 +29,29 @@ public class SSDReadCommand implements SSDCommand {
         String data = fileHandler.readNAND(index);
         fileHandler.writeResult(index, data);
     }
+    @Override
+    boolean flushAndCheckAbleBuffering(ArrayList<String> commandOptionList) {
+        String commandStr = commandOptionList.get(0);
+        String commandIndex = commandOptionList.get(1);
+
+        for (int i = commandBuffer.size() - 1; i >= 0 ; i--) {
+            ArrayList<String> bufferedCommandOptionList = commandBuffer.get(i);
+            String bufferedCommandStr = bufferedCommandOptionList.get(0);
+            if(!bufferedCommandStr.equals("W"))
+                continue;
+
+            String bufferedCommandIndex = bufferedCommandOptionList.get(1);
+            String bufferedCommandData = bufferedCommandOptionList.get(2);
+
+            if (commandIndex.equals(bufferedCommandIndex)) {
+                SSDCommand bufferedCommand = SSDCommandFactory.of(bufferedCommandStr);
+                bufferedCommand.run(bufferedCommandOptionList);
+                commandBuffer.remove(i);
+                return false;
+            }
+        }
+
+        return false;
+    }
+
 }

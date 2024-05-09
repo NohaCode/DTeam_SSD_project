@@ -1,6 +1,7 @@
 package command.shell;
 
 import app.SSD;
+import util.FileHandler;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class ShellReadCommand implements ShellCommand {
     @Override
     public void run(SSD ssd, ArrayList<String> commandOptionList) {
         ssd.run("R " + commandOptionList.get(1));
+        System.out.println(FileHandler.get().readRESULT(Integer.parseInt(commandOptionList.get(1))));
     }
 
     public boolean isValidCommandOptionListSize(ArrayList<String> commandOptionList) {
