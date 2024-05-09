@@ -6,12 +6,12 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 
-public class ShellTestApp1Command implements ShellCommand {
+public class ShellTestApp1Command extends ShellCommand {
 
     private FileHandler fileHandler = FileHandler.get();
 
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if(!isValidCommandOptionListSize(commandOptionList)) {
             return false;
         }
@@ -19,7 +19,7 @@ public class ShellTestApp1Command implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         String writeValue = "0xABCDFFFF";
         String resultValue = "";
         for (int addreess = 0; addreess < 100; addreess++) {

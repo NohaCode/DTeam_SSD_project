@@ -16,19 +16,54 @@ import java.util.Optional;
 import static java.lang.Thread.sleep;
 
 public class Logger {
-    FileHandler fileHandler;
+    public static final String PRODUCTION = "PRODUCTION";
+    public static final String TEST = "TEST";
+    private static Logger productionLogger;
+    private static Logger testLogger;
 
-    public Logger() {
-        this.fileHandler = FileHandler.get();
+    private String mode = "PRODUCTION";
+
+    private Logger(String mode) {
+        this.mode = mode;
     }
 
-    public String print(String message, Class<? extends Object> clazz) throws IOException {
-        String logLine = "[" +
+    public static Logger get() {
+        if (productionLogger == null)
+            productionLogger = new Logger(PRODUCTION);
+        return productionLogger;
+    }
+
+    public static Logger get(String mode) {
+        if (mode.equals(PRODUCTION)) {
+            if (productionLogger == null)
+                productionLogger = new Logger(PRODUCTION);
+            return productionLogger;
+        }
+        if (testLogger == null)
+            testLogger = new Logger(TEST);
+        return testLogger;
+    }
+
+    public void log(String message, Class<? extends Object> clazz) {
+        if (mode.equals(PRODUCTION)) {
+            print(message, clazz);
+        }
+        makeLogMessage(message, clazz);
+    }
+
+    public String makeLogMessage(String message, Class<? extends Object> clazz) {
+        String logMessage = "[" +
                 getNowTime(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")) +
                 "] " +
                 addSpace(getMethodName(clazz)) +
                 " : " +
                 message;
+
+        return logMessage;
+    }
+
+    public String print(String message, Class<? extends Object> clazz) {
+        String logLine = makeLogMessage(message, clazz);
 
         System.out.println(logLine); //출력
 
@@ -45,12 +80,13 @@ public class Logger {
         sleep(150);
 
         // 파일 사이즈 체크 &&  10KB 넘어가면 이름 변경
+
         if(getFileKBSize() >= 10){
             renameFile(FileHandler.LOG_FILE, getNowTimeFileName()); //latest.log -> until_xxx.log
         }
 
         // 로그파일 개수 2개 이상이면 가장 오래된거 이름 변경
-        if(getFileCntExceptLatestFile() >= 2){
+        if (getFileCntExceptLatestFile() >= 2) {
             //압축
             String oldestFileName = getOldestLogFileName();
             renameFile(oldestFileName, convertLogToZip(oldestFileName)); //until_xx.log -> until_xx.zip
@@ -74,7 +110,7 @@ public class Logger {
     }
 
 
-    public void renameFile(String currentFileName, String newFileName){
+    public void renameFile(String currentFileName, String newFileName) {
         String currentFilePath = FileHandler.LOG_PATH + currentFileName;
 
         // 파일 객체 생성
@@ -83,7 +119,7 @@ public class Logger {
 
         try {
             currentFile.renameTo(newFile);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("이름 변경 실패");
         }
     }
@@ -98,8 +134,8 @@ public class Logger {
 
         Optional<File> oldestFile = Arrays.stream(files)
                 .filter(file -> !file.getName().equals("latest.log")
-                && file.getName().startsWith("until")
-                && file.getName().endsWith(".log"))
+                        && file.getName().startsWith("until")
+                        && file.getName().endsWith(".log"))
                 .min(Comparator.comparing(File::getName));
 
         return oldestFile.map(File::getName).orElse(null);
@@ -127,16 +163,17 @@ public class Logger {
         File file = new File(logFilePath);
 
         if (!file.exists()) {
-            try{
+            try {
                 file.createNewFile();
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println("파일 생성 실패");
             }
         }
     }
 
-    public long getFileKBSize()  {
-        String logFilePath = FileHandler.LOG_FILE_PATH;; // 파일 경로
+    public long getFileKBSize() {
+        String logFilePath = FileHandler.LOG_FILE_PATH;
+        ; // 파일 경로
         Path path = Paths.get(logFilePath);
 
         long sizeInBytes = 0; // 파일 크기 (바이트 단위)
@@ -151,15 +188,15 @@ public class Logger {
 
     public String getMethodName(Class<? extends Object> clazz) {
         String methodName = clazz.getEnclosingMethod().getName(); //new Object() {}.getClass();
-        return methodName+"()";
+        return methodName + "()";
     }
 
-    public String getNowTime(DateTimeFormatter formatter){
+    public String getNowTime(DateTimeFormatter formatter) {
         LocalDateTime now = LocalDateTime.now();
         return now.format(formatter);
     }
 
-    public String addSpace(String methodName){
+    public String addSpace(String methodName) {
         return String.format("%-" + 30 + "s", methodName);
     }
 }

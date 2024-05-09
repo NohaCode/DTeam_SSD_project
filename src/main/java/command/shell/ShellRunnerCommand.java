@@ -7,9 +7,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ShellRunnerCommand implements ShellCommand {
+public class ShellRunnerCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if(!isValidCommandSize(commandOptionList))
             return false;
 
@@ -21,7 +21,7 @@ public class ShellRunnerCommand implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         testRun(FileHandler.RUN_LIST_FILE_PATH);
     }
 

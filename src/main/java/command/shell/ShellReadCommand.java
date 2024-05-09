@@ -5,9 +5,9 @@ import util.FileHandler;
 
 import java.util.ArrayList;
 
-public class ShellReadCommand implements ShellCommand {
+public class ShellReadCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if(!isValidCommandOptionListSize(commandOptionList)) {return false;}
 
         if(!isValidIntegerParameter(commandOptionList, 1)) {return false;}
@@ -18,7 +18,7 @@ public class ShellReadCommand implements ShellCommand {
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         ssd.run("R " + commandOptionList.get(1));
         System.out.println(FileHandler.get().readRESULT(Integer.parseInt(commandOptionList.get(1))));
     }

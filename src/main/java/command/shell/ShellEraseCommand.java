@@ -3,9 +3,9 @@ package command.shell;
 import java.util.ArrayList;
 import app.SSD;
 
-public class ShellEraseCommand implements ShellCommand{
+public class ShellEraseCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if(!isValidCommandOptionListSize(commandOptionList)) {return false;}
 
         if(!isValidIntegerParameter(commandOptionList, 1)) {return false;}
@@ -17,7 +17,7 @@ public class ShellEraseCommand implements ShellCommand{
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         int start = Integer.parseInt(commandOptionList.get(1));
         int end = start + Integer.parseInt(commandOptionList.get(2));
 
