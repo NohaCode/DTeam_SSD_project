@@ -1,6 +1,7 @@
 import app.SSD;
 import command.ssd.SSDCommandBuffer;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -19,6 +20,11 @@ public class BufferTest {
     SSD ssd;
 
     ArrayList<ArrayList<String>> commandBuffer = SSDCommandBuffer.get();
+
+    @BeforeEach
+    void setUp() {
+        ssd.run("F");
+    }
 
     @Test
     void buffer_Command10개저장후Flush() {

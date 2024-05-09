@@ -2,6 +2,7 @@ package app;
 
 import command.shell.ShellCommand;
 import command.shell.ShellCommandFactory;
+import exception.ShellException;
 
 import java.util.*;
 
@@ -12,7 +13,7 @@ public class Shell {
     private SSD ssd;
     public static final String COMMAND_SEPARATOR = " ";
 
-    public Shell(){
+    public Shell() {
         this.ssd = new SSD();
     }
 
@@ -30,23 +31,23 @@ public class Shell {
         String commandLine;
         while (true) {
             commandLine = scanner.nextLine();
-            shell.run(commandLine);
+            try {
+                shell.run(commandLine);
+            } catch (Exception e) {
+                System.out.println(INVALID_COMMAND_MESSAGE);
+            }
         }
     }
 
     public void run(String commandLine) {
-        try {
-            if (isValidCommandLine(commandLine))
-                return;
+        if (isValidCommandLine(commandLine))
+            throw new ShellException();
 
-            ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
-            String commandStr = commandOptionList.get(0);
+        ArrayList<String> commandOptionList = new ArrayList<>(Arrays.asList(commandLine.trim().split(COMMAND_SEPARATOR)));
+        String commandStr = commandOptionList.get(0);
 
-            ShellCommand command = ShellCommandFactory.of(commandStr);
-            command.process(ssd, commandOptionList);
-        } catch (Exception e) {
-            System.out.println(INVALID_COMMAND_MESSAGE);
-        }
+        ShellCommand command = ShellCommandFactory.of(commandStr);
+        command.process(ssd, commandOptionList);
     }
 
     private boolean isValidCommandLine(String commandLine) {
