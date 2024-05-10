@@ -1,6 +1,10 @@
 .idea/
 src/main/resources/
 
+# But track the src/resources/logs directory and src/resources/help.txt file
+!src/main/resources/logs
+!src/main/resources/help.txt
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
