@@ -1,3 +1,5 @@
+package util;
+
 import org.json.JSONObject;
 
 import java.io.*;
@@ -9,8 +11,15 @@ public class FileHandler {
     public static final String RESOURCES_PATH = "src/main/resources/";
     public static final String NAND_FILE = "nand.txt";
     public static final String RESULT_FILE = "result.txt";
+    public static final String RUN_LIST_FILE = "run_list.lst";
     public static final String RESULT_FILE_PATH = RESOURCES_PATH + RESULT_FILE;
     public static final String NAND_FILE_PATH = RESOURCES_PATH + NAND_FILE;
+    public static final String RUN_LIST_FILE_PATH = RESOURCES_PATH + RUN_LIST_FILE;
+    public static final String DEFAULT_VALUE = "0x00000000";
+    public static final String LOG_FILE = "latest.log";
+    public static final String LOG_DIR = "logs/";
+    public static final String LOG_PATH = RESOURCES_PATH + LOG_DIR;
+    public static final String LOG_FILE_PATH = RESOURCES_PATH + LOG_DIR + LOG_FILE;
 
     private FileHandler() {}
 
@@ -48,7 +57,7 @@ public class FileHandler {
             try {
                 if (br != null) br.close();
             } catch (IOException ex) {
-                return SSD.DEFAULT_VALUE;
+                return "";
             }
             return sb.toString();
         }
@@ -96,7 +105,7 @@ public class FileHandler {
         if (jsonObject != null && jsonObject.has(jsonIndex)) {
             return (String) jsonObject.get(jsonIndex);
         }
-        return SSD.DEFAULT_VALUE;
+        return DEFAULT_VALUE;
     }
 
     public void writeNAND(int index, String data) {
@@ -137,6 +146,14 @@ public class FileHandler {
         if (jsonObject != null && jsonObject.has(jsonIndex)) {
             return (String) jsonObject.get(jsonIndex);
         }
-        return SSD.DEFAULT_VALUE;
+        return DEFAULT_VALUE;
+    }
+
+    public String readScenario () {
+        return fileRead(RUN_LIST_FILE_PATH);
+    }
+
+    public void writeScenario (String command) {
+        fileWrite(RUN_LIST_FILE_PATH, command);
     }
 }

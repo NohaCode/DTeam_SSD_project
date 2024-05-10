@@ -1,13 +1,16 @@
+import app.SSD;
+import exception.SSDException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import util.FileHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static util.FileHandler.DEFAULT_VALUE;
 
 @ExtendWith(MockitoExtension.class)
 class SSDTest {
@@ -30,6 +33,7 @@ class SSDTest {
     @BeforeEach
     void setUp() {
         fileHandler = FileHandler.get();
+        fileHandler.initFile();
     }
 
     private static String getWriteCommandArgument(int index, String value) {
@@ -44,10 +48,17 @@ class SSDTest {
     public void write_SSD_잘못된_요청_실패() {
         assertThatThrownBy(() -> {
             ssd.run(SSD.COMMAND_SEPARATOR);
+            ssd.run("F");
+        }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
+
+        assertThatThrownBy(() -> {
+            ssd.run(null);
+            ssd.run("F");
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
         assertThatThrownBy(() -> {
             ssd.run(SSD.COMMAND_SEPARATOR + CORRECT_WRITE_VALUE + SSD.COMMAND_SEPARATOR);
+            ssd.run("F");
         }).isInstanceOf(SSDException.class).hasMessageContaining(SSD.INVALID_COMMAND_MESSAGE);
 
     }
@@ -139,7 +150,8 @@ class SSDTest {
     public void read_SSD_Write한주소를Read() {
         ssd.run("W 1 0xFFFFFFFF");
 
-        String data = fileHandler.readNAND(1);
+        ssd.run("R 1");
+        String data = fileHandler.readRESULT(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
@@ -184,6 +196,7 @@ class SSDTest {
     @Test
     public void read_SSD_같은주소여러번Read() {
         ssd.run("W 1 0xFFFFFFFF");
+        ssd.run("F");
 
         String data = fileHandler.readNAND(1);
         assertThat(data).isEqualTo("0xFFFFFFFF");
@@ -201,13 +214,16 @@ class SSDTest {
         ssd.run("W 2 0xFFFFFFFB");
         ssd.run("W 3 0xFFFFFFFF");
 
-        String data = fileHandler.readNAND(1);
+        ssd.run("R 1");
+        String data = fileHandler.readRESULT(1);
         assertThat(data).isEqualTo("0xFFFFFFFA");
 
-        data = fileHandler.readNAND(2);
+        ssd.run("R 2");
+        data = fileHandler.readRESULT(2);
         assertThat(data).isEqualTo("0xFFFFFFFB");
 
-        data = fileHandler.readNAND(3);
+        ssd.run("R 3");
+        data = fileHandler.readRESULT(3);
         assertThat(data).isEqualTo("0xFFFFFFFF");
     }
 
@@ -215,5 +231,118 @@ class SSDTest {
     public void read_SSD_Format못맞춘경우read() {
         //ssd R
         //ssd R 2 0xFFFFFFFF
+    }
+
+    @Test
+    void erase_SSD_Write한값_1개_지우기_성공() {
+        ssd.run("W 1 0xFFFFFFFF");
+        ssd.run("F");
+
+        String data = fileHandler.readNAND(1);
+        assertThat(data).isEqualTo("0xFFFFFFFF");
+
+        ssd.run("E 1 1");
+        ssd.run("F");
+
+        data = fileHandler.readNAND(1);
+        assertThat(data).isEqualTo(DEFAULT_VALUE);
+    }
+
+    @Test
+    void erase_SSD_Write한값들_10개_지우기_성공() {
+        String data;
+        for(int i = 0; i < 10; i++){
+            ssd.run("W " + i + " 0xFFFFFFFF");
+            ssd.run("F");
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo("0xFFFFFFFF");
+        }
+
+        ssd.run("E 0 10");
+        ssd.run("F");
+
+        for(int i = 0; i < 10; i++){
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo(DEFAULT_VALUE);
+        }
+    }
+
+    @Test
+    void erase_SSD_Write한값들_마지막5개_지우기_성공() {
+        String data;
+        for(int i = 90; i < 100; i++){
+            ssd.run("W " + String.valueOf(i) + " 0xFFFFFFFF");
+            ssd.run("F");
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo("0xFFFFFFFF");
+        }
+
+        ssd.run("E 95 10");
+        ssd.run("F");
+
+        for(int i = 90; i < 95; i++){
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo("0xFFFFFFFF");
+        }
+
+        for(int i = 95; i < 100; i++){
+            data = fileHandler.readNAND(i);
+            assertThat(data).isEqualTo(DEFAULT_VALUE);
+        }
+    }
+
+    @Test
+    void erase_SSD_명령어위반_부족한_파라미터_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void erase_SSD_명령어위반_잘못된명령어_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E ABC 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+
+        e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 1 ABC");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void erase_SSD_명령어위반_알맞지_않은_주소값_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E -1 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+
+        e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 111 5");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void erase_SSD_명령어위반_알맞지_않은_사이즈_실패() {
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 1 -1");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+
+        e = assertThrows(SSDException.class, () -> {
+            ssd.run("E 1 11");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
+    }
+
+    @Test
+    void flush_SSD_명령어위반_알맞지_않은_사이즈_실패(){
+        SSDException e = assertThrows(SSDException.class, () -> {
+            ssd.run("F 1");
+        });
+        assertThat(e.getMessage()).isEqualTo(SSD.INVALID_COMMAND_MESSAGE);
     }
 }

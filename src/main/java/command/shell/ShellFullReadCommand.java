@@ -1,8 +1,13 @@
+package command.shell;
+
+import app.SSD;
+import util.FileHandler;
+
 import java.util.ArrayList;
 
-public class ShellFullReadCommand implements ShellCommand{
+public class ShellFullReadCommand extends ShellCommand {
     @Override
-    public boolean isValidCommand(ArrayList<String> commandOptionList) {
+    public boolean isValidCommandImpl(ArrayList<String> commandOptionList) {
         if(!isValidCommandOptionListSize(commandOptionList))
             return false;
 
@@ -10,9 +15,10 @@ public class ShellFullReadCommand implements ShellCommand{
     }
 
     @Override
-    public void run(SSD ssd, ArrayList<String> commandOptionList) {
+    public void runImpl(SSD ssd, ArrayList<String> commandOptionList) {
         for (int i = 0; i < 100; i++) {
             ssd.run("R " + i);
+            System.out.println(FileHandler.get().readRESULT(i));
         }
     }
 
