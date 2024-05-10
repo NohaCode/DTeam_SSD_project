@@ -31,6 +31,12 @@ public class SSDReadCommand extends SSDCommand {
     }
     @Override
     boolean flushAndCheckAbleBuffering(ArrayList<String> commandOptionList) {
+        flushWrite(commandOptionList);
+        flushErase(commandOptionList);
+        return false;
+    }
+
+    private void flushWrite(ArrayList<String> commandOptionList) {
         String commandStr = commandOptionList.get(0);
         String commandIndex = commandOptionList.get(1);
 
@@ -47,11 +53,30 @@ public class SSDReadCommand extends SSDCommand {
                 SSDCommand bufferedCommand = SSDCommandFactory.of(bufferedCommandStr);
                 bufferedCommand.run(bufferedCommandOptionList);
                 commandBuffer.remove(i);
-                return false;
+                return;
             }
         }
-
-        return false;
     }
 
+    private void flushErase(ArrayList<String> commandOptionList) {
+        String commandStr = commandOptionList.get(0);
+        int commandIndex = Integer.parseInt(commandOptionList.get(1));
+
+        for (int i = commandBuffer.size() - 1; i >= 0 ; i--) {
+            ArrayList<String> bufferedCommandOptionList = commandBuffer.get(i);
+            String bufferedCommandStr = bufferedCommandOptionList.get(0);
+            if(!bufferedCommandStr.equals("E"))
+                continue;
+
+            int bufferedCommandStartIndex = Integer.parseInt(bufferedCommandOptionList.get(1));
+            int bufferedCommandEndIndex = bufferedCommandStartIndex + Integer.parseInt(bufferedCommandOptionList.get(2));
+
+            if (bufferedCommandStartIndex <= commandIndex && commandIndex < bufferedCommandEndIndex) {
+                SSDCommand bufferedCommand = SSDCommandFactory.of(bufferedCommandStr);
+                bufferedCommand.run(bufferedCommandOptionList);
+                commandBuffer.remove(i);
+                return;
+            }
+        }
+    }
 }
