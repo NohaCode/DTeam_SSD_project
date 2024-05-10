@@ -338,7 +338,7 @@ class ShellTest {
         ArrayList<String> commandOptionList = new ArrayList<>(Collections.singletonList("run_list.lst"));
 
         assertThat(runnerCommand.isValidCommandImpl(commandOptionList)).isEqualTo(true);
-        assertThat(runnerCommand.testRun(RUN_LIST_FILE_PATH)).isEqualTo("Pass");
+        assertThat(runnerCommand.testRun(RUN_LIST_FILE_PATH)).isEqualTo("PASS");
 
     }
 
@@ -348,6 +348,6 @@ class ShellTest {
         ArrayList<String> commandOptionList = new ArrayList<>(Collections.singletonList("run_list.lst"));
 
         assertThat(runnerCommand.isValidCommandImpl(commandOptionList)).isEqualTo(true);
-        assertThat(runnerCommand.testRun(TEST_RUN_LIST_FILE_PATH)).isEqualTo("Fail");
+        assertThat(runnerCommand.testRun(TEST_RUN_LIST_FILE_PATH)).isEqualTo("FAIL");
     }
 }
