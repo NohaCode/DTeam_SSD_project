@@ -12,15 +12,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Scenario {
-    private static final String filePath = "src/main/java/command/scenario/test/";
+    private static String filePath = "C:\\Users\\User\\IdeaProjects\\DTeam_SSD_project\\testcode\\";
 
-    private static ConcurrentHashMap<String, Boolean> scenarioMap;
-
-    public Scenario() {
-        scenarioMap = new ConcurrentHashMap<>();
-    }
+    private static ConcurrentHashMap<String, Boolean> scenarioMap = new ConcurrentHashMap<>();
 
     public static void findScenario() {
+        scenarioMap.clear();
+        String currentDir = System.getProperty("user.dir");
+        filePath = currentDir + "\\testcode\\";
         File dir = new File(filePath);
         File[] files = dir.listFiles();
         if (files != null) {
@@ -61,10 +60,9 @@ public class Scenario {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         compiler.run(null, null, null, javaFilePath);
 
-        URL[] url = new URL[]{new File(javaFilePath).toURI().toURL()};
+        URL[] url = new URL[]{new File(filePath + fileName + ".class").toURI().toURL()};
         URLClassLoader classLoader = URLClassLoader.newInstance(url);
-        String className = new File(javaFilePath).getName().replace(".java", "");
-        Class<?> loadedClass = classLoader.loadClass("command.scenario.test." + className);
+        Class<?> loadedClass = Class.forName("command.scenario.test." + fileName.toLowerCase(), true, classLoader);
 
         Object instance = loadedClass.getDeclaredConstructor().newInstance();
 
