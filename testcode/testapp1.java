@@ -1,5 +1,3 @@
-package command.scenario.test;
-
 import app.SSD;
 import command.shell.ShellCommand;
 import exception.ShellException;

@@ -60,9 +60,9 @@ public class Scenario {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         compiler.run(null, null, null, javaFilePath);
 
-        URL[] url = new URL[]{new File(filePath + fileName + ".class").toURI().toURL()};
+        URL[] url = new URL[]{new File(filePath).toURI().toURL()};
         URLClassLoader classLoader = URLClassLoader.newInstance(url);
-        Class<?> loadedClass = Class.forName("command.scenario.test." + fileName.toLowerCase(), true, classLoader);
+        Class<?> loadedClass = Class.forName(fileName, true, classLoader);
 
         Object instance = loadedClass.getDeclaredConstructor().newInstance();
 
