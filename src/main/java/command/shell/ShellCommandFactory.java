@@ -28,6 +28,8 @@ public class ShellCommandFactory {
                 commandMap.put(command, new ShellEraseRangeCommand());
             } else if (command.equals("run_list.lst")) {
                 commandMap.put(command, new ShellRunnerCommand());
+            } else if (command.equals("flush")) {
+                commandMap.put(command, new ShellFlushCommand());
             } else {
                 Scenario.findScenario();
                 if (Scenario.hasScenario(command)) {
